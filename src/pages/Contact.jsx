@@ -30,8 +30,8 @@ const Contact = () => {
         message: formData.message
       }
 
-      // Use original working script
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIlAfBITq6kvRw1xG4cFEV_E09i2FmYuaviFdBGbuDEYHV7NRqFL9B14QFYzcIFkWa/exec'
+      // Use simple email-only script
+      const scriptUrl = 'https://script.google.com/macros/s/YOUR_NEW_SCRIPT_URL_HERE/exec'
 
       // Submit to original working script
       const response = await fetch(scriptUrl, {
