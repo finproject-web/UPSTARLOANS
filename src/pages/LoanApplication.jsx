@@ -245,12 +245,11 @@ const LoanApplication = () => {
         phoneNumber: formData.phoneNumber
       }
 
-      // Submit to both scripts
-      const emailScriptUrl = 'https://script.google.com/macros/s/AKfycbzP3LCzrPSHHhwvwSLVz1lK57AuSfEpUtQAumanimqvsPxrcbiiTYreSR6aPBuWUo4h7Q/exec'
-      const sheetsScriptUrl = 'https://script.google.com/macros/s/AKfycbxGqA6A5sqAa5RRJ8x9kYt3WCt2dLpkgwydNO42DMXWd2Se8PfG4zW0TjCu_zKiIZwh/exec'
+      // Use original working script
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIlAfBITq6kvRw1xG4cFEV_E09i2FmYuaviFdBGbuDEYHV7NRqFL9B14QFYzcIFkWa/exec'
 
-      // Submit to email script
-      const emailResponse = await fetch(emailScriptUrl, {
+      // Submit to original working script
+      const response = await fetch(scriptUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -258,26 +257,13 @@ const LoanApplication = () => {
         body: new URLSearchParams(formDataToSubmit)
       })
 
-      // Submit to sheets script
-      const sheetsResponse = await fetch(sheetsScriptUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(formDataToSubmit)
-      })
-
-      const emailResult = await emailResponse.json()
-      const sheetsResult = await sheetsResponse.json()
-      
-      // Log results for debugging
-      console.log('Email Script Result:', emailResult)
-      console.log('Sheets Script Result:', sheetsResult)
-      
-      if (emailResult.status === 'success' || sheetsResult.status === 'success') {
-        console.log('Form submitted successfully to at least one script')
+      // Check response
+      if (response.ok) {
+        console.log('Form submitted successfully')
+        console.log('Response:', await response.json())
       } else {
-        console.error('Form submission error. Email:', emailResult.message, 'Sheets:', sheetsResult.message)
+        console.error('Error submitting form')
+        console.error('Response:', response)
       }
     } catch (error) {
       console.error('Error submitting form:', error)

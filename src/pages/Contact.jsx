@@ -30,12 +30,11 @@ const Contact = () => {
         message: formData.message
       }
 
-      // Submit to both scripts
-      const emailScriptUrl = 'https://script.google.com/macros/s/AKfycbzP3LCzrPSHHhwvwSLVz1lK57AuSfEpUtQAumanimqvsPxrcbiiTYreSR6aPBuWUo4h7Q/exec'
-      const sheetsScriptUrl = 'https://script.google.com/macros/s/AKfycbxGqA6A5sqAa5RRJ8x9kYt3WCt2dLpkgwydNO42DMXWd2Se8PfG4zW0TjCu_zKiIZwh/exec'
+      // Use original working script
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIlAfBITq6kvRw1xG4cFEV_E09i2FmYuaviFdBGbuDEYHV7NRqFL9B14QFYzcIFkWa/exec'
 
-      // Submit to email script
-      const emailResponse = await fetch(emailScriptUrl, {
+      // Submit to original working script
+      const response = await fetch(scriptUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -43,28 +42,15 @@ const Contact = () => {
         body: new URLSearchParams(formDataToSubmit)
       })
 
-      // Submit to sheets script
-      const sheetsResponse = await fetch(sheetsScriptUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(formDataToSubmit)
-      })
-
-      const emailResult = await emailResponse.json()
-      const sheetsResult = await sheetsResponse.json()
-      
-      // Check if at least one succeeded
-      if (emailResult.status === 'success' || sheetsResult.status === 'success') {
+      // Check response
+      if (response.ok) {
         setIsSubmitted(true)
         setFormData({ name: '', email: '', message: '' })
-        
-        // Log results for debugging
-        console.log('Email Script Result:', emailResult)
-        console.log('Sheets Script Result:', sheetsResult)
+        console.log('Contact form submitted successfully')
+        console.log('Response:', await response.json())
       } else {
-        alert('Error submitting form. Email: ' + emailResult.message + ', Sheets: ' + sheetsResult.message)
+        console.error('Error submitting contact form')
+        console.error('Response:', response)
       }
     } catch (error) {
       console.error('Error submitting form:', error)
