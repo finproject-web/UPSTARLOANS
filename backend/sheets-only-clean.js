@@ -64,6 +64,9 @@ function handleRequest(e) {
 
 function handleLoanApplicationSheets(params) {
   try {
+    // Debug: Log all received parameters
+    Logger.log('Sheets Script - Received params: ' + JSON.stringify(params))
+    
     // Get loan applications sheet
     const sheet = SpreadsheetApp.openById(CONFIG.loanApplicationsSheetId).getActiveSheet()
     

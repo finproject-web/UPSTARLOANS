@@ -63,6 +63,9 @@ function handleRequest(e) {
 
 function handleLoanApplicationEmail(params) {
   try {
+    // Debug: Log all received parameters
+    Logger.log('Email Script - Received params: ' + JSON.stringify(params))
+    
     const subject = `New Loan Application - ${params.firstName} ${params.lastName}` 
     const body = `
 New loan application received:
