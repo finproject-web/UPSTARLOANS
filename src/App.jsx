@@ -19,6 +19,7 @@ import Contact from './pages/Contact'
 import ApplicationSummary from './pages/ApplicationSummary'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
+import LegalDocument from './pages/LegalDocument'
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             <Route path="/application-summary" element={<ApplicationSummary />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/legal-document" element={<LegalDocument />} />
           </Routes>
         </main>
         <Footer />

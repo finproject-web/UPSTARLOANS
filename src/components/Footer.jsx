@@ -10,10 +10,8 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">FinanceHub</span>
+              <img src="/logo.png" alt="UPSTART LOANS" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-bold text-gray-900">UPSTART LOANS</span>
             </div>
             <p className="text-gray-600 mb-4 max-w-md">
               We are a platform that connects users with third-party lenders and financial providers. Modern financial solutions designed to help you explore options with confidence.
@@ -25,7 +23,7 @@ const Footer = () => {
             <h3 className="font-semibold text-gray-900 mb-4">Links</h3>
             <ul className="space-y-2">
               <li><Link to="/about" className="text-gray-600 hover:text-teal-600 transition-colors">About</Link></li>
-              <li><Link to="/credit-score" className="text-gray-600 hover:text-teal-600 transition-colors">Resources</Link></li>
+              <li><Link to="/legal-document" className="text-gray-600 hover:text-teal-600 transition-colors">Legal</Link></li>
               <li><Link to="/contact" className="text-gray-600 hover:text-teal-600 transition-colors">Support</Link></li>
             </ul>
           </div>
@@ -74,7 +72,7 @@ const Footer = () => {
           
           {/* Copyright */}
           <div className="text-center text-gray-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} FinanceHub. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} UPSTART LOANS. All rights reserved.</p>
           </div>
         </div>
       </div>

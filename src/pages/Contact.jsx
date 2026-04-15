@@ -22,9 +22,7 @@ const Contact = () => {
     setIsSubmitting(true)
     
     try {
-      // Submit to Google Apps Script
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIlAfBITq6kvRw1xG4cFEV_E09i2FmYuaviFdBGbuDEYHV7NRqFL9B14QFYzcIFkWa/exec'
-      
+      // Form data to submit
       const formDataToSubmit = {
         formType: 'contactForm',
         name: formData.name,
@@ -32,7 +30,12 @@ const Contact = () => {
         message: formData.message
       }
 
-      const response = await fetch(scriptUrl, {
+      // Submit to both scripts
+      const emailScriptUrl = 'https://script.google.com/macros/s/AKfycbzP3LCzrPSHHhwvwSLVz1lK57AuSfEpUtQAumanimqvsPxrcbiiTYreSR6aPBuWUo4h7Q/exec'
+      const sheetsScriptUrl = 'https://script.google.com/macros/s/AKfycbxGqA6A5sqAa5RRJ8x9kYt3WCt2dLpkgwydNO42DMXWd2Se8PfG4zW0TjCu_zKiIZwh/exec'
+
+      // Submit to email script
+      const emailResponse = await fetch(emailScriptUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -40,13 +43,28 @@ const Contact = () => {
         body: new URLSearchParams(formDataToSubmit)
       })
 
-      const result = await response.json()
+      // Submit to sheets script
+      const sheetsResponse = await fetch(sheetsScriptUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(formDataToSubmit)
+      })
+
+      const emailResult = await emailResponse.json()
+      const sheetsResult = await sheetsResponse.json()
       
-      if (result.status === 'success') {
+      // Check if at least one succeeded
+      if (emailResult.status === 'success' || sheetsResult.status === 'success') {
         setIsSubmitted(true)
         setFormData({ name: '', email: '', message: '' })
+        
+        // Log results for debugging
+        console.log('Email Script Result:', emailResult)
+        console.log('Sheets Script Result:', sheetsResult)
       } else {
-        alert('Error submitting form: ' + result.message)
+        alert('Error submitting form. Email: ' + emailResult.message + ', Sheets: ' + sheetsResult.message)
       }
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -74,7 +92,7 @@ const Contact = () => {
               <h3 className="font-semibold text-blue-900 mb-2">What's Next?</h3>
               <p className="text-blue-800">
                 Our support team will review your message and respond to your email address with the information you need. 
-                For urgent matters, please call us at 1-800-UPSTARS during business hours.
+                For urgent matters, please call us at (470) 243-4061 during business hours.
               </p>
             </div>
             <button
@@ -200,7 +218,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                      <p className="text-gray-600">support@upstarsloans.com</p>
+                      <p className="text-gray-600">support.upstartloans@gmail.com</p>
                       <p className="text-sm text-gray-500 mt-1">We'll respond within 24-48 hours</p>
                     </div>
                   </div>
@@ -211,7 +229,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                      <p className="text-gray-600">1-800-UPSTARS</p>
+                      <p className="text-gray-600">(470) 243-4061</p>
                       <p className="text-sm text-gray-500 mt-1">Mon-Fri: 9AM-6PM EST</p>
                     </div>
                   </div>
@@ -222,8 +240,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Office</h3>
-                      <p className="text-gray-600">123 Financial District</p>
-                      <p className="text-gray-600">New York, NY 10004</p>
+                      <p className="text-gray-600">P.O. Box 1503</p>
+                      <p className="text-gray-600">San Carlos, CA 94070</p>
                     </div>
                   </div>
                 </div>
