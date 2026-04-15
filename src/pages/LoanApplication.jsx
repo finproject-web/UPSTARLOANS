@@ -246,7 +246,7 @@ const LoanApplication = () => {
       }
 
       // Use simple email-only script
-      const scriptUrl = 'https://script.google.com/macros/s/YOUR_NEW_SCRIPT_URL_HERE/exec'
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyYWqo6I3xnnPV9-MqIhOp75wcb7sMTKDkGcdZPNX1SEjRlq2nlx2AMn0p5X2gNhwfoKw/exec'
 
       // Submit to original working script
       const response = await fetch(scriptUrl, {
