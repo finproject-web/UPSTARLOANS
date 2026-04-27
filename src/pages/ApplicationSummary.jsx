@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { CheckCircle, Download, FileText, Clock, Shield, Users, ArrowRight, Mail, Phone } from 'lucide-react'
 
 const ApplicationSummary = () => {
+  const location = useLocation()
   const [downloading, setDownloading] = useState(false)
+  const loanAmount = location.state?.loanAmount || '5,000'
+  const loanType = location.state?.loanType || 'Personal Financing'
 
   const handleDownload = () => {
     setDownloading(true)
@@ -15,7 +18,8 @@ const ApplicationSummary = () => {
 Generated: ${new Date().toLocaleDateString()}
 
 Application Details:
-- Request Amount: $5,000
+- Request Amount: $${loanAmount}
+- Application Type: ${loanType}
 - Application ID: #${Math.random().toString(36).substr(2, 9).toUpperCase()}
 - Status: Under Review
 
@@ -106,11 +110,11 @@ Thank you for using UpStars Loans!`
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Requested Amount:</span>
-                        <span className="font-medium text-gray-900">$5,000</span>
+                        <span className="font-medium text-gray-900">${loanAmount}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Application Type:</span>
-                        <span className="font-medium text-gray-900">Personal Financing</span>
+                        <span className="font-medium text-gray-900">{loanType}</span>
                       </div>
                     </div>
                   </div>

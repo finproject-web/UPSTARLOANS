@@ -136,7 +136,7 @@ const PersonalFinancing = () => {
       submitToGoogleSheets()
       
       setTimeout(() => {
-        navigate('/application-summary')
+        navigate('/application-summary', { state: { loanAmount: formData.loanAmount, loanType: 'Personal Financing' } })
       }, 3000)
     }
   }

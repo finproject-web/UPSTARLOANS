@@ -262,7 +262,7 @@ const LoanApplication = () => {
       // Email already sent when Generate Document was clicked
       
       setTimeout(() => {
-        navigate('/application-summary')
+        navigate('/application-summary', { state: { loanAmount: formData.loanAmount, loanType: currentLoanConfig.title } })
       }, 3000)
     }
   }
