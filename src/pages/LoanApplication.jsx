@@ -153,27 +153,45 @@ const LoanApplication = () => {
     })
   }
 
-  const startDrawing = (e) => {
-    setIsDrawing(true)
+  const getCoordinates = (e) => {
     const canvas = canvasRef.current
     const rect = canvas.getBoundingClientRect()
+    
+    // Handle both touch and mouse events
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    }
+  }
+
+  const startDrawing = (e) => {
+    e.preventDefault()
+    setIsDrawing(true)
+    const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
+    const coords = getCoordinates(e)
     
     ctx.beginPath()
-    ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+    ctx.moveTo(coords.x, coords.y)
   }
 
   const draw = (e) => {
     if (!isDrawing) return
+    e.preventDefault()
     
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
+    const coords = getCoordinates(e)
     
-    ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+    ctx.lineTo(coords.x, coords.y)
     ctx.stroke()
   }
 
-  const stopDrawing = () => {
+  const stopDrawing = (e) => {
+    if (e) e.preventDefault()
     setIsDrawing(false)
     // Auto-save signature when user stops drawing
     saveSignature()
@@ -1101,6 +1119,13 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 Your Signature *
               </label>
               
+              {/* Signature Instructions */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+                <p className="text-sm text-blue-800">
+                  <strong>How to sign:</strong> Use your mouse (desktop) or finger (mobile/tablet) to draw your signature in the box below. Sign clearly within the white area.
+                </p>
+              </div>
+              
               {/* Signature Canvas */}
               <div className="border-2 border-gray-300 rounded-lg bg-white mb-4">
                 <canvas
@@ -1112,6 +1137,9 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                   onMouseMove={draw}
                   onMouseUp={stopDrawing}
                   onMouseLeave={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
                   style={{ touchAction: 'none' }}
                 />
               </div>
