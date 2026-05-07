@@ -778,11 +778,6 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       return
     }
     
-    if (!idProof) {
-      setIdProofError('Please upload a valid ID proof before downloading the agreement.')
-      return
-    }
-    
     try {
       // Show loading state
       const button = event.target
