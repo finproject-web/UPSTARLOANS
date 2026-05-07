@@ -414,9 +414,9 @@ const LoanAgreement = () => {
           </div>
         ) : (
           <div>
-            {/* LightStream Loan Agreement Header */}
+            {/* UP Start Loans Loan Agreement Header */}
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4">LightStream Loan Agreement</h1>
+              <h1 className="text-4xl font-bold text-white mb-4">UP Start Loans Loan Agreement</h1>
               <p className="text-lg text-gray-300">Loan Agreement Number: {loanNumber}</p>
               <p className="text-lg text-gray-300">Date: {currentDate}</p>
             </div>
@@ -453,7 +453,7 @@ const LoanAgreement = () => {
                     <strong>Payment example:</strong> Monthly payments for a $10,000 loan at 10.00% APR with a term of 3 years would result in 36 monthly payments of $306.44.
                   </p>
                   <p className="text-sm text-gray-400 mb-4">
-                    <strong>Maximum APR for a LightStream loan is 25.39%.</strong> Loan terms range from 24 - 240 months depending on loan type.
+                    <strong>Maximum APR for a UP Start Loans loan is 25.39%.</strong> Loan terms range from 24 - 240 months depending on loan type.
                   </p>
                   <p className="text-sm text-gray-400 mb-4">
                     <strong>You can fund your loan today if today is a banking business day, your application is approved, and you complete the following steps by 2:30 p.m. Eastern time:</strong>
@@ -467,7 +467,7 @@ const LoanAgreement = () => {
                     <strong>E H L Truist Bank is an Equal Housing Lender. 2025 Truist Financial Corporation.</strong>
                   </p>
                   <p className="text-sm text-gray-400 mb-2">
-                    Truist, LightStream, and LightStream logos are service marks of Truist Financial Corporation. All rights reserved.
+                    Truist, UP Start Loans, and UP Start Loans logos are service marks of Truist Financial Corporation. All rights reserved.
                   </p>
                   <p className="text-sm text-gray-400">
                     All other trademarks are property of their respective owners. Lending services provided by Truist Bank.

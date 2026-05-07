@@ -10,7 +10,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex justify-center mb-8">
-              <img src="/logo.png" alt="UPSTART LOANS" className="w-20 h-20 object-contain" />
+              <img src="/logo.png" alt="UP Start Loans" className="w-20 h-20 object-contain" />
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 animate-fade-in">
               Compare financial options from multiple providers in one place
@@ -68,7 +68,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">UPSTART LOANS</span>
+              Why Choose <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">UP Start Loans</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We're committed to providing transparent, secure, and personalized financial solutions
@@ -499,7 +499,7 @@ const Home = () => {
             <div className="p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
               <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
                 <Lightbulb className="w-5 h-5 text-indigo-600 mr-2" />
-                How does UPSTART LOANS work?
+                How does UP Start Loans work?
               </h3>
               <p className="text-gray-600">We connect you with verified financial service providers based on your needs and profile.</p>
             </div>

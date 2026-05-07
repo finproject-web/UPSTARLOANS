@@ -10,8 +10,8 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <img src="/logo.png" alt="UPSTART LOANS" className="w-8 h-8 object-contain" />
-              <span className="text-xl font-bold text-gray-900">UPSTART LOANS</span>
+              <img src="/logo.png" alt="UP Start Loans" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-bold text-gray-900">UP Start Loans</span>
             </div>
             <p className="text-gray-600 mb-4 max-w-md">
               We are a platform that connects users with third-party lenders and financial providers. Modern financial solutions designed to help you explore options with confidence.
@@ -69,10 +69,23 @@ const Footer = () => {
               No obligation to proceed
             </span>
           </div>
+
+          {/* Admin Access - Desktop Only */}
+          <div className="hidden lg:flex items-center justify-center mb-6">
+            <div className="bg-gray-100 rounded-lg px-4 py-2">
+              <a 
+                href="/admin-login" 
+                className="text-gray-600 hover:text-teal-600 transition-colors text-sm flex items-center"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Admin Access
+              </a>
+            </div>
+          </div>
           
           {/* Copyright */}
           <div className="text-center text-gray-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} UPSTART LOANS. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} UP Start Loans. All rights reserved.</p>
           </div>
         </div>
       </div>

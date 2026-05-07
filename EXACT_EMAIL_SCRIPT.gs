@@ -87,31 +87,89 @@ function sendApplicationEmail(data) {
 }
 
 function sendAgreementEmail(data) {
-  const subject = "Loan Agreement Signed - " + data.borrower_name;
-  
-  // Simple agreement email with ID proof
-  const emailBody = "Loan Agreement Submitted - UpStars Loans\n\n" +
-    "Borrower: " + data.borrower_name + "\n" +
-    "Email: " + data.email + "\n" +
-    "Agreement Number: " + data.agreementNumber + "\n" +
-    "Loan Amount: $" + data.loanAmount + "\n" +
-    "Loan Term: " + data.loanTerm + " months\n" +
-    "Monthly Payment: $" + calculateMonthlyPayment(data.loanAmount, data.loanTerm) + "\n\n" +
-    "ID Proof Information:\n" +
-    "- File Name: " + (data.idProofName || 'Not uploaded') + "\n" +
-    "- File Type: " + (data.idProofType || 'Not uploaded') + "\n" +
-    "- File Size: " + (data.idProofSize || 'Not uploaded') + "\n" +
-    "- Status: " + (data.idProofBase64 ? 'Attached (Base64 encoded)' : 'Not uploaded') + "\n\n" +
-    "Agreement Accepted: " + (data.agreementAccepted ? 'Yes' : 'No') + "\n" +
-    "Signature Status: " + data.signatureStatus + "\n" +
-    "Submission Date: " + data.submissionDate + "\n\n" +
-    "Complete agreement content has been included in this submission.";
-  
-  // Send to both emails
-  GmailApp.sendEmail(PRIMARY_EMAIL, subject, emailBody);
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, emailBody);
-  
-  Logger.log("Agreement email sent to both: " + PRIMARY_EMAIL + " and " + SECONDARY_EMAIL);
+  try {
+    const subject = "Loan Agreement Signed - " + (data.borrower_name || 'Customer');
+    
+    // Save ID proof data to customer dashboard
+    saveIdProofToCustomerDashboard(data);
+    
+    // Simple agreement email with ID proof
+    const emailBody = "Loan Agreement Submitted - UpStars Loans\n\n" +
+      "Borrower: " + (data.borrower_name || 'Customer') + "\n" +
+      "Email: " + (data.email || 'Not provided') + "\n" +
+      "Agreement Number: " + (data.agreementNumber || 'Not provided') + "\n" +
+      "Loan Amount: $" + (data.loanAmount || 'Not provided') + "\n" +
+      "Loan Term: " + (data.loanTerm || 'Not provided') + " months\n" +
+      "Monthly Payment: $" + (calculateMonthlyPayment(data.loanAmount, data.loanTerm) || '0.00') + "\n\n" +
+      "ID Proof Information:\n" +
+      "- File Name: " + (data.idProofName || 'Not uploaded') + "\n" +
+      "- File Type: " + (data.idProofType || 'Not uploaded') + "\n" +
+      "- File Size: " + (data.idProofSize || 'Not uploaded') + "\n" +
+      "- Status: " + (data.idProofBase64 ? 'Attached (Base64 encoded)' : 'Not uploaded') + "\n" +
+      "- Agreement Accepted: " + (data.agreementAccepted ? 'Yes' : 'No') + "\n" +
+      "- Signature Status: " + (data.signatureStatus || 'Not provided') + "\n" +
+      "- Submission Date: " + (data.submissionDate || new Date().toLocaleDateString()) + "\n\n" +
+      "Complete agreement content has been included in this submission.\n\n" +
+      "ID proof has been saved to your customer dashboard for future reference.";
+    
+    // Send to both emails
+    GmailApp.sendEmail(PRIMARY_EMAIL, subject, emailBody);
+    GmailApp.sendEmail(SECONDARY_EMAIL, subject, emailBody);
+    
+    Logger.log("Agreement email sent to both: " + PRIMARY_EMAIL + " and " + SECONDARY_EMAIL);
+  } catch (error) {
+    Logger.log('Error in sendAgreementEmail: ' + error.toString());
+    sendErrorEmail('Error sending agreement email: ' + error.toString(), data);
+  }
+}
+
+function saveIdProofToCustomerDashboard(data) {
+  try {
+    // Get or create customer data spreadsheet
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('Customer Data') || ss.insertSheet('Customer Data');
+    
+    // Find existing customer by email
+    const customerEmail = data.email || 'Not provided';
+    const existingData = sheet.getDataRange().getValues();
+    
+    let customerRow = -1;
+    for (let i = 0; i < existingData.length; i++) {
+      if (existingData[i][0] === customerEmail) {
+        customerRow = i;
+        break;
+      }
+    }
+    
+    if (customerRow === -1) {
+      // Add new customer
+      const newCustomerData = [
+        customerEmail,
+        data.idProofName || 'Not uploaded',
+        data.idProofType || 'Not uploaded',
+        data.idProofSize || 'Not uploaded',
+        data.idProofBase64 || '',
+        new Date().toLocaleDateString()
+      ];
+      sheet.appendRow(newCustomerData);
+      Logger.log('New customer added: ' + customerEmail);
+    } else {
+      // Update existing customer
+      sheet.getRange(customerRow + 1, 1, 6).setValues([
+        data.idProofName || 'Not uploaded',
+        data.idProofType || 'Not uploaded',
+        data.idProofSize || 'Not uploaded',
+        data.idProofBase64 || ''
+      ]);
+      Logger.log('Customer ID proof updated: ' + customerEmail);
+    }
+    
+    SpreadsheetApp.flush();
+    return true;
+  } catch (error) {
+    Logger.log('Error saving ID proof to customer dashboard: ' + error.toString());
+    return false;
+  }
 }
 
 function calculateMonthlyPayment(loanAmount, loanTerm) {

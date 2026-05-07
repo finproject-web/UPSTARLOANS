@@ -23,6 +23,11 @@ import LegalDocument from './pages/LegalDocument'
 import LoanSuccess from './pages/LoanSuccess'
 import LoanCancelled from './pages/LoanCancelled'
 import TestSetup from './pages/TestSetup'
+import CustomerLogin from './pages/CustomerLogin'
+import CustomerDashboard from './pages/CustomerDashboard'
+import CustomerLoginDetails from './pages/CustomerLoginDetails'
+import AdminLogin from './pages/AdminLogin'
+import AdminDashboard from './pages/AdminDashboard'
 
 function App() {
   return (
@@ -52,6 +57,11 @@ function App() {
             <Route path="/loan-success" element={<LoanSuccess />} />
             <Route path="/loan-cancelled" element={<LoanCancelled />} />
             <Route path="/test-setup" element={<TestSetup />} />
+            <Route path="/customer-login" element={<CustomerLogin />} />
+            <Route path="/customer-login-details" element={<CustomerLoginDetails />} />
+            <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </main>
         <Footer />

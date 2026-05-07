@@ -39,15 +39,16 @@ const NewHeader = () => {
         </div>
       </div>
 
+      
       {/* MAIN NAVBAR */}
       <nav className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-20">
             {/* LOGO */}
             <div className="flex items-center space-x-3">
-              <img src="/logo.png" alt="UPSTART LOANS" className="w-10 h-10 object-contain" />
+              <img src="/logo.png" alt="UP Start Loans" className="w-10 h-10 object-contain" />
               <div>
-                <span className="text-2xl font-bold text-gray-900">UPSTART LOANS</span>
+                <span className="text-2xl font-bold text-gray-900">UP Start Loans</span>
                 <div className="text-xs text-gray-500 font-medium">Smart Financial Solutions</div>
               </div>
             </div>
@@ -264,9 +265,9 @@ const NewHeader = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <img src="/logo.png" alt="UPSTART LOANS" className="w-10 h-10 object-contain" />
+                <img src="/logo.png" alt="UP Start Loans" className="w-10 h-10 object-contain" />
                 <div>
-                  <span className="text-2xl font-bold text-gray-900">UPSTART LOANS</span>
+                  <span className="text-2xl font-bold text-gray-900">UP Start Loans</span>
                   <div className="text-xs text-gray-500 font-medium">Smart Financial Solutions</div>
                 </div>
               </div>
@@ -373,9 +374,28 @@ const NewHeader = () => {
               </div>
 
               {/* Account Access */}
-              <a href="#" className="block text-gray-800 font-semibold uppercase tracking-wide py-3 border-b border-gray-200">
-                Account Access
-              </a>
+              <div 
+                className="relative"
+                onMouseEnter={() => handleMouseEnter('account')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <button className="w-full text-left text-gray-800 font-semibold uppercase tracking-wide py-3 border-b border-gray-200">
+                  Account Access
+                </button>
+                
+                {activeDropdown === 'account' && (
+                  <div className="absolute top-full left-0 mt-3 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
+                    <div className="py-2">
+                      <a href="/customer-login" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                        Customer Login
+                      </a>
+                      <a href="/customer-dashboard" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                        Customer Dashboard
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* CTA Button */}
               <div className="mt-6">
