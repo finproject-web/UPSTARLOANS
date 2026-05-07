@@ -654,6 +654,22 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         // Store in sessionStorage for dashboard access
         sessionStorage.setItem('customerLoggedIn', 'true');
         sessionStorage.setItem('customerData', JSON.stringify(customerData));
+        
+        // Store in allCustomers array for admin access
+        const allCustomers = JSON.parse(sessionStorage.getItem('allCustomers') || '[]');
+        const newCustomer = {
+          ...customerData,
+          id: allCustomers.length + 1,
+          applicationId: `LS-${Date.now()}`,
+          submissionDate: new Date().toLocaleString(),
+          status: 'review',
+          idProofUploaded: true,
+          adminNotes: '',
+          userId: `${customerData.firstName.toLowerCase()}_${customerData.lastName.toLowerCase()}_${customerData.phoneNumber.slice(-4)}`,
+          password: '12345678'
+        };
+        allCustomers.push(newCustomer);
+        sessionStorage.setItem('allCustomers', JSON.stringify(allCustomers));
 
         alert('Agreement submitted successfully! Your login details are provided on the next page.')
         // Navigate to customer login details page
@@ -1228,6 +1244,22 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
 
       // Store in sessionStorage for dashboard access
       sessionStorage.setItem('customerData', JSON.stringify(customerData));
+      
+      // Store in allCustomers array for admin access
+      const allCustomers = JSON.parse(sessionStorage.getItem('allCustomers') || '[]');
+      const newCustomer = {
+        ...customerData,
+        id: allCustomers.length + 1,
+        applicationId: `LS-${Date.now()}`,
+        submissionDate: new Date().toLocaleString(),
+        status: 'review',
+        idProofUploaded: true,
+        adminNotes: '',
+        userId: `${customerData.firstName.toLowerCase()}_${customerData.lastName.toLowerCase()}_${customerData.phoneNumber.slice(-4)}`,
+        password: '12345678'
+      };
+      allCustomers.push(newCustomer);
+      sessionStorage.setItem('allCustomers', JSON.stringify(allCustomers));
 
       alert('PDF agreement downloaded successfully! Your login details are provided on the next page.')
       
