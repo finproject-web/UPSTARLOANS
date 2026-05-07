@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Loan Agreement</title>
+    <script>
+        // Create sample loan data
+        const sampleLoanData = {
+            name: "John Doe",
+            email: "john.doe@example.com",
+            phone: "555-123-4567",
+            loanAmount: "10000",
+            loanDuration: "36",
+            customerBank: "chase",
+            routingNumber: "021000021",
+            accountNumber: "123456789",
+            streetAddress: "123 Main Street",
+            city: "New York",
+            state: "NY",
+            zipCode: "10001",
+            creditScore: "750"
+        };
+
+        // Store in sessionStorage
+        sessionStorage.setItem('loanApplicationData', JSON.stringify(sampleLoanData));
+        
+        // Redirect to loan agreement
+        window.location.href = '/loan-agreement';
+    </script>
+</head>
+<body>
+    <p>Setting up test data and redirecting to loan agreement...</p>
+</body>
+</html>
