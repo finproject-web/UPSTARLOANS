@@ -2347,7 +2347,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                   </select>
                   <button
                     onClick={downloadCompleteAgreement}
-                    disabled={!agreementAccepted || !idProof}
+                    disabled={!agreementAccepted}
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
                   >
                     Download Agreement
@@ -2370,7 +2370,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                     disabled={!agreementAccepted}
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
                   >
-                    Print Agreement (Agree First)
+                    Print Agreement
                   </button>
                 </div>
               </div>
