@@ -1283,17 +1283,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 <option value="54">54 months</option>
                 <option value="60">60 months</option>
               </select>
-              {formData.loanAmount && formData.loanTerm && (
-                <div className="mt-2 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm font-semibold text-blue-900">
-                    Monthly Payment: ${calculateMonthlyPayment(formData.loanAmount, parseInt(formData.loanTerm))}
-                  </p>
-                  <p className="text-xs text-blue-700 mt-1">
-                    At 10% fixed APR
-                  </p>
-                </div>
-              )}
-            </div>
+                          </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1325,6 +1315,24 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
               </p>
             </div>
           </div>
+        
+        {/* Monthly Payment Display */}
+        {formData.loanAmount && formData.loanTerm && (
+          <div className="bg-blue-50 rounded-xl p-6 mt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-lg font-semibold text-blue-900">Monthly Payment Calculation</h4>
+                <p className="text-sm text-blue-700 mt-1">Based on 10% fixed APR</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-blue-900">
+                  ${calculateMonthlyPayment(formData.loanAmount, parseInt(formData.loanTerm))}
+                </p>
+                <p className="text-sm text-blue-700">per month</p>
+              </div>
+            </div>
+          </div>
+        )}
         </div>
 
         {/* Personal Information */}
@@ -2327,7 +2335,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                   </p>
                 </div>
                 
-                <div className="flex space-x-4">
+                <div className="flex flex-wrap gap-2 mt-4">
                   <select
                     value={sectionView}
                     onChange={handleSectionViewChange}
@@ -2337,33 +2345,33 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                     <option value="all">Show All Sections</option>
                     <option value="terms">Terms & Conditions</option>
                   </select>
-                <button
-                  onClick={downloadCompleteAgreement}
-                  disabled={!agreementAccepted || !idProof}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
-                >
-                  Download Agreement
-                </button>
-                <button
-                  onClick={submitAgreementToGmail}
-                  disabled={!agreementAccepted || !idProof || isSubmittingEmail}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
-                >
-                  {isSubmittingEmail ? 'Submitting...' : 'Submit Agreement'}
-                </button>
-                <button
-                  onClick={() => {
-                    if (agreementAccepted) {
-                      window.print();
-                    } else {
-                      alert('Please accept the agreement first.');
-                    }
-                  }}
-                  disabled={!agreementAccepted}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
-                >
-                  Print Agreement (Agree First)
-                </button>
+                  <button
+                    onClick={downloadCompleteAgreement}
+                    disabled={!agreementAccepted || !idProof}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
+                  >
+                    Download Agreement
+                  </button>
+                  <button
+                    onClick={submitAgreementToGmail}
+                    disabled={!agreementAccepted || !idProof || isSubmittingEmail}
+                    className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
+                  >
+                    {isSubmittingEmail ? 'Submitting...' : 'Submit Agreement'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (agreementAccepted) {
+                        window.print();
+                      } else {
+                        alert('Please accept the agreement first.');
+                      }
+                    }}
+                    disabled={!agreementAccepted}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
+                  >
+                    Print Agreement (Agree First)
+                  </button>
                 </div>
               </div>
             </div>
