@@ -76,6 +76,10 @@ function doGet(e) {
 
 function doPost(e) {
   try {
+    // Add CORS headers
+    const output = ContentService.createTextOutput();
+    output.setMimeType(ContentService.MimeType.JSON);
+    
     const data = e.parameter;
     const action = data.action || 'saveCustomer';
     
@@ -91,18 +95,31 @@ function doPost(e) {
       throw new Error('Unknown action: ' + action);
     }
     
-    return ContentService.createTextOutput(JSON.stringify({
+    const response = JSON.stringify({
       result: 'success',
       data: result
-    }));
+    });
+    
+    output.setContent(response);
+    
+    // Set CORS headers
+    return ContentService.createTextOutput()
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type')
+      .setContent(response);
     
   } catch (error) {
     Logger.log('Error in doPost: ' + error.toString());
     
-    return ContentService.createTextOutput(JSON.stringify({
-      result: 'error',
-      error: error.toString()
-    }));
+    return ContentService.createTextOutput()
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type')
+      .setContent(JSON.stringify({
+        result: 'error',
+        error: error.toString()
+      }));
   }
 }
 
