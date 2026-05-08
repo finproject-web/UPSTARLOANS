@@ -47,8 +47,16 @@ const AdminDashboard = () => {
         })
       });
       
-      const result = await response.json();
-      console.log('Google Sheets response:', result);
+      let result;
+      try {
+        result = await response.json();
+        console.log('Google Sheets response:', result);
+      } catch (error) {
+        console.log('Error parsing JSON response:', error);
+        console.log('Response text:', await response.text());
+        // If JSON parsing fails, use fallback
+        result = { result: 'error', error: 'Invalid response from Google Sheets' };
+      }
       
       let customers = [];
       
