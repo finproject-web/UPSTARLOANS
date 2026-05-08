@@ -1318,6 +1318,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 <option value="Richard Johns">Richard Johns</option>
                 <option value="Austin Miller">Austin Miller</option>
                 <option value="Benjamin">Benjamin</option>
+                <option value="Peter Smith">Peter Smith</option>
               </select>
               <p className="text-xs text-gray-500 mt-1">
                 Please select the loan agent you are working with
