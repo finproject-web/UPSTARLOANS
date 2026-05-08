@@ -151,8 +151,8 @@ const AdminDashboard = () => {
       }
     ];
     
-    // Combine real customers with mock data
-    const allCustomers = customers.concat(mockCustomers);
+    // Show real customers first, only show mock data if no real customers exist
+    const allCustomers = customers.length > 0 ? customers : mockCustomers;
     
     setCustomers(allCustomers);
     setLoading(false);
@@ -276,12 +276,20 @@ const AdminDashboard = () => {
               <h1 className="text-xl font-bold text-gray-900">UpStars Loans</h1>
               <span className="ml-2 text-sm text-gray-500">Admin Portal</span>
             </div>
-            <button
-              onClick={handleLogout}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              Logout
-            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={loadCustomerData}
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              >
+                Refresh Data
+              </button>
+              <button
+                onClick={handleLogout}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>
