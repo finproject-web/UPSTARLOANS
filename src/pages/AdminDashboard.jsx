@@ -34,128 +34,178 @@ const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, [navigate]);
 
-  const loadCustomerData = () => {
-    // Load real customer data from sessionStorage
-    // In production, this would come from backend/database
-    const storedCustomers = sessionStorage.getItem('allCustomers');
-    let customers = [];
-    
-    console.log('Loading customer data from sessionStorage:', storedCustomers);
-    
-    if (storedCustomers) {
-      try {
-        customers = JSON.parse(storedCustomers);
-        console.log('Parsed customers:', customers);
-      } catch (error) {
-        console.error('Error parsing customers:', error);
-        customers = [];
+  const loadCustomerData = async () => {
+    try {
+      // Load customer data from Google Sheets
+      const response = await fetch('https://script.google.com/macros/s/YOUR_GOOGLE_SHEETS_SCRIPT_ID/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          action: 'getCustomers'
+        })
+      });
+      
+      const result = await response.json();
+      console.log('Google Sheets response:', result);
+      
+      let customers = [];
+      
+      if (result.result === 'success' && result.data) {
+        customers = result.data.map((customer, index) => ({
+          ...customer,
+          id: index + 1
+        }));
+        console.log('Loaded customers from Google Sheets:', customers);
+      } else {
+        console.log('No customers found in Google Sheets, using fallback data');
+        
+        // Fallback to mock data if no real customers exist
+        customers = [
+          {
+            id: 1,
+            applicationId: 'LS-1715084400000',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@email.com',
+            phoneNumber: '555-123-4567',
+            homeAddress: '123 Main St',
+            city: 'New York',
+            state: 'NY',
+            zipCode: '10001',
+            dateOfBirth: '01/15/1985',
+            ssnNumber: '123-45-6789',
+            bankName: 'Chase',
+            routingNumber: '123456789',
+            accountNumber: '987654321',
+            loanAmount: '5000',
+            loanPurpose: 'medical emergency',
+            loanTerm: '12',
+            monthlyPayment: '439.47',
+            loanAgent: 'Paul David',
+            status: 'in_process',
+            submissionDate: '5/7/2026, 10:30:15 AM',
+            idProofUploaded: true,
+            idProofName: 'driver_license.jpg',
+            idProofSize: '2.1 MB',
+            idProofType: 'JPEG',
+            idProofBase64: '/9j/4AAQSkZJRgABAQAAAQ...',
+            adminNotes: 'Application under review',
+            userId: 'john_doe_4567',
+            password: '12345678'
+          },
+          {
+            id: 2,
+            applicationId: 'LS-1715084500000',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            email: 'jane.smith@email.com',
+            phoneNumber: '555-987-6543',
+            homeAddress: '456 Oak Ave',
+            city: 'Los Angeles',
+            state: 'CA',
+            zipCode: '90001',
+            dateOfBirth: '03/22/1990',
+            ssnNumber: '987-65-4321',
+            bankName: 'Bank of America',
+            routingNumber: '987654321',
+            accountNumber: '123456789',
+            loanAmount: '10000',
+            loanPurpose: 'business',
+            loanTerm: '24',
+            monthlyPayment: '461.45',
+            loanAgent: 'Eric Brown',
+            status: 'review',
+            submissionDate: '5/7/2026, 11:15:30 AM',
+            idProofUploaded: true,
+            idProofName: 'passport.pdf',
+            idProofSize: '3.2 MB',
+            idProofType: 'PDF',
+            idProofBase64: 'JVBERi0xLjQK...',
+            adminNotes: 'Waiting for business documents',
+            userId: 'jane_smith_6543',
+            password: '12345678'
+          },
+          {
+            id: 3,
+            applicationId: 'LS-1715084600000',
+            firstName: 'Mike',
+            lastName: 'Johnson',
+            email: 'mike.j@email.com',
+            phoneNumber: '555-456-7890',
+            homeAddress: '789 Pine St',
+            city: 'Chicago',
+            state: 'IL',
+            zipCode: '60601',
+            dateOfBirth: '07/10/1988',
+            ssnNumber: '456-78-9012',
+            bankName: 'Wells Fargo',
+            routingNumber: '456789123',
+            accountNumber: '789012345',
+            loanAmount: '7500',
+            loanPurpose: 'education',
+            loanTerm: '18',
+            monthlyPayment: '447.89',
+            loanAgent: 'Richard Johns',
+            status: 'completed',
+            submissionDate: '5/7/2026, 9:45:00 AM',
+            idProofUploaded: true,
+            idProofName: 'student_id.pdf',
+            idProofSize: '3.2 MB',
+            idProofType: 'PDF',
+            adminNotes: 'Loan approved - ready for disbursement',
+            userId: 'mike_johnson_789',
+            password: '12345678'
+          }
+        ];
       }
+      
+      setCustomers(customers);
+      setLoading(false);
+      
+    } catch (error) {
+      console.error('Error loading customer data from Google Sheets:', error);
+      
+      // Fallback to mock data on error
+      const mockCustomers = [
+        {
+          id: 1,
+          applicationId: 'LS-1715084400000',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@email.com',
+          phoneNumber: '555-123-4567',
+          homeAddress: '123 Main St',
+          city: 'New York',
+          state: 'NY',
+          zipCode: '10001',
+          dateOfBirth: '01/15/1985',
+          ssnNumber: '123-45-6789',
+          bankName: 'Chase',
+          routingNumber: '123456789',
+          accountNumber: '987654321',
+          loanAmount: '5000',
+          loanPurpose: 'medical emergency',
+          loanTerm: '12',
+          monthlyPayment: '439.47',
+          loanAgent: 'Paul David',
+          status: 'in_process',
+          submissionDate: '5/7/2026, 10:30:15 AM',
+          idProofUploaded: true,
+          idProofName: 'driver_license.jpg',
+          idProofSize: '2.1 MB',
+          idProofType: 'JPEG',
+          idProofBase64: '/9j/4AAQSkZJRgABAQAAAQ...',
+          adminNotes: 'Application under review',
+          userId: 'john_doe_4567',
+          password: '12345678'
+        }
+      ];
+      
+      setCustomers(mockCustomers);
+      setLoading(false);
     }
-    
-    // Mock customer data (fallback)
-    const mockCustomers = [
-      {
-        id: 1,
-        applicationId: 'LS-1715084400000',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@email.com',
-        phoneNumber: '555-123-4567',
-        homeAddress: '123 Main St',
-        city: 'New York',
-        state: 'NY',
-        zipCode: '10001',
-        dateOfBirth: '01/15/1985',
-        ssnNumber: '123-45-6789',
-        bankName: 'Chase',
-        routingNumber: '123456789',
-        accountNumber: '987654321',
-        loanAmount: '5000',
-        loanPurpose: 'medical emergency',
-        loanTerm: '12',
-        monthlyPayment: '439.47',
-        loanAgent: 'Paul David',
-        status: 'in_process',
-        submissionDate: '5/7/2026, 10:30:15 AM',
-        idProofUploaded: true,
-        idProofName: 'driver_license.jpg',
-        idProofSize: '2.1 MB',
-        idProofType: 'JPEG',
-        idProofBase64: '/9j/4AAQSkZJRgABAQAAAQ...',
-        adminNotes: 'Application under review',
-        userId: 'john_doe_4567',
-        password: '12345678'
-      },
-      {
-        id: 2,
-        applicationId: 'LS-1715084500000',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jane.smith@email.com',
-        phoneNumber: '555-987-6543',
-        homeAddress: '456 Oak Ave',
-        city: 'Los Angeles',
-        state: 'CA',
-        zipCode: '90001',
-        dateOfBirth: '03/22/1990',
-        ssnNumber: '987-65-4321',
-        bankName: 'Bank of America',
-        routingNumber: '987654321',
-        accountNumber: '123456789',
-        loanAmount: '10000',
-        loanPurpose: 'business',
-        loanTerm: '24',
-        monthlyPayment: '461.45',
-        loanAgent: 'Eric Brown',
-        status: 'review',
-        submissionDate: '5/7/2026, 11:15:30 AM',
-        idProofUploaded: true,
-        idProofName: 'passport.pdf',
-        idProofSize: '3.2 MB',
-        idProofType: 'PDF',
-        idProofBase64: 'JVBERi0xLjQK...',
-        adminNotes: 'Waiting for business documents',
-        userId: 'jane_smith_6543',
-        password: '12345678'
-      },
-      {
-        id: 3,
-        applicationId: 'LS-1715084600000',
-        firstName: 'Mike',
-        lastName: 'Johnson',
-        email: 'mike.j@email.com',
-        phoneNumber: '555-456-7890',
-        homeAddress: '789 Pine St',
-        city: 'Chicago',
-        state: 'IL',
-        zipCode: '60601',
-        dateOfBirth: '07/10/1988',
-        ssnNumber: '456-78-9012',
-        bankName: 'Wells Fargo',
-        routingNumber: '456789123',
-        accountNumber: '789012345',
-        loanAmount: '7500',
-        loanPurpose: 'education',
-        loanTerm: '18',
-        monthlyPayment: '447.89',
-        loanAgent: 'Richard Johns',
-        status: 'completed',
-        submissionDate: '5/7/2026, 9:45:00 AM',
-        idProofUploaded: true,
-        idProofName: 'student_id.pdf',
-        idProofSize: '3.2 MB',
-        idProofType: 'PDF',
-        adminNotes: 'Loan approved - ready for disbursement',
-        userId: 'mike_johnson_789',
-        password: '12345678'
-      }
-    ];
-    
-    // Show real customers first, only show mock data if no real customers exist
-    const allCustomers = customers.length > 0 ? customers : mockCustomers;
-    
-    setCustomers(allCustomers);
-    setLoading(false);
   };
 
   const handleLogout = () => {

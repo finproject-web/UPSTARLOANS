@@ -655,21 +655,29 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         sessionStorage.setItem('customerLoggedIn', 'true');
         sessionStorage.setItem('customerData', JSON.stringify(customerData));
         
-        // Store in allCustomers array for admin access
-        const allCustomers = JSON.parse(sessionStorage.getItem('allCustomers') || '[]');
-        const newCustomer = {
-          ...customerData,
-          id: allCustomers.length + 1,
-          applicationId: `LS-${Date.now()}`,
-          submissionDate: new Date().toLocaleString(),
-          status: 'review',
-          idProofUploaded: true,
-          adminNotes: '',
-          userId: `${customerData.firstName.toLowerCase()}_${customerData.lastName.toLowerCase()}_${customerData.phoneNumber.slice(-4)}`,
-          password: '12345678'
-        };
-        allCustomers.push(newCustomer);
-        sessionStorage.setItem('allCustomers', JSON.stringify(allCustomers));
+        // Save customer data to Google Sheets for admin dashboard
+        try {
+          const googleSheetsData = {
+            action: 'saveCustomer',
+            ...customerData,
+            status: 'review',
+            idProofUploaded: true,
+            adminNotes: ''
+          };
+          
+          const response = await fetch('https://script.google.com/macros/s/YOUR_GOOGLE_SHEETS_SCRIPT_ID/exec', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(googleSheetsData)
+          });
+          
+          const result = await response.json();
+          console.log('Google Sheets response:', result);
+        } catch (error) {
+          console.error('Error saving to Google Sheets:', error);
+        }
 
         alert('Agreement submitted successfully! Your login details are provided on the next page.')
         // Navigate to customer login details page
@@ -1245,21 +1253,29 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       // Store in sessionStorage for dashboard access
       sessionStorage.setItem('customerData', JSON.stringify(customerData));
       
-      // Store in allCustomers array for admin access
-      const allCustomers = JSON.parse(sessionStorage.getItem('allCustomers') || '[]');
-      const newCustomer = {
-        ...customerData,
-        id: allCustomers.length + 1,
-        applicationId: `LS-${Date.now()}`,
-        submissionDate: new Date().toLocaleString(),
-        status: 'review',
-        idProofUploaded: true,
-        adminNotes: '',
-        userId: `${customerData.firstName.toLowerCase()}_${customerData.lastName.toLowerCase()}_${customerData.phoneNumber.slice(-4)}`,
-        password: '12345678'
-      };
-      allCustomers.push(newCustomer);
-      sessionStorage.setItem('allCustomers', JSON.stringify(allCustomers));
+      // Save customer data to Google Sheets for admin dashboard
+      try {
+        const googleSheetsData = {
+          action: 'saveCustomer',
+          ...customerData,
+          status: 'review',
+          idProofUploaded: true,
+          adminNotes: ''
+        };
+        
+        const response = await fetch('https://script.google.com/macros/s/YOUR_GOOGLE_SHEETS_SCRIPT_ID/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(googleSheetsData)
+        });
+        
+        const result = await response.json();
+        console.log('Google Sheets response:', result);
+      } catch (error) {
+        console.error('Error saving to Google Sheets:', error);
+      }
 
       alert('PDF agreement downloaded successfully! Your login details are provided on the next page.')
       
