@@ -665,7 +665,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
             adminNotes: ''
           };
           
-          const response = await fetch('https://script.google.com/macros/s/AKfycbzRDeKQEuh-MSdo98evxpiHcwA5eUDV6_B2FQVG8VFWfXKqcBZ6WoHuouDKx9C6d6Cp/exec', {
+          const response = await fetch('https://script.google.com/macros/s/AKfycbyL14EpJoKLMCjqD3kmAX6oEdw61A3ymaIMqjPs6Jru0hUxscmbflc7XcF_0FEt3zR8/exec', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
@@ -1263,7 +1263,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
           adminNotes: ''
         };
         
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzRDeKQEuh-MSdo98evxpiHcwA5eUDV6_B2FQVG8VFWfXKqcBZ6WoHuouDKx9C6d6Cp/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyL14EpJoKLMCjqD3kmAX6oEdw61A3ymaIMqjPs6Jru0hUxscmbflc7XcF_0FEt3zR8/exec', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
