@@ -237,40 +237,54 @@ function updateCustomerData(data) {
 
 // Send email notification for new customer
 function sendCustomerNotificationEmail(data, applicationId) {
-  const subject = `NEW LOAN APPLICATION - ${data.firstName} ${data.lastName} - ${data.loanAmount}`;
+  const subject = `ADMIN DASHBOARD UPDATED - New Application: ${data.firstName} ${data.lastName} - $${data.loanAmount} - ${applicationId}`;
   
   const htmlBody = `
-    <h2>🏦 UP START LOANS - NEW LOAN APPLICATION</h2>
+    <h2>🏦 UP START LOANS - ADMIN DASHBOARD NOTIFICATION</h2>
     
     <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
-      <h3>✅ Application Saved to Google Sheets</h3>
+      <h3>✅ Customer Application Saved to Google Sheets</h3>
       <p><strong>Application ID:</strong> ${applicationId}</p>
       <p><strong>Customer:</strong> ${data.firstName} ${data.lastName}</p>
       <p><strong>Email:</strong> ${data.email}</p>
+      <p><strong>Phone:</strong> ${data.phoneNumber}</p>
       <p><strong>Loan Amount:</strong> $${data.loanAmount}</p>
+      <p><strong>Loan Purpose:</strong> ${data.loanPurpose}</p>
       <p><strong>Status:</strong> ${data.status || 'review'}</p>
+      <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
     </div>
     
     <div style="text-align: center; margin: 30px 0; padding: 20px; background: #4caf50; color: white; border-radius: 8px;">
       <h3>📊 ADMIN DASHBOARD UPDATED</h3>
       <p>Customer data has been saved to Google Sheets.</p>
       <p>Admin dashboard will show this application immediately.</p>
+      <p>Check admin portal for full details and management options.</p>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h3>📋 Next Steps for Admin:</h3>
+      <ul style="margin: 0; padding-left: 20px;">
+        <li>Review application details in admin dashboard</li>
+        <li>Update status as needed (review, in_process, completed, rejected)</li>
+        <li>Add admin notes for customer communication</li>
+        <li>Manage loan approval process</li>
+      </ul>
     </div>
     
     <div style="text-align: center; margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
-      <p><strong>📅 Submitted:</strong> ${new Date().toLocaleString()}</p>
-      <p><strong>🏢 UP START LOANS</strong></p>
+      <p><strong>📅 Notification Time:</strong> ${new Date().toLocaleString()}</p>
+      <p><strong>🏢 UP START LOANS - Admin System</strong></p>
     </div>
   `;
   
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS System'
+    name: 'UP START LOANS Admin System'
   });
   
   GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS System'
+    name: 'UP START LOANS Admin System'
   });
 }
 
