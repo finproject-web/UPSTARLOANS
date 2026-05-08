@@ -310,10 +310,18 @@ const AdminDashboard = () => {
   };
 
   const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         customer.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         customer.applicationId.toLowerCase().includes(searchTerm.toLowerCase());
+    // Add safety checks to prevent undefined errors
+    if (!customer) return false;
+    
+    const firstName = customer.firstName || '';
+    const lastName = customer.lastName || '';
+    const email = customer.email || '';
+    const applicationId = customer.applicationId || '';
+    
+    const matchesSearch = firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         applicationId.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || customer.status === statusFilter;
     
