@@ -37,7 +37,7 @@ const AdminDashboard = () => {
   const loadCustomerData = async () => {
     try {
       // Load customer data from Google Sheets
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyooCSWJ3kphVCCzKGgALuwhxdT4SltLhwlyg54WPIUu7S-nHv7X0cxhs5hlWG9boUA1A/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyPDjQJyRu3ZdBkhkTNPtFHUjo1ivDrsI8Rag_0wsguSU8rdsI6Uvg6T_Vt7pHh54i6/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
