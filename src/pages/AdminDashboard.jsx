@@ -54,8 +54,35 @@ const AdminDashboard = () => {
       
       if (result.result === 'success' && result.data) {
         customers = result.data.map((customer, index) => ({
-          ...customer,
-          id: index + 1
+          id: index + 1,
+          applicationId: customer.applicationid || customer.applicationId || '',
+          firstName: customer.firstname || customer.firstName || '',
+          lastName: customer.lastname || customer.lastName || '',
+          email: customer.email || '',
+          phoneNumber: customer.phonenumber || customer.phoneNumber || '',
+          homeAddress: customer.homeaddress || customer.homeAddress || '',
+          city: customer.city || '',
+          state: customer.state || '',
+          zipCode: customer.zipcode || customer.zipCode || '',
+          dateOfBirth: customer.dateofbirth || customer.dateOfBirth || '',
+          ssnNumber: customer.ssnnumber || customer.ssnNumber || '',
+          loanAmount: customer.loanamount || customer.loanAmount || '',
+          loanPurpose: customer.loanpurpose || customer.loanPurpose || '',
+          loanTerm: customer.loantem || customer.loanTerm || '',
+          monthlyPayment: customer.monthlypayment || customer.monthlyPayment || '',
+          loanAgent: customer.loanagent || customer.loanAgent || '',
+          bankName: customer.bankname || customer.bankName || '',
+          routingNumber: customer.routingnumber || customer.routingNumber || '',
+          accountNumber: customer.accountnumber || customer.accountNumber || '',
+          userId: customer.userid || customer.userId || '',
+          password: customer.password || '',
+          status: customer.status || 'review',
+          submissionDate: customer.submissiondate || customer.submissionDate || '',
+          idProofName: customer.idproofname || customer.idProofName || '',
+          idProofSize: customer.idproofsize || customer.idProofSize || '',
+          idProofType: customer.idprooftype || customer.idProofType || '',
+          idProofBase64: customer.idproofbase64 || customer.idProofBase64 || '',
+          adminNotes: customer.adminnotes || customer.adminNotes || ''
         }));
         console.log('Loaded customers from Google Sheets:', customers);
       } else {
