@@ -14,7 +14,7 @@ const ApplicationSummary = () => {
     setTimeout(() => {
       setDownloading(false)
       // Create a simple text file for download
-      const content = `Application Summary - UpStars Loans
+      const content = `Application Summary - Upstart Loans
 Generated: ${new Date().toLocaleDateString()}
 
 Application Details:
@@ -40,7 +40,7 @@ Contact Information:
 - Phone: 1-800-UPSTARS
 - Hours: Mon-Fri 9AM-6PM EST
 
-Thank you for using UpStars Loans!`
+Thank you for using Upstart Loans!`
       
       const blob = new Blob([content], { type: 'text/plain' })
       const url = window.URL.createObjectURL(blob)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, FileText, Download, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react';
+import { fetchCustomerByEmail } from '../utils/customerService';
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
@@ -9,22 +10,40 @@ const CustomerDashboard = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Check if customer is logged in
-    const isLoggedIn = sessionStorage.getItem('customerLoggedIn');
-    const storedCustomerData = sessionStorage.getItem('customerData');
+    const loadDashboard = async () => {
+      const isLoggedIn = sessionStorage.getItem('customerLoggedIn');
+      const storedCustomerData = sessionStorage.getItem('customerData');
 
-    if (!isLoggedIn) {
-      navigate('/customer-login');
-      return;
-    }
+      if (!isLoggedIn) {
+        navigate('/customer-login');
+        return;
+      }
 
-    if (storedCustomerData) {
-      setCustomerData(JSON.parse(storedCustomerData));
+      if (!storedCustomerData) {
+        setError('No customer data found');
+        setLoading(false);
+        return;
+      }
+
+      const localData = JSON.parse(storedCustomerData);
+      setCustomerData(localData);
+
+      if (localData.email) {
+        try {
+          const freshData = await fetchCustomerByEmail(localData.email);
+          if (freshData) {
+            setCustomerData(freshData);
+            sessionStorage.setItem('customerData', JSON.stringify(freshData));
+          }
+        } catch (err) {
+          console.warn('Could not refresh application from server:', err);
+        }
+      }
+
       setLoading(false);
-    } else {
-      setError('No customer data found');
-      setLoading(false);
-    }
+    };
+
+    loadDashboard();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -37,7 +56,10 @@ const CustomerDashboard = () => {
     switch (status) {
       case 'review':
         return <Clock className="w-5 h-5 text-yellow-500" />;
+      case 'in_process':
+        return <Clock className="w-5 h-5 text-blue-500" />;
       case 'approved':
+      case 'completed':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case 'rejected':
         return <XCircle className="w-5 h-5 text-red-500" />;
@@ -50,7 +72,10 @@ const CustomerDashboard = () => {
     switch (status) {
       case 'review':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'in_process':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'approved':
+      case 'completed':
         return 'bg-green-100 text-green-800 border-green-200';
       case 'rejected':
         return 'bg-red-100 text-red-800 border-red-200';
@@ -63,8 +88,12 @@ const CustomerDashboard = () => {
     switch (status) {
       case 'review':
         return 'Under Review';
+      case 'in_process':
+        return 'In Process';
       case 'approved':
         return 'Approved';
+      case 'completed':
+        return 'Completed';
       case 'rejected':
         return 'Rejected';
       default:
@@ -107,7 +136,7 @@ const CustomerDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">UpStars Loans</h1>
+              <h1 className="text-xl font-bold text-gray-900">Upstart Loans</h1>
               <span className="ml-2 text-sm text-gray-500">Customer Portal</span>
             </div>
             <button

@@ -7,7 +7,7 @@ Since you don't have a Google Apps Script yet, here's the fastest way to get ema
 ### **Step 1: Go to Google Apps Script**
 1. Visit [script.google.com](https://script.google.com)
 2. Click "New Project"
-3. Name it: "UpStars Loans Email Service"
+3. Name it: "Upstart Loans Email Service"
 
 ### **Step 2: Paste the Script**
 1. Delete all default code
@@ -18,7 +18,7 @@ Since you don't have a Google Apps Script yet, here's the fastest way to get ema
 1. Click "Deploy" → "New deployment"
 2. Select "Web app"
 3. **Settings:**
-   - Description: "UpStars Loans Email Service"
+   - Description: "Upstart Loans Email Service"
    - Execute as: "Me (finnfoxpersonalloan@gmail.com)"
    - Who has access: "Anyone"
 4. Click "Deploy"

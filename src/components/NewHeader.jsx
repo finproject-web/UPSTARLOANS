@@ -46,9 +46,9 @@ const NewHeader = () => {
           <div className="flex items-center justify-between h-20">
             {/* LOGO */}
             <div className="flex items-center space-x-3">
-              <img src="/logo.png" alt="UP Start Loans" className="w-10 h-10 object-contain" />
+              <img src="/logo.png" alt="Upstart Loans" className="w-10 h-10 object-contain" />
               <div>
-                <span className="text-2xl font-bold text-gray-900">UP Start Loans</span>
+                <span className="text-2xl font-bold text-gray-900">Upstart Loans</span>
                 <div className="text-xs text-gray-500 font-medium">Smart Financial Solutions</div>
               </div>
             </div>
@@ -265,9 +265,9 @@ const NewHeader = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <img src="/logo.png" alt="UP Start Loans" className="w-10 h-10 object-contain" />
+                <img src="/logo.png" alt="Upstart Loans" className="w-10 h-10 object-contain" />
                 <div>
-                  <span className="text-2xl font-bold text-gray-900">UP Start Loans</span>
+                  <span className="text-2xl font-bold text-gray-900">Upstart Loans</span>
                   <div className="text-xs text-gray-500 font-medium">Smart Financial Solutions</div>
                 </div>
               </div>

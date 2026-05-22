@@ -45,7 +45,7 @@ const TermsOfService = () => {
                     <div>
                       <h3 className="font-semibold text-yellow-900 mb-2">Important Disclaimer</h3>
                       <p className="text-yellow-800">
-                        UpStars Loans is not a lender, financial advisor, or direct provider of financial products. 
+                        Upstart Loans is not a lender, financial advisor, or direct provider of financial products. 
                         We are a platform that connects users with third-party financial service providers. 
                         All financial products and services are provided by independent third parties.
                       </p>
@@ -58,7 +58,7 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Agreement to Terms</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  By accessing and using UpStars Loans (the "Platform"), you accept and agree to be bound by the 
+                  By accessing and using Upstart Loans (the "Platform"), you accept and agree to be bound by the 
                   terms and provision of this agreement. If you do not agree to abide by the above, please do not 
                   use this service.
                 </p>
@@ -68,7 +68,7 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Description of Service</h2>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  UpStars Loans provides a platform that:
+                  Upstart Loans provides a platform that:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
                   <li>Connects users with third-party financial service providers</li>
@@ -175,7 +175,7 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Limitation of Liability</h2>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  To the fullest extent permitted by law, UpStars Loans shall not be liable for:
+                  To the fullest extent permitted by law, Upstart Loans shall not be liable for:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
                   <li>Any indirect, incidental, special, or consequential damages</li>
@@ -193,7 +193,7 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Indemnification</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  You agree to indemnify and hold harmless UpStars Loans, its affiliates, officers, directors, 
+                  You agree to indemnify and hold harmless Upstart Loans, its affiliates, officers, directors, 
                   employees, and agents from any claims, damages, or expenses arising from your use of the platform 
                   or violation of these terms.
                 </p>

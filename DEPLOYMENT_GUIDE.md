@@ -26,13 +26,13 @@ This guide will help you deploy the new enhanced Google Apps Script that handles
 
 1. **Save the Project**
    - Click "Save project" (Ctrl+S)
-   - Give it a name like "UpStars Loans Enhanced Email"
+   - Give it a name like "Upstart Loans Enhanced Email"
 
 2. **Deploy as Web App**
    - Click "Deploy" → "New deployment"
    - Select "Web app"
    - Configuration:
-     - Description: "UpStars Loans Enhanced Email Service"
+     - Description: "Upstart Loans Enhanced Email Service"
      - Execute as: "Me (your-email@gmail.com)"
      - Who has access: "Anyone"
    - Click "Deploy"

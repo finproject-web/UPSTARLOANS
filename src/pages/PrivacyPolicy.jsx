@@ -41,7 +41,7 @@ const PrivacyPolicy = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  UpStars Loans ("we," "us," or "our") is committed to protecting your privacy. 
+                  Upstart Loans ("we," "us," or "our") is committed to protecting your privacy. 
                   This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
                   when you visit our website upstarsloans.com and use our services.
                 </p>

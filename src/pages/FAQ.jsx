@@ -8,7 +8,7 @@ const FAQ = () => {
   const faqs = [
     {
       question: "How does this platform work?",
-      answer: "UpStars Loans is a financial services platform that connects users with third-party financial service providers. When you submit your information through our secure form, we review your details and match you with potential lenders or financial service providers from our network who may be able to help with your specific needs. You can then review the available options and choose what works best for you."
+      answer: "Upstart Loans is a financial services platform that connects users with third-party financial service providers. When you submit your information through our secure form, we review your details and match you with potential lenders or financial service providers from our network who may be able to help with your specific needs. You can then review the available options and choose what works best for you."
     },
     {
       question: "Will checking options affect my credit score?",

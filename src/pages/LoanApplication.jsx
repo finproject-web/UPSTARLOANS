@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { stripBase64Prefix } from '../utils/customerService'
+import { LOAN_AGENTS } from '../constants/loanAgents'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { User, Mail, Phone, DollarSign, Lock, CheckCircle, ArrowRight, Shield, Calendar, MapPin, CreditCard, Building2, FileText, Download } from 'lucide-react'
 import jsPDF from 'jspdf'
@@ -402,7 +404,7 @@ const LoanApplication = () => {
     console.log('Signature exists:', !!signature)
     console.log('Form data:', formData)
     
-    const agreementContent = `${currentLoanConfig.title} AGREEMENT - UpStars Loans
+    const agreementContent = `${currentLoanConfig.title} AGREEMENT - Upstart Loans
     
 Date: ${new Date().toLocaleDateString()}
 Application ID: #${Math.random().toString(36).substr(2, 9).toUpperCase()}
@@ -423,8 +425,8 @@ Terms: ${currentLoanConfig.terms}
 Bank: ${formData.bankName}
 
 TERMS AND CONDITIONS:
-1. The borrower acknowledges that UpStars Loans is a platform connecting borrowers with third-party lenders.
-2. The borrower authorizes UpStars Loans to share their information with potential lenders.
+1. The borrower acknowledges that Upstart Loans is a platform connecting borrowers with third-party lenders.
+2. The borrower authorizes Upstart Loans to share their information with potential lenders.
 3. The borrower confirms that all provided information is accurate and complete.
 4. The borrower understands that loan approval is at the discretion of individual lenders.
 5. The borrower agrees to repay any approved loan according to the lender terms.
@@ -599,9 +601,9 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         // Add signature status
         signatureStatus: signature ? 'Electronic Signature (Canvas)' : 'Not signed',
         // Add ID proof information
-        idProofName: idProofName || 'Not uploaded',
-        idProofSize: idProofSize || '0 MB',
-        idProofType: idProofType || 'None',
+        idProofName: idProof.name,
+        idProofSize: `${(idProof.size / 1024 / 1024).toFixed(2)} MB`,
+        idProofType: idProof.type,
         // Add submission date
         submissionDate: new Date().toLocaleDateString()
       }
@@ -644,11 +646,12 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
           accountNumber: formData.accountNumber,
           userId: formData.userId,
           password: formData.password,
-          status: 'review', // Initial status
+          status: 'review',
           submissionDate: new Date().toLocaleDateString(),
-          idProofName: idProofName,
-          idProofSize: idProofSize,
-          idProofType: idProofType
+          idProofName: idProof.name,
+          idProofSize: `${(idProof.size / 1024 / 1024).toFixed(2)} MB`,
+          idProofType: idProof.type,
+          idProofBase64: stripBase64Prefix(idProofBase64),
         };
 
         // Store in sessionStorage for dashboard access
@@ -702,7 +705,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
     const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
     const totalRepayment = monthlyPayment * months
 
-    return `${currentLoanConfig.title} AGREEMENT - UpStars Loans
+    return `${currentLoanConfig.title} AGREEMENT - Upstart Loans
 
 Agreement Number: LS-${Date.now().toString()}
 Date: ${new Date().toLocaleDateString()}
@@ -867,7 +870,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       
       pdf.setFontSize(14)
       pdf.setTextColor(0, 0, 0)
-      pdf.text('UpStars Loans', 105, 30, { align: 'center' })
+      pdf.text('Upstart Loans', 105, 30, { align: 'center' })
       
       // Add agreement details
       pdf.setFontSize(10)
@@ -1220,6 +1223,12 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       button.textContent = originalText
       button.disabled = false
       
+      let pdfIdProofBase64 = ''
+      if (idProof) {
+        const dataUrl = await convertFileToBase64(idProof)
+        pdfIdProofBase64 = stripBase64Prefix(dataUrl)
+      }
+
       // Store customer data for dashboard access
       const customerData = {
         applicationId: 'LS-' + Date.now(),
@@ -1243,11 +1252,12 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         accountNumber: formData.accountNumber,
         userId: formData.userId,
         password: formData.password,
-        status: 'review', // Initial status
+        status: 'review',
         submissionDate: new Date().toLocaleDateString(),
-        idProofName: (typeof idProofName !== 'undefined') ? idProofName : 'Not uploaded',
-        idProofSize: (typeof idProofSize !== 'undefined') ? idProofSize : '0 MB',
-        idProofType: (typeof idProofType !== 'undefined') ? idProofType : 'None'
+        idProofName: idProof ? idProof.name : 'Not uploaded',
+        idProofSize: idProof ? `${(idProof.size / 1024 / 1024).toFixed(2)} MB` : '0 MB',
+        idProofType: idProof ? idProof.type : 'None',
+        idProofBase64: pdfIdProofBase64,
       };
 
       // Store in sessionStorage for dashboard access
@@ -1329,12 +1339,11 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 required
               >
                 <option value="">Select loan agent</option>
-                <option value="Paul David">Paul David</option>
-                <option value="Eric Brown">Eric Brown</option>
-                <option value="Richard Johns">Richard Johns</option>
-                <option value="Austin Miller">Austin Miller</option>
-                <option value="Benjamin">Benjamin</option>
-                <option value="Peter Smith">Peter Smith</option>
+                {LOAN_AGENTS.map((agent) => (
+                  <option key={agent} value={agent}>
+                    {agent}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 mt-1">
                 Please select the loan agent you are working with
@@ -2043,7 +2052,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
     return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">UP Start Loans Loan Agreement</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Upstart Loans Loan Agreement</h1>
         <p className="text-gray-600">Review and Sign Your Personal Loan Agreement</p>
       </div>
 

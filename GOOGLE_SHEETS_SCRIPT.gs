@@ -1,4 +1,4 @@
-// Google Sheets Integration Script for UP START LOANS
+// Google Sheets Integration Script for Upstart Loans
 // This script handles customer data storage and retrieval from Google Sheets
 // Replaces sessionStorage approach with persistent Google Sheets storage
 
@@ -67,16 +67,27 @@ function setupHeaders(sheet) {
 // Main function to handle web requests
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
-    <h1>UP START LOANS - Google Sheets Integration</h1>
+    <h1>Upstart Loans - Google Sheets Integration</h1>
     <p>Customer data storage system ready.</p>
     <p><strong>Sheet:</strong> ${SHEET_NAME}</p>
     <p><strong>Spreadsheet ID:</strong> ${SPREADSHEET_ID}</p>
   `);
 }
 
+function doOptions(e) {
+  // Handle CORS preflight requests
+  return ContentService.createTextOutput()
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, HEAD')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+    .setHeader('Access-Control-Max-Age', '86400')
+    .setHeader('Access-Control-Allow-Credentials', 'true')
+    .setContent('');
+}
+
 function doPost(e) {
   try {
-    // Add CORS headers
+    // Add CORS headers with more robust implementation
     const output = ContentService.createTextOutput();
     output.setMimeType(ContentService.MimeType.JSON);
     
@@ -91,6 +102,8 @@ function doPost(e) {
       result = getCustomersData();
     } else if (action === 'updateCustomer') {
       result = updateCustomerData(data);
+    } else if (action === 'getCustomerByEmail') {
+      result = getCustomerByEmail(data.email);
     } else {
       throw new Error('Unknown action: ' + action);
     }
@@ -100,13 +113,16 @@ function doPost(e) {
       data: result
     });
     
+    // Set CORS headers and content
     output.setContent(response);
     
-    // Set CORS headers
+    // Set CORS headers - more comprehensive
     return ContentService.createTextOutput()
       .setHeader('Access-Control-Allow-Origin', '*')
-      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-      .setHeader('Access-Control-Allow-Headers', 'Content-Type')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, HEAD')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+      .setHeader('Access-Control-Max-Age', '86400')
+      .setHeader('Access-Control-Allow-Credentials', 'true')
       .setContent(response);
     
   } catch (error) {
@@ -114,8 +130,10 @@ function doPost(e) {
     
     return ContentService.createTextOutput()
       .setHeader('Access-Control-Allow-Origin', '*')
-      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-      .setHeader('Access-Control-Allow-Headers', 'Content-Type')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, HEAD')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+      .setHeader('Access-Control-Max-Age', '86400')
+      .setHeader('Access-Control-Allow-Credentials', 'true')
       .setContent(JSON.stringify({
         result: 'error',
         error: error.toString()
@@ -202,6 +220,36 @@ function getCustomersData() {
   return customers;
 }
 
+// Get most recent application for a customer email
+function getCustomerByEmail(email) {
+  if (!email) {
+    return null;
+  }
+  
+  const normalizedEmail = email.toString().trim().toLowerCase();
+  const customers = getCustomersData();
+  let latest = null;
+  let latestTimestamp = 0;
+  
+  for (let i = 0; i < customers.length; i++) {
+    const customerEmail = (customers[i].email || '').toString().trim().toLowerCase();
+    if (customerEmail !== normalizedEmail) {
+      continue;
+    }
+    
+    const applicationId = customers[i].applicationid || customers[i].applicationId || '';
+    const match = applicationId.toString().match(/LS-(\d+)/);
+    const timestamp = match ? Number(match[1]) : 0;
+    
+    if (!latest || timestamp >= latestTimestamp) {
+      latest = customers[i];
+      latestTimestamp = timestamp;
+    }
+  }
+  
+  return latest;
+}
+
 // Update customer data (for admin operations)
 function updateCustomerData(data) {
   const sheet = getSheet();
@@ -257,7 +305,7 @@ function sendCustomerNotificationEmail(data, applicationId) {
   const subject = `ADMIN DASHBOARD UPDATED - New Application: ${data.firstName} ${data.lastName} - $${data.loanAmount} - ${applicationId}`;
   
   const htmlBody = `
-    <h2>🏦 UP START LOANS - ADMIN DASHBOARD NOTIFICATION</h2>
+    <h2>🏦 Upstart Loans - ADMIN DASHBOARD NOTIFICATION</h2>
     
     <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
       <h3>✅ Customer Application Saved to Google Sheets</h3>
@@ -290,24 +338,24 @@ function sendCustomerNotificationEmail(data, applicationId) {
     
     <div style="text-align: center; margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
       <p><strong>📅 Notification Time:</strong> ${new Date().toLocaleString()}</p>
-      <p><strong>🏢 UP START LOANS - Admin System</strong></p>
+      <p><strong>🏢 Upstart Loans - Admin System</strong></p>
     </div>
   `;
   
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS Admin System'
+    name: 'Upstart Loans Admin System'
   });
   
   GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS Admin System'
+    name: 'Upstart Loans Admin System'
   });
 }
 
 // Function to create the Google Sheet (run this once)
 function createCustomerSheet() {
-  const spreadsheet = SpreadsheetApp.create("UP START LOANS - Customer Applications");
+  const spreadsheet = SpreadsheetApp.create("Upstart Loans - Customer Applications");
   const sheet = spreadsheet.insertSheet("CustomerApplications");
   
   setupHeaders(sheet);

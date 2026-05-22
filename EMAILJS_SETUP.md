@@ -28,7 +28,7 @@ Subject: Loan Agreement Submitted - {{borrower_name}}
 
 Dear {{borrower_name}},
 
-Thank you for submitting your loan agreement with UpStars Loans.
+Thank you for submitting your loan agreement with Upstart Loans.
 
 **Loan Details:**
 - Loan Amount: ${{loan_amount}}
@@ -56,7 +56,7 @@ Next Steps:
 If you have any questions, please contact us at support@upstarsloans.com or call 1-800-UPSTARS.
 
 Best regards,
-UpStars Loans Team
+Upstart Loans Team
 ```
 
 4. Save the template and note your **Template ID** (e.g., `template_agreement123`)

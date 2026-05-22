@@ -192,7 +192,7 @@ const PersonalFinancing = () => {
     console.log('Signature exists:', !!signature)
     console.log('Form data:', formData)
     
-    const agreementContent = `LOAN AGREEMENT - UP Start Loans
+    const agreementContent = `LOAN AGREEMENT - Upstart Loans
     
 Date: ${new Date().toLocaleDateString()}
 Application ID: #${Math.random().toString(36).substr(2, 9).toUpperCase()}
@@ -209,8 +209,8 @@ Loan Purpose: ${formData.loanPurpose}
 Bank: ${formData.bankName}
 
 TERMS AND CONDITIONS:
-1. The borrower acknowledges that UP Start Loans is a platform connecting borrowers with third-party lenders.
-2. The borrower authorizes UP Start Loans to share their information with potential lenders.
+1. The borrower acknowledges that Upstart Loans is a platform connecting borrowers with third-party lenders.
+2. The borrower authorizes Upstart Loans to share their information with potential lenders.
 3. The borrower confirms that all provided information is accurate and complete.
 4. The borrower understands that loan approval is at the discretion of individual lenders.
 5. The borrower agrees to repay any approved loan according to the lender terms.
@@ -849,7 +849,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
         {/* Agreement Content */}
         <div className="bg-gray-50 rounded-lg p-6 mb-8 max-h-96 overflow-y-auto">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">LOAN AGREEMENT - UP Start Loans</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">LOAN AGREEMENT - Upstart Loans</h3>
           
           <div className="space-y-4 text-sm text-gray-700">
             <div>
@@ -881,8 +881,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
             <div className="border-t pt-4">
               <h4 className="font-semibold mb-2">TERMS AND CONDITIONS:</h4>
               <ol className="list-decimal list-inside space-y-1 ml-4">
-                <li>The borrower acknowledges that UP Start Loans is a platform connecting borrowers with third-party lenders.</li>
-                <li>The borrower authorizes UP Start Loans to share their information with potential lenders.</li>
+                <li>The borrower acknowledges that Upstart Loans is a platform connecting borrowers with third-party lenders.</li>
+                <li>The borrower authorizes Upstart Loans to share their information with potential lenders.</li>
                 <li>The borrower confirms that all provided information is accurate and complete.</li>
                 <li>The borrower understands that loan approval is at the discretion of individual lenders.</li>
                 <li>The borrower agrees to repay any approved loan according to the lender terms.</li>

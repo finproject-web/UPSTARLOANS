@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, User, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { DEFAULT_CUSTOMER_PASSWORD } from '../utils/customerService';
 
 const CustomerLoginDetails = () => {
   const navigate = useNavigate();
@@ -8,8 +9,7 @@ const CustomerLoginDetails = () => {
   const [customerEmail, setCustomerEmail] = React.useState('');
   const [showLoginDetails, setShowLoginDetails] = React.useState(false);
 
-  // Default password for all customers
-  const DEFAULT_PASSWORD = '12345678';
+  const DEFAULT_PASSWORD = DEFAULT_CUSTOMER_PASSWORD;
 
   // Get customer data from sessionStorage (set during loan submission)
   React.useEffect(() => {
@@ -52,7 +52,7 @@ const CustomerLoginDetails = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">UpStars Loans</h1>
+              <h1 className="text-xl font-bold text-gray-900">Upstart Loans</h1>
               <span className="ml-2 text-sm text-gray-500">Customer Portal</span>
             </div>
             <button
@@ -114,7 +114,7 @@ const CustomerLoginDetails = () => {
                   <strong>Password:</strong> {DEFAULT_PASSWORD}
                 </p>
                 <p className="text-xs text-yellow-600 mt-1">
-                  This is your default password for all customers
+                  Use this password to sign in to your customer portal anytime
                 </p>
               </div>
             </div>

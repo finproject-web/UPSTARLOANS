@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, FileText, CheckCircle, Clock, AlertCircle, XCircle, Search, Filter, Edit, Eye, Download } from 'lucide-react';
+import { LOAN_AGENTS } from '../constants/loanAgents';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -366,7 +367,7 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">UpStars Loans</h1>
+              <h1 className="text-xl font-bold text-gray-900">Upstart Loans</h1>
               <span className="ml-2 text-sm text-gray-500">Admin Portal</span>
             </div>
             <div className="flex items-center space-x-4">
@@ -955,15 +956,27 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-500">Loan Agent</label>
-                    <input
-                      type="text"
+                    <select
                       value={selectedCustomer.loanAgent}
                       onChange={(e) => {
                         const updatedCustomer = { ...selectedCustomer, loanAgent: e.target.value };
                         setSelectedCustomer(updatedCustomer);
                       }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    >
+                      <option value="">Select loan agent</option>
+                      {LOAN_AGENTS.map((agent) => (
+                        <option key={agent} value={agent}>
+                          {agent}
+                        </option>
+                      ))}
+                      {selectedCustomer.loanAgent &&
+                        !LOAN_AGENTS.includes(selectedCustomer.loanAgent) && (
+                          <option value={selectedCustomer.loanAgent}>
+                            {selectedCustomer.loanAgent}
+                          </option>
+                        )}
+                    </select>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Monthly Payment</label>

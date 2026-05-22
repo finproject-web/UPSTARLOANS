@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
+import {
+  DEFAULT_CUSTOMER_PASSWORD,
+  fetchCustomerByEmail,
+} from '../utils/customerService';
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
@@ -10,71 +14,44 @@ const CustomerLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Default password for all customers
-  const DEFAULT_PASSWORD = '12345678';
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    // Simple validation
     if (!email || !password) {
       setError('Please fill in all fields');
       setLoading(false);
       return;
     }
 
-    // Check if password matches default password
-    if (password !== DEFAULT_PASSWORD) {
+    if (password !== DEFAULT_CUSTOMER_PASSWORD) {
       setError('Invalid password. Please use the default password provided.');
       setLoading(false);
       return;
     }
 
-    // Simulate login success (in real app, this would validate against backend)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const customerData = await fetchCustomerByEmail(email);
 
-      // Create mock customer data (in real app, this would come from backend)
-      const customerData = {
-        applicationId: 'LS-' + Date.now(),
-        firstName: 'John',
-        lastName: 'Doe',
-        email: email,
-        phoneNumber: '555-123-4567',
-        homeAddress: '123 Main St',
-        city: 'Anytown',
-        state: 'CA',
-        zipCode: '12345',
-        dateOfBirth: '01/01/1990',
-        ssnNumber: '123456789',
-        loanAmount: '5000',
-        loanPurpose: 'medical emergency',
-        loanTerm: '12',
-        monthlyPayment: '439.47',
-        loanAgent: 'Paul David',
-        bankName: 'Navy Federal Credit Union',
-        routingNumber: '123456789',
-        accountNumber: '987654321',
-        userId: 'customer123',
-        password: '4dfffffffff',
-        status: 'in_process', // Can be: review, in_process, completed, rejected
-        submissionDate: new Date().toLocaleDateString(),
-        idProofName: 'id_proof.jpg',
-        idProofSize: '2.5 MB',
-        idProofType: 'image/jpeg'
-      };
+      if (!customerData) {
+        setError(
+          'No application found for this email. Please complete your loan application first, or check that you entered the correct email.'
+        );
+        setLoading(false);
+        return;
+      }
 
-      // Store login state
       sessionStorage.setItem('customerLoggedIn', 'true');
       sessionStorage.setItem('customerData', JSON.stringify(customerData));
 
-      // Navigate to dashboard
       navigate('/customer-dashboard');
     } catch (err) {
-      setError('Login failed. Please try again.');
+      console.error('Customer login error:', err);
+      setError(
+        err.message ||
+          'Unable to load your application. Please try again in a moment.'
+      );
     } finally {
       setLoading(false);
     }
@@ -84,7 +61,7 @@ const CustomerLogin = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">UpStars Loans</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Upstart Loans</h1>
           <p className="mt-2 text-gray-600">Customer Portal Login</p>
         </div>
       </div>
@@ -160,10 +137,10 @@ const CustomerLogin = () => {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-blue-800">
-                    <strong>Default Password:</strong> {DEFAULT_PASSWORD}
+                    <strong>Default Password:</strong> {DEFAULT_CUSTOMER_PASSWORD}
                   </p>
                   <p className="text-xs text-blue-600 mt-1">
-                    Use this default password to access your account
+                    Use the email from your application and this password to access your dashboard
                   </p>
                 </div>
               </div>
@@ -178,7 +155,7 @@ const CustomerLogin = () => {
                 {loading ? (
                   <div className="flex items-center">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Signing in...
+                    Loading your application...
                   </div>
                 ) : (
                   'Sign In'
