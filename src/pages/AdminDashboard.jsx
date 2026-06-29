@@ -15,9 +15,6 @@ const AdminDashboard = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCustomerDocs, setSelectedCustomerDocs] = useState([]);
 
-  // Admin credentials
-  const ADMIN_EMAIL = 'admin@upstarsloans.com';
-  const ADMIN_PASSWORD = 'admin123';
 
   useEffect(() => {
     // Check if admin is logged in

@@ -10,9 +10,9 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Admin credentials
-  const ADMIN_EMAIL = 'admin@upstarsloans.com';
-  const ADMIN_PASSWORD = 'admin123';
+  // Admin credentials from environment variables
+  const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@upstarsloans.com';
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,24 +126,6 @@ const AdminLogin = () => {
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <Shield className="h-5 w-5 text-blue-400" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-blue-800">
-                    <strong>Admin Credentials:</strong>
-                  </p>
-                  <p className="text-xs text-blue-600 mt-1">
-                    Email: {ADMIN_EMAIL}
-                  </p>
-                  <p className="text-xs text-blue-600">
-                    Password: {ADMIN_PASSWORD}
-                  </p>
-                </div>
-              </div>
-            </div>
 
             <div>
               <button

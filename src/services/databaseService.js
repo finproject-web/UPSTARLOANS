@@ -3,7 +3,7 @@ import { supabase, TABLES, handleDatabaseError } from '../config/supabase'
 // Customer Database Service
 // Handles all database operations for customer data
 
-export const DEFAULT_CUSTOMER_PASSWORD = '12345678'
+export const DEFAULT_CUSTOMER_PASSWORD = 'Up$tarLoan#2024'
 
 /**
  * Strip data-URL prefix so dashboard can use raw base64

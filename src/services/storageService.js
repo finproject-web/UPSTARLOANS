@@ -34,8 +34,8 @@ export async function uploadFile(bucketName, fileType, fileName, fileData, custo
     if (role === 'admin') {
       authCredentials = {
         role: 'admin',
-        email: 'admin@upstarsloans.com',
-        password: 'admin123'
+        email: import.meta.env.VITE_ADMIN_EMAIL || 'admin@upstarsloans.com',
+        password: import.meta.env.VITE_ADMIN_PASSWORD || ''
       }
     } else {
       const customerData = JSON.parse(sessionStorage.getItem('customerData') || '{}')
@@ -254,8 +254,8 @@ export async function getSignedUrl(bucketName, storagePath, customerId = null) {
     if (role === 'admin') {
       authCredentials = {
         role: 'admin',
-        email: 'admin@upstarsloans.com',
-        password: 'admin123'
+        email: import.meta.env.VITE_ADMIN_EMAIL || 'admin@upstarsloans.com',
+        password: import.meta.env.VITE_ADMIN_PASSWORD || ''
       }
     } else {
       const customerData = JSON.parse(sessionStorage.getItem('customerData') || '{}')
@@ -309,8 +309,8 @@ export async function downloadFile(bucketName, storagePath, customerId = null) {
     if (role === 'admin') {
       authCredentials = {
         role: 'admin',
-        email: 'admin@upstarsloans.com',
-        password: 'admin123'
+        email: import.meta.env.VITE_ADMIN_EMAIL || 'admin@upstarsloans.com',
+        password: import.meta.env.VITE_ADMIN_PASSWORD || ''
       }
     } else {
       const customerData = JSON.parse(sessionStorage.getItem('customerData') || '{}')
