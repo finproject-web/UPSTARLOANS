@@ -1,9 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase Configuration
-// Replace these with your actual Supabase project credentials
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL'
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY'
+
+// Log configuration status
+console.log('=== SUPABASE CONFIGURATION ===')
+console.log('URL configured:', supabaseUrl !== 'YOUR_SUPABASE_URL')
+console.log('Key configured:', supabaseKey !== 'YOUR_SUPABASE_ANON_KEY')
+console.log('URL (first 20 chars):', supabaseUrl.substring(0, 20))
+console.log('Key (first 20 chars):', supabaseKey.substring(0, 20))
 
 // Log warning if credentials are not configured
 if (supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseKey === 'YOUR_SUPABASE_ANON_KEY') {
