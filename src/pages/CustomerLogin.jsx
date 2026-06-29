@@ -149,22 +149,6 @@ const CustomerLogin = () => {
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <Lock className="h-5 w-5 text-blue-400" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-blue-800">
-                    <strong>Default Password:</strong> {DEFAULT_CUSTOMER_PASSWORD}
-                  </p>
-                  <p className="text-xs text-blue-600 mt-1">
-                    Use the email from your application and this password to access your dashboard
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <div>
               <button
                 type="submit"
