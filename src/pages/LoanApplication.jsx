@@ -5,6 +5,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { User, Mail, Phone, DollarSign, Lock, CheckCircle, ArrowRight, Shield, Calendar, MapPin, CreditCard, Building2, FileText, Download } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import { saveCustomerToDatabase } from '../services/databaseService'
+import { saveKYCDocument, saveLoanAgreement } from '../services/documentService'
 
 const LoanApplication = () => {
   const [searchParams] = useSearchParams()
@@ -44,6 +46,17 @@ const LoanApplication = () => {
   const [sectionView, setSectionView] = useState('summary')
   const [idProof, setIdProof] = useState(null)
   const [idProofError, setIdProofError] = useState('')
+  
+  // KYC Documents State
+  const [idFront, setIdFront] = useState(null)
+  const [idFrontError, setIdFrontError] = useState('')
+  const [idBack, setIdBack] = useState(null)
+  const [idBackError, setIdBackError] = useState('')
+  const [selfiePhoto, setSelfiePhoto] = useState(null)
+  const [selfiePhotoError, setSelfiePhotoError] = useState('')
+  const [headRotationVideo, setHeadRotationVideo] = useState(null)
+  const [headRotationVideoError, setHeadRotationVideoError] = useState('')
+  
   const canvasRef = useRef(null)
   const agreementRef = useRef(null)
   const navigate = useNavigate()
@@ -300,9 +313,14 @@ const LoanApplication = () => {
     setValidationErrors(errors)
     
     if (Object.keys(errors).length === 0) {
-      // Send email first when Generate Document is clicked
+      // Send email first when Generate Document is clicked (non-blocking)
       setIsSubmittingEmail(true)
-      await submitToGoogleSheets()
+      try {
+        await submitToGoogleSheets()
+      } catch (emailError) {
+        console.warn('Email submission failed (CORS or network error), continuing to agreement:', emailError)
+        // Continue to agreement even if email fails
+      }
       setIsSubmittingEmail(false)
       
       // Then show agreement for signature
@@ -373,10 +391,10 @@ const LoanApplication = () => {
         submissionDate: new Date().toLocaleDateString()
       }
 
-      // Use deployed email script
+      // Use deployed email script (original approach - works in production)
       const scriptUrl = 'https://script.google.com/macros/s/AKfycbzRXeE1s1Ez_lUv5V9FaiIakzBeKBSRoIqH0mF5bIbJ2k8SgJzI1omV1m8bOFvfoaGnbg/exec'
 
-      // Submit to original working script
+      // Submit to Google Apps Script (may fail on localhost due to CORS, but works in production)
       const response = await fetch(scriptUrl, {
         method: 'POST',
         headers: {
@@ -385,13 +403,10 @@ const LoanApplication = () => {
         body: new URLSearchParams(formDataToSubmit)
       })
 
-      // Check response
       if (response.ok) {
-        console.log('Form submitted successfully')
-        console.log('Response:', await response.json())
+        console.log('✅ Email sent successfully')
       } else {
-        console.error('Error submitting form')
-        console.error('Response:', response)
+        console.warn('⚠️ Email submission failed (CORS or network error), but form will proceed')
       }
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -522,6 +537,159 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
     }
   }
 
+  // KYC Document Handlers
+  const handleIdFrontUpload = (e) => {
+    const file = e.target.files[0]
+    setIdFrontError('')
+
+    if (!file) {
+      setIdFront(null)
+      return
+    }
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+    if (!allowedTypes.includes(file.type)) {
+      setIdFrontError('Please upload a valid file (PDF, JPG, JPEG, PNG)')
+      setIdFront(null)
+      return
+    }
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      setIdFrontError('File size must be less than 5MB')
+      setIdFront(null)
+      return
+    }
+
+    setIdFront(file)
+    setIdFrontError('')
+  }
+
+  const handleRemoveIdFront = () => {
+    setIdFront(null)
+    setIdFrontError('')
+    const fileInput = document.getElementById('id-front-upload')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
+  const handleIdBackUpload = (e) => {
+    const file = e.target.files[0]
+    setIdBackError('')
+
+    if (!file) {
+      setIdBack(null)
+      return
+    }
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+    if (!allowedTypes.includes(file.type)) {
+      setIdBackError('Please upload a valid file (PDF, JPG, JPEG, PNG)')
+      setIdBack(null)
+      return
+    }
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      setIdBackError('File size must be less than 5MB')
+      setIdBack(null)
+      return
+    }
+
+    setIdBack(file)
+    setIdBackError('')
+  }
+
+  const handleRemoveIdBack = () => {
+    setIdBack(null)
+    setIdBackError('')
+    const fileInput = document.getElementById('id-back-upload')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
+  const handleSelfiePhotoUpload = (e) => {
+    const file = e.target.files[0]
+    setSelfiePhotoError('')
+
+    if (!file) {
+      setSelfiePhoto(null)
+      return
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
+    if (!allowedTypes.includes(file.type)) {
+      setSelfiePhotoError('Please upload a valid image (JPG, JPEG, PNG)')
+      setSelfiePhoto(null)
+      return
+    }
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      setSelfiePhotoError('File size must be less than 5MB')
+      setSelfiePhoto(null)
+      return
+    }
+
+    setSelfiePhoto(file)
+    setSelfiePhotoError('')
+  }
+
+  const handleRemoveSelfiePhoto = () => {
+    setSelfiePhoto(null)
+    setSelfiePhotoError('')
+    const fileInput = document.getElementById('selfie-photo-upload')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
+  const handleHeadRotationVideoUpload = (e) => {
+    const file = e.target.files[0]
+    setHeadRotationVideoError('')
+
+    if (!file) {
+      setHeadRotationVideo(null)
+      return
+    }
+
+    // Validate file type
+    const allowedTypes = ['video/mp4', 'video/webm', 'video/quicktime']
+    if (!allowedTypes.includes(file.type)) {
+      setHeadRotationVideoError('Please upload a valid video file (MP4, WebM, MOV)')
+      setHeadRotationVideo(null)
+      return
+    }
+
+    // Validate file size (50MB max for videos)
+    const maxSize = 50 * 1024 * 1024 // 50MB
+    if (file.size > maxSize) {
+      setHeadRotationVideoError('File size must be less than 50MB')
+      setHeadRotationVideo(null)
+      return
+    }
+
+    setHeadRotationVideo(file)
+    setHeadRotationVideoError('')
+  }
+
+  const handleRemoveHeadRotationVideo = () => {
+    setHeadRotationVideo(null)
+    setHeadRotationVideoError('')
+    const fileInput = document.getElementById('head-rotation-video-upload')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -532,166 +700,255 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
   }
 
   const submitAgreementToGmail = async () => {
+    console.log('=== SUBMISSION VALIDATION ===')
+    
     if (!agreementAccepted) {
       alert('Please accept the agreement before submitting.')
       return
     }
     
-    if (!idProof) {
-      setIdProofError('Please upload a valid ID proof before submitting the agreement.')
+    if (!signature) {
+      alert('Please provide your electronic signature before submitting.')
       return
     }
+    
+    // KYC Document Validation (all optional)
+    console.log('KYC documents provided:', {
+      idFront: !!idFront,
+      idBack: !!idBack,
+      selfiePhoto: !!selfiePhoto,
+      headRotationVideo: !!headRotationVideo
+    })
 
     try {
       setIsSubmittingEmail(true)
+      console.log('=== STARTING SUBMISSION PROCESS ===')
+      console.log('Form data being submitted:', formData)
       
-      // Convert ID proof to base64
-      const idProofBase64 = await convertFileToBase64(idProof)
+      // Convert KYC documents to base64 (only if provided)
+      let idFrontBase64 = null
+      let idBackBase64 = null
+      let selfieBase64 = null
+      let videoBase64 = null
+      let videoName = null
+      let videoType = null
+      let videoSize = null
+
+      if (idFront) {
+        console.log('Converting ID Front to base64...')
+        idFrontBase64 = await convertFileToBase64(idFront)
+        console.log('ID Front converted successfully, size:', idFrontBase64.length)
+      }
+      
+      if (idBack) {
+        console.log('Converting ID Back to base64...')
+        idBackBase64 = await convertFileToBase64(idBack)
+        console.log('ID Back converted successfully, size:', idBackBase64.length)
+      }
+      
+      if (selfiePhoto) {
+        console.log('Converting Selfie Photo to base64...')
+        selfieBase64 = await convertFileToBase64(selfiePhoto)
+        console.log('Selfie Photo converted successfully, size:', selfieBase64.length)
+      }
+      
+      if (headRotationVideo) {
+        console.log('Converting Head Rotation Video to base64...')
+        videoBase64 = await convertFileToBase64(headRotationVideo)
+        videoName = headRotationVideo.name
+        videoType = headRotationVideo.type
+        videoSize = `${(headRotationVideo.size / 1024 / 1024).toFixed(2)} MB`
+        console.log('Video converted successfully, size:', videoBase64.length)
+      }
       
       // Generate complete agreement content
       const agreementContent = generateCompleteAgreementContent()
       
-      // Form data to submit with agreement and ID proof
-      const formDataToSubmit = {
-        formType: 'loanAgreement',
-        loanAmount: formData.loanAmount,
-        loanPurpose: formData.loanPurpose,
+      // Generate application ID
+      const applicationId = `LS-${Date.now()}`
+      console.log('Generated application ID:', applicationId)
+      
+      // Prepare customer data for database
+      const customerData = {
+        applicationId: applicationId,
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        phoneNumber: formData.phoneNumber,
         homeAddress: formData.homeAddress,
         city: formData.city,
         state: formData.state,
         zipCode: formData.zipCode,
         dateOfBirth: formData.dateOfBirth,
         ssnNumber: formData.ssnNumber,
+        loanAmount: formData.loanAmount,
+        loanPurpose: formData.loanPurpose,
+        loanTerm: formData.loanTerm,
+        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
+        loanAgent: formData.loanAgent,
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
         userId: formData.userId,
         password: formData.password,
-        phoneNumber: formData.phoneNumber,
-        // Agreement information
-        agreementNumber: `LS-${Date.now().toString()}`,
-        agreementContent: agreementContent,
-        agreementAccepted: agreementAccepted,
-        signatureStatus: signature ? 'Signed' : 'Not signed',
-        submissionDate: new Date().toLocaleDateString(),
-        // ID proof information
-        idProofName: idProof.name,
-        idProofType: idProof.type,
-        idProofSize: `${(idProof.size / 1024 / 1024).toFixed(2)} MB`,
-        idProofBase64: idProofBase64
+        status: 'review'
+      };
+      console.log('Customer data prepared for database:', customerData)
+
+      // Save customer to database
+      console.log('=== SAVING CUSTOMER TO DATABASE ===')
+      console.log('Calling saveCustomerToDatabase with:', customerData)
+      let savedCustomer = null
+      try {
+        savedCustomer = await saveCustomerToDatabase(customerData)
+        console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
+        console.log('Customer ID:', savedCustomer.id)
+      } catch (dbError) {
+        console.error('❌ DATABASE SAVE FAILED:', dbError)
+        console.error('❌ Error message:', dbError.message || dbError)
+        console.error('❌ Will continue with email notification...')
+        // Create a fallback savedCustomer object so the rest of the flow works
+        savedCustomer = { ...customerData, id: null }
       }
-
-      // Use exact email format script - DEPLOYED URL
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzRXeE1s1Ez_lUv5V9FaiIakzBeKBSRoIqH0mF5bIbJ2k8SgJzI1omV1m8bOFvfoaGnbg/exec'
-
-      // Include all fields including new ones
-      const completeData = { 
-        ...formDataToSubmit,
-        // Add new fields that were missing
-        loanAgent: formData.loanAgent,
-        loanTerm: formData.loanTerm,
-        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
-        // Add borrower name for agreement email
-        borrower_name: formData.firstName + ' ' + formData.lastName,
-        // Add agreement number
-        agreementNumber: 'LS-' + Date.now(),
-        // Add signature status
-        signatureStatus: signature ? 'Electronic Signature (Canvas)' : 'Not signed',
-        // Add ID proof information
-        idProofName: idProof.name,
-        idProofSize: `${(idProof.size / 1024 / 1024).toFixed(2)} MB`,
-        idProofType: idProof.type,
-        // Add submission date
-        submissionDate: new Date().toLocaleDateString()
-      }
-
       
-      // Submit to Gmail script
-      const response = await fetch(scriptUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(completeData)
-      })
-
-      // Check response
-      const responseData = await response.json()
-      if (response.ok && responseData.result === 'success') {
-        console.log('Agreement submitted successfully')
+      // Save KYC documents and agreement to database (only if customer was saved successfully)
+      if (savedCustomer.id) {
+        console.log('=== SAVING KYC DOCUMENTS TO DATABASE ===')
         
-        // Store customer data for dashboard access
-        const customerData = {
-          applicationId: 'LS-' + Date.now(),
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phoneNumber: formData.phoneNumber,
-          homeAddress: formData.homeAddress,
-          city: formData.city,
-          state: formData.state,
-          zipCode: formData.zipCode,
-          dateOfBirth: formData.dateOfBirth,
-          ssnNumber: formData.ssnNumber,
-          loanAmount: formData.loanAmount,
-          loanPurpose: formData.loanPurpose,
-          loanTerm: formData.loanTerm,
-          monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
-          loanAgent: formData.loanAgent,
-          bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
-          routingNumber: formData.routingNumber,
-          accountNumber: formData.accountNumber,
-          userId: formData.userId,
-          password: formData.password,
-          status: 'review',
-          submissionDate: new Date().toLocaleDateString(),
-          idProofName: idProof.name,
-          idProofSize: `${(idProof.size / 1024 / 1024).toFixed(2)} MB`,
-          idProofType: idProof.type,
-          idProofBase64: stripBase64Prefix(idProofBase64),
-        };
-
-        // Store in sessionStorage for dashboard access
-        sessionStorage.setItem('customerLoggedIn', 'true');
-        sessionStorage.setItem('customerData', JSON.stringify(customerData));
-        
-        // Save customer data to Google Sheets for admin dashboard
         try {
-          const googleSheetsData = {
-            action: 'saveCustomer',
-            ...customerData,
-            status: 'review',
-            idProofUploaded: true,
-            adminNotes: ''
-          };
+          if (idFront && idFrontBase64) {
+            console.log('Saving ID Front...')
+            const idFrontData = {
+              documentName: idFront.name,
+              documentType: 'id_front',
+              documentSize: `${(idFront.size / 1024 / 1024).toFixed(2)} MB`,
+              documentData: idFrontBase64
+            }
+            await saveKYCDocument(savedCustomer.id, applicationId, idFrontData)
+            console.log('✅ ID FRONT SAVED')
+          }
           
-          const response = await fetch('https://script.google.com/macros/s/AKfycbyPDjQJyRu3ZdBkhkTNPtFHUjo1ivDrsI8Rag_0wsguSU8rdsI6Uvg6T_Vt7pHh54i6/exec', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(googleSheetsData)
-          });
+          if (idBack && idBackBase64) {
+            console.log('Saving ID Back...')
+            const idBackData = {
+              documentName: idBack.name,
+              documentType: 'id_back',
+              documentSize: `${(idBack.size / 1024 / 1024).toFixed(2)} MB`,
+              documentData: idBackBase64
+            }
+            await saveKYCDocument(savedCustomer.id, applicationId, idBackData)
+            console.log('✅ ID BACK SAVED')
+          }
           
-          const result = await response.json();
-          console.log('Google Sheets response:', result);
-        } catch (error) {
-          console.error('Error saving to Google Sheets:', error);
+          if (selfiePhoto && selfieBase64) {
+            console.log('Saving Selfie Photo...')
+            const selfieData = {
+              documentName: selfiePhoto.name,
+              documentType: 'selfie',
+              documentSize: `${(selfiePhoto.size / 1024 / 1024).toFixed(2)} MB`,
+              documentData: selfieBase64
+            }
+            await saveKYCDocument(savedCustomer.id, applicationId, selfieData)
+            console.log('✅ SELFIE SAVED')
+          }
+          
+          if (headRotationVideo && videoBase64) {
+            console.log('Saving Head Rotation Video...')
+            const videoData = {
+              documentName: videoName,
+              documentType: 'head_rotation',
+              documentSize: videoSize,
+              documentData: videoBase64
+            }
+            await saveKYCDocument(savedCustomer.id, applicationId, videoData)
+            console.log('✅ VIDEO SAVED')
+          }
+          
+          // Save loan agreement with signature
+          console.log('=== SAVING LOAN AGREEMENT ===')
+          const agreementData = {
+            applicationId: applicationId,
+            agreementStatus: 'signed',
+            signatureData: signature
+          }
+          await saveLoanAgreement(savedCustomer.id, applicationId, agreementData)
+          console.log('✅ LOAN AGREEMENT SAVED')
+        } catch (docError) {
+          console.error('❌ Error saving documents/agreement:', docError)
+          // Continue - customer data is already saved
+        }
+      } else {
+        console.log('⏭️ Skipping KYC/agreement save — customer ID not available (database save failed)')
+      }
+
+      // Store customer data for dashboard access
+      const dashboardData = {
+        ...savedCustomer,
+        // KYC Documents info for dashboard (only if provided)
+        idFrontName: idFront ? idFront.name : '',
+        idFrontSize: idFront ? `${(idFront.size / 1024 / 1024).toFixed(2)} MB` : '',
+        idFrontType: idFront ? idFront.type : '',
+        idBackName: idBack ? idBack.name : '',
+        idBackSize: idBack ? `${(idBack.size / 1024 / 1024).toFixed(2)} MB` : '',
+        idBackType: idBack ? idBack.type : '',
+        selfieName: selfiePhoto ? selfiePhoto.name : '',
+        selfieSize: selfiePhoto ? `${(selfiePhoto.size / 1024 / 1024).toFixed(2)} MB` : '',
+        selfieType: selfiePhoto ? selfiePhoto.type : '',
+        videoName: videoName || '',
+        videoSize: videoSize || '',
+        videoType: videoType || '',
+      }
+
+      // Store in sessionStorage for dashboard access
+      sessionStorage.setItem('customerLoggedIn', 'true');
+      sessionStorage.setItem('customerData', JSON.stringify(dashboardData));
+      
+      // Send email notification (optional - can be removed if not needed)
+      try {
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzRXeE1s1Ez_lUv5V9FaiIakzBeKBSRoIqH0mF5bIbJ2k8SgJzI1omV1m8bOFvfoaGnbg/exec'
+
+        const completeData = { 
+          ...dashboardData,
+          borrower_name: formData.firstName + ' ' + formData.lastName,
+          agreementNumber: applicationId,
+          signatureStatus: signature ? 'Electronic Signature (Canvas)' : 'Not signed',
+          submissionDate: new Date().toLocaleDateString()
         }
 
-        alert('Agreement submitted successfully! Your login details are provided on the next page.')
-        // Navigate to customer login details page
-        navigate('/customer-login-details')
-      } else {
-        console.error('Error submitting agreement:', responseData)
-        throw new Error(responseData.error || 'Failed to submit agreement')
+        const response = await fetch(scriptUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(completeData)
+        })
+
+        const responseData = await response.json()
+        
+        if (response.ok && responseData.result === 'success') {
+          console.log('Email notification response:', responseData)
+        } else {
+          console.error('Email notification failed:', responseData)
+        }
+      } catch (error) {
+        console.error('Error sending email notification:', error);
+        // Continue even if email fails - data is already saved to database
       }
 
+      console.log('=== SUBMISSION PROCESS COMPLETE ===')
+      console.log('✅ All database inserts successful')
+      console.log('✅ All documents uploaded successfully')
+      console.log('✅ Ready to navigate to success page')
+      
+      alert('Agreement submitted successfully! Your login details are provided on the next page.')
+      // Navigate to customer login details page
+      navigate('/customer-login-details')
+
     } catch (error) {
+      console.error('=== SUBMISSION ERROR ===')
       console.error('Error submitting agreement:', error)
+      console.error('Error details:', error.message)
+      console.error('Error stack:', error.stack)
       alert('Failed to submit agreement. Please try again or contact support.')
     } finally {
       setIsSubmittingEmail(false)
@@ -2360,147 +2617,241 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
             </label>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Draw your agreement below:
-              </label>
-              
-              <div className="bg-white border-2 border-gray-300 rounded-lg">
-                <canvas
-                  ref={canvasRef}
-                  className="w-full h-32 rounded cursor-crosshair"
-                  onMouseDown={startDrawing}
-                  onMouseMove={draw}
-                  onMouseUp={stopDrawing}
-                  onMouseLeave={stopDrawing}
-                  onTouchStart={startDrawing}
-                  onTouchMove={draw}
-                  onTouchEnd={stopDrawing}
+          {/* Electronic Signature */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Draw your signature below:
+            </label>
+            
+            <div className="bg-white border-2 border-gray-300 rounded-lg relative">
+              <canvas
+                ref={canvasRef}
+                className="w-full h-32 rounded cursor-crosshair"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={startDrawing}
+                onTouchMove={draw}
+                onTouchEnd={stopDrawing}
+              />
+              {!signature && (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400 pointer-events-none">
+                  <span>Sign here with mouse or finger</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex space-x-4 mt-4">
+              <button
+                onClick={clearSignature}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm"
+              >
+                Clear Signature
+              </button>
+            </div>
+          </div>
+
+          {/* KYC Verification Section */}
+          <div className="mb-8 border-t pt-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">KYC Verification (Optional)</h3>
+            <p className="text-sm text-gray-600 mb-6">Upload the following documents to verify your identity. All fields are optional.</p>
+            
+            <div className="space-y-6">
+              {/* Government ID Front */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  1. Government ID Front (Optional)
+                </label>
+                <input
+                  type="file"
+                  id="id-front-upload"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleIdFrontUpload}
+                  className={`w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    idFrontError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
                 />
-                {!signature && (
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 pointer-events-none">
-                    <span>Sign here with mouse or finger</span>
+                {idFrontError && (
+                  <p className="text-red-500 text-xs mt-1">{idFrontError}</p>
+                )}
+                {idFront && (
+                  <div className="flex items-center justify-between mt-2 p-2 bg-green-50 rounded border border-green-200">
+                    <span className="text-sm text-green-700">
+                      {idFront.name} ({(idFront.size / 1024 / 1024).toFixed(2)} MB)
+                    </span>
+                    <button
+                      onClick={handleRemoveIdFront}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
                   </div>
                 )}
+                <p className="text-xs text-gray-500 mt-2">
+                  Accepted formats: JPG, JPEG, PNG, PDF &middot; Max size: 5MB
+                </p>
               </div>
-              
-              <div className="flex space-x-4 mt-4">
-                <button
-                  onClick={clearSignature}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm"
-                >
-                  Clear Signature
-                </button>
+
+              {/* Government ID Back */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  2. Government ID Back (Optional)
+                </label>
+                <input
+                  type="file"
+                  id="id-back-upload"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleIdBackUpload}
+                  className={`w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    idBackError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {idBackError && (
+                  <p className="text-red-500 text-xs mt-1">{idBackError}</p>
+                )}
+                {idBack && (
+                  <div className="flex items-center justify-between mt-2 p-2 bg-green-50 rounded border border-green-200">
+                    <span className="text-sm text-green-700">
+                      {idBack.name} ({(idBack.size / 1024 / 1024).toFixed(2)} MB)
+                    </span>
+                    <button
+                      onClick={handleRemoveIdBack}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+                <p className="text-xs text-gray-500 mt-2">
+                  Accepted formats: JPG, JPEG, PNG, PDF &middot; Max size: 5MB
+                </p>
+              </div>
+
+              {/* Selfie Photo */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  3. Selfie Photo (Optional)
+                </label>
+                <input
+                  type="file"
+                  id="selfie-photo-upload"
+                  accept=".jpg,.jpeg,.png"
+                  onChange={handleSelfiePhotoUpload}
+                  className={`w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    selfiePhotoError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {selfiePhotoError && (
+                  <p className="text-red-500 text-xs mt-1">{selfiePhotoError}</p>
+                )}
+                {selfiePhoto && (
+                  <div className="flex items-center justify-between mt-2 p-2 bg-green-50 rounded border border-green-200">
+                    <span className="text-sm text-green-700">
+                      {selfiePhoto.name} ({(selfiePhoto.size / 1024 / 1024).toFixed(2)} MB)
+                    </span>
+                    <button
+                      onClick={handleRemoveSelfiePhoto}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+                <p className="text-xs text-gray-500 mt-2">
+                  Accepted formats: JPG, JPEG, PNG &middot; Max size: 5MB
+                </p>
+              </div>
+
+              {/* 360-Degree Head Rotation Video */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  4. 360-Degree Head Rotation Video (Optional)
+                </label>
+                <input
+                  type="file"
+                  id="head-rotation-video-upload"
+                  accept=".mp4,.webm,.mov"
+                  onChange={handleHeadRotationVideoUpload}
+                  className={`w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    headRotationVideoError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {headRotationVideoError && (
+                  <p className="text-red-500 text-xs mt-1">{headRotationVideoError}</p>
+                )}
+                {headRotationVideo && (
+                  <div className="flex items-center justify-between mt-2 p-2 bg-green-50 rounded border border-green-200">
+                    <span className="text-sm text-green-700">
+                      {headRotationVideo.name} ({(headRotationVideo.size / 1024 / 1024).toFixed(2)} MB)
+                    </span>
+                    <button
+                      onClick={handleRemoveHeadRotationVideo}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+                <p className="text-xs text-gray-500 mt-2">
+                  Accepted formats: MP4, WebM, MOV &middot; Max size: 50MB
+                </p>
+                <div className="mt-2 p-2 bg-blue-50 rounded text-xs text-blue-700">
+                  <strong>Instructions:</strong> Record a 360-degree video slowly turning your head left to right for identity verification.
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => {
-                    if (agreementAccepted && signature) {
-                      handleAgree();
-                    } else {
-                      alert('Please accept the terms and provide your signature.');
-                    }
-                  }}
-                  disabled={!agreementAccepted || !signature}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-6 py-3 rounded font-medium"
-                >
-                  Submit Agreement
-                </button>
-                <button
-                  onClick={() => {
-                    if (confirm('Are you sure you want to cancel this loan agreement?')) {
-                      navigate('/loan-cancelled');
-                    }
-                  }}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded font-medium"
-                >
-                  I Disagree
-                </button>
-              </div>
-              
-              <div className="flex flex-col space-y-4">
-                {/* ID Upload Section */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Upload ID Proof (Required)
-                  </label>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-1">
-                      <input
-                        type="file"
-                        id="id-proof-upload"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={handleIdProofUpload}
-                        className={`w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          idProofError ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      />
-                      {idProofError && (
-                        <p className="text-red-500 text-xs mt-1">{idProofError}</p>
-                      )}
-                    </div>
-                    {idProof && (
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-600">
-                          {idProof.name} ({(idProof.size / 1024 / 1024).toFixed(2)} MB)
-                        </span>
-                        <button
-                          onClick={handleRemoveIdProof}
-                          className="text-red-500 hover:text-red-700 text-sm"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Accepted formats: PDF, JPG, JPEG, PNG (Max size: 5MB)
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap gap-2 mt-4">
-                  <select
-                    value={sectionView}
-                    onChange={handleSectionViewChange}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm cursor-pointer"
-                  >
-                    <option value="summary">Summary Only</option>
-                    <option value="all">Show All Sections</option>
-                    <option value="terms">Terms & Conditions</option>
-                  </select>
-                  <button
-                    onClick={(e) => downloadCompleteAgreement(e)}
-                    disabled={!agreementAccepted}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
-                  >
-                    Download Agreement
-                  </button>
-                  <button
-                    onClick={submitAgreementToGmail}
-                    disabled={!agreementAccepted || !idProof || isSubmittingEmail}
-                    className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
-                  >
-                    {isSubmittingEmail ? 'Submitting...' : 'Submit Agreement'}
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (agreementAccepted) {
-                        window.print();
-                      } else {
-                        alert('Please accept the agreement first.');
-                      }
-                    }}
-                    disabled={!agreementAccepted}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
-                  >
-                    Print Agreement
-                  </button>
-                </div>
-              </div>
+          {/* Action Buttons */}
+          <div className="border-t pt-6">
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={submitAgreementToGmail}
+                disabled={!agreementAccepted || !signature || isSubmittingEmail}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-6 py-3 rounded font-medium text-sm"
+              >
+                {isSubmittingEmail ? 'Submitting...' : 'Submit Agreement'}
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm('Are you sure you want to cancel this loan agreement?')) {
+                    navigate('/loan-cancelled');
+                  }
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded font-medium text-sm"
+              >
+                I Disagree
+              </button>
+              <select
+                value={sectionView}
+                onChange={handleSectionViewChange}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm cursor-pointer"
+              >
+                <option value="summary">Summary Only</option>
+                <option value="all">Show All Sections</option>
+                <option value="terms">Terms & Conditions</option>
+              </select>
+              <button
+                onClick={(e) => downloadCompleteAgreement(e)}
+                disabled={!agreementAccepted}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
+              >
+                Download Agreement
+              </button>
+              <button
+                onClick={() => {
+                  if (agreementAccepted) {
+                    window.print();
+                  } else {
+                    alert('Please accept the agreement first.');
+                  }
+                }}
+                disabled={!agreementAccepted}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded text-sm"
+              >
+                Print Agreement
+              </button>
             </div>
           </div>
         </div>

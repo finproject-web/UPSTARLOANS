@@ -4,7 +4,8 @@ import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import {
   DEFAULT_CUSTOMER_PASSWORD,
   fetchCustomerByEmail,
-} from '../utils/customerService';
+} from '../services/databaseService';
+import { fetchCustomerByEmail as fetchCustomerFromSheets } from '../utils/customerService';
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
@@ -25,19 +26,37 @@ const CustomerLogin = () => {
       return;
     }
 
-    if (password !== DEFAULT_CUSTOMER_PASSWORD) {
-      setError('Invalid password. Please use the default password provided.');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const customerData = await fetchCustomerByEmail(email);
+      // Try Supabase first, then fall back to Google Sheets
+      let customerData = null;
+      
+      try {
+        customerData = await fetchCustomerByEmail(email);
+        console.log('Supabase lookup result:', customerData ? 'Found' : 'Not found');
+      } catch (dbErr) {
+        console.warn('Supabase lookup failed, trying Google Sheets:', dbErr.message);
+      }
+
+      if (!customerData) {
+        try {
+          customerData = await fetchCustomerFromSheets(email);
+          console.log('Google Sheets lookup result:', customerData ? 'Found' : 'Not found');
+        } catch (sheetErr) {
+          console.warn('Google Sheets lookup also failed:', sheetErr.message);
+        }
+      }
 
       if (!customerData) {
         setError(
           'No application found for this email. Please complete your loan application first, or check that you entered the correct email.'
         );
+        setLoading(false);
+        return;
+      }
+
+      // Validate password against stored password or default
+      if (password !== customerData.password && password !== DEFAULT_CUSTOMER_PASSWORD) {
+        setError('Invalid password. Please use the password provided during registration.');
         setLoading(false);
         return;
       }

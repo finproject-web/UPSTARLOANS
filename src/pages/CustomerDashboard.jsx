@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, FileText, Download, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react';
-import { fetchCustomerByEmail } from '../utils/customerService';
+import { fetchCustomerByEmail } from '../services/databaseService';
+import { getCustomerKYCDocuments } from '../services/documentService';
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [documents, setDocuments] = useState([]);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -34,6 +36,12 @@ const CustomerDashboard = () => {
           if (freshData) {
             setCustomerData(freshData);
             sessionStorage.setItem('customerData', JSON.stringify(freshData));
+            
+            // Fetch KYC documents
+            if (freshData.id) {
+              const docs = await getCustomerKYCDocuments(freshData.id);
+              setDocuments(docs);
+            }
           }
         } catch (err) {
           console.warn('Could not refresh application from server:', err);
@@ -276,67 +284,29 @@ const CustomerDashboard = () => {
           </div>
         </div>
 
-        {/* ID Proof */}
-        {customerData?.idProofName !== 'Not uploaded' && (
+        {/* KYC Documents */}
+        {documents && documents.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">ID Proof</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p className="text-gray-900 font-medium">{customerData.idProofName}</p>
-                <p className="text-sm text-gray-500">Size: {customerData.idProofSize}</p>
-                <p className="text-sm text-gray-500">Type: {customerData.idProofType}</p>
-                <div className="mt-3">
-                  <button
-                    onClick={() => {
-                      if (customerData.idProofBase64) {
-                        // Create download link from base64
-                        const link = document.createElement('a');
-                        link.href = `data:${customerData.idProofType === 'PDF' ? 'application/pdf' : 'image/jpeg'};base64,${customerData.idProofBase64}`;
-                        link.download = customerData.idProofName;
-                        link.click();
-                      } else {
-                        alert('ID proof file not available for download');
-                      }
-                    }}
-                    className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    <span>Download ID Proof</span>
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center justify-center">
-                {customerData.idProofBase64 ? (
-                  customerData.idProofType === 'PDF' ? (
-                    <div className="bg-gray-100 p-4 rounded-lg text-center">
-                      <FileText className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">PDF Document</p>
-                      <p className="text-xs text-gray-500 mt-1">Click to download</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">KYC Documents</h3>
+            <div className="space-y-4">
+              {documents.map((doc) => (
+                <div key={doc.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{doc.document_name}</p>
+                      <p className="text-xs text-gray-500">
+                        {doc.document_type === 'id_front' && 'Government ID Front'}
+                        {doc.document_type === 'id_back' && 'Government ID Back'}
+                        {doc.document_type === 'selfie' && 'Selfie Photo'}
+                        {doc.document_type === 'head_rotation' && '360° Head Rotation Video'}
+                        {' · '}{doc.document_size}
+                      </p>
                     </div>
-                  ) : (
-                    <img 
-                      src={`data:image/jpeg;base64,${customerData.idProofBase64}`}
-                      alt="ID Proof"
-                      className="max-w-full h-auto max-h-48 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = `data:image/jpeg;base64,${customerData.idProofBase64}`;
-                        link.download = customerData.idProofName;
-                        link.click();
-                      }}
-                    />
-                  )
-                ) : (
-                  <div className="bg-gray-100 p-4 rounded-lg text-center">
-                    <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-600">No file available</p>
                   </div>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 mt-4">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-sm text-green-600">Uploaded</span>
+                  <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Uploaded</span>
+                </div>
+              ))}
             </div>
           </div>
         )}

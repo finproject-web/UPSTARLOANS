@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, FileText, CheckCircle, Clock, AlertCircle, XCircle, Search, Filter, Edit, Eye, Download } from 'lucide-react';
 import { LOAN_AGENTS } from '../constants/loanAgents';
+import { fetchAllCustomers, updateCustomerStatus, updateCustomerInDatabase, deleteCustomer } from '../services/databaseService';
+import { getCustomerKYCDocuments, getLoanAgreement } from '../services/documentService';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const AdminDashboard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedCustomerDocs, setSelectedCustomerDocs] = useState([]);
 
   // Admin credentials
   const ADMIN_EMAIL = 'admin@upstarsloans.com';
@@ -37,210 +40,30 @@ const AdminDashboard = () => {
 
   const loadCustomerData = async () => {
     try {
-      // Load customer data from Google Sheets
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyPDjQJyRu3ZdBkhkTNPtFHUjo1ivDrsI8Rag_0wsguSU8rdsI6Uvg6T_Vt7pHh54i6/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          action: 'getCustomers'
-        })
-      });
-      
-      let result;
-      try {
-        result = await response.json();
-        console.log('Google Sheets response:', result);
-      } catch (error) {
-        console.log('Error parsing JSON response:', error);
-        console.log('Response text:', await response.text());
-        // If JSON parsing fails, use fallback
-        result = { result: 'error', error: 'Invalid response from Google Sheets' };
-      }
-      
-      let customers = [];
-      
-      if (result.result === 'success' && result.data) {
-        customers = result.data.map((customer, index) => ({
-          id: index + 1,
-          applicationId: customer.applicationid || customer.applicationId || '',
-          firstName: customer.firstname || customer.firstName || '',
-          lastName: customer.lastname || customer.lastName || '',
-          email: customer.email || '',
-          phoneNumber: customer.phonenumber || customer.phoneNumber || '',
-          homeAddress: customer.homeaddress || customer.homeAddress || '',
-          city: customer.city || '',
-          state: customer.state || '',
-          zipCode: customer.zipcode || customer.zipCode || '',
-          dateOfBirth: customer.dateofbirth || customer.dateOfBirth || '',
-          ssnNumber: customer.ssnnumber || customer.ssnNumber || '',
-          loanAmount: customer.loanamount || customer.loanAmount || '',
-          loanPurpose: customer.loanpurpose || customer.loanPurpose || '',
-          loanTerm: customer.loantem || customer.loanTerm || '',
-          monthlyPayment: customer.monthlypayment || customer.monthlyPayment || '',
-          loanAgent: customer.loanagent || customer.loanAgent || '',
-          bankName: customer.bankname || customer.bankName || '',
-          routingNumber: customer.routingnumber || customer.routingNumber || '',
-          accountNumber: customer.accountnumber || customer.accountNumber || '',
-          userId: customer.userid || customer.userId || '',
-          password: customer.password || '',
-          status: customer.status || 'review',
-          submissionDate: customer.submissiondate || customer.submissionDate || '',
-          idProofName: customer.idproofname || customer.idProofName || '',
-          idProofSize: customer.idproofsize || customer.idProofSize || '',
-          idProofType: customer.idprooftype || customer.idProofType || '',
-          idProofBase64: customer.idproofbase64 || customer.idProofBase64 || '',
-          adminNotes: customer.adminnotes || customer.adminNotes || ''
-        }));
-        console.log('Loaded customers from Google Sheets:', customers);
-      } else {
-        console.log('No customers found in Google Sheets, using fallback data');
-        
-        // Fallback to mock data if no real customers exist
-        customers = [
-          {
-            id: 1,
-            applicationId: 'LS-1715084400000',
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'john.doe@email.com',
-            phoneNumber: '555-123-4567',
-            homeAddress: '123 Main St',
-            city: 'New York',
-            state: 'NY',
-            zipCode: '10001',
-            dateOfBirth: '01/15/1985',
-            ssnNumber: '123-45-6789',
-            bankName: 'Chase',
-            routingNumber: '123456789',
-            accountNumber: '987654321',
-            loanAmount: '5000',
-            loanPurpose: 'medical emergency',
-            loanTerm: '12',
-            monthlyPayment: '439.47',
-            loanAgent: 'Paul David',
-            status: 'in_process',
-            submissionDate: '5/7/2026, 10:30:15 AM',
-            idProofUploaded: true,
-            idProofName: 'driver_license.jpg',
-            idProofSize: '2.1 MB',
-            idProofType: 'JPEG',
-            idProofBase64: '/9j/4AAQSkZJRgABAQAAAQ...',
-            adminNotes: 'Application under review',
-            userId: 'john_doe_4567',
-            password: '12345678'
-          },
-          {
-            id: 2,
-            applicationId: 'LS-1715084500000',
-            firstName: 'Jane',
-            lastName: 'Smith',
-            email: 'jane.smith@email.com',
-            phoneNumber: '555-987-6543',
-            homeAddress: '456 Oak Ave',
-            city: 'Los Angeles',
-            state: 'CA',
-            zipCode: '90001',
-            dateOfBirth: '03/22/1990',
-            ssnNumber: '987-65-4321',
-            bankName: 'Bank of America',
-            routingNumber: '987654321',
-            accountNumber: '123456789',
-            loanAmount: '10000',
-            loanPurpose: 'business',
-            loanTerm: '24',
-            monthlyPayment: '461.45',
-            loanAgent: 'Eric Brown',
-            status: 'review',
-            submissionDate: '5/7/2026, 11:15:30 AM',
-            idProofUploaded: true,
-            idProofName: 'passport.pdf',
-            idProofSize: '3.2 MB',
-            idProofType: 'PDF',
-            idProofBase64: 'JVBERi0xLjQK...',
-            adminNotes: 'Waiting for business documents',
-            userId: 'jane_smith_6543',
-            password: '12345678'
-          },
-          {
-            id: 3,
-            applicationId: 'LS-1715084600000',
-            firstName: 'Mike',
-            lastName: 'Johnson',
-            email: 'mike.j@email.com',
-            phoneNumber: '555-456-7890',
-            homeAddress: '789 Pine St',
-            city: 'Chicago',
-            state: 'IL',
-            zipCode: '60601',
-            dateOfBirth: '07/10/1988',
-            ssnNumber: '456-78-9012',
-            bankName: 'Wells Fargo',
-            routingNumber: '456789123',
-            accountNumber: '789012345',
-            loanAmount: '7500',
-            loanPurpose: 'education',
-            loanTerm: '18',
-            monthlyPayment: '447.89',
-            loanAgent: 'Richard Johns',
-            status: 'completed',
-            submissionDate: '5/7/2026, 9:45:00 AM',
-            idProofUploaded: true,
-            idProofName: 'student_id.pdf',
-            idProofSize: '3.2 MB',
-            idProofType: 'PDF',
-            adminNotes: 'Loan approved - ready for disbursement',
-            userId: 'mike_johnson_789',
-            password: '12345678'
-          }
-        ];
-      }
-      
-      setCustomers(customers);
+      console.log('=== LOADING CUSTOMER DATA FROM DATABASE ===');
+      const dbCustomers = await fetchAllCustomers();
+      console.log('✅ Loaded', dbCustomers.length, 'customers from database:', dbCustomers);
+      setCustomers(dbCustomers);
       setLoading(false);
       
     } catch (error) {
-      console.error('Error loading customer data from Google Sheets:', error);
-      
-      // Fallback to mock data on error
-      const mockCustomers = [
-        {
-          id: 1,
-          applicationId: 'LS-1715084400000',
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@email.com',
-          phoneNumber: '555-123-4567',
-          homeAddress: '123 Main St',
-          city: 'New York',
-          state: 'NY',
-          zipCode: '10001',
-          dateOfBirth: '01/15/1985',
-          ssnNumber: '123-45-6789',
-          bankName: 'Chase',
-          routingNumber: '123456789',
-          accountNumber: '987654321',
-          loanAmount: '5000',
-          loanPurpose: 'medical emergency',
-          loanTerm: '12',
-          monthlyPayment: '439.47',
-          loanAgent: 'Paul David',
-          status: 'in_process',
-          submissionDate: '5/7/2026, 10:30:15 AM',
-          idProofUploaded: true,
-          idProofName: 'driver_license.jpg',
-          idProofSize: '2.1 MB',
-          idProofType: 'JPEG',
-          idProofBase64: '/9j/4AAQSkZJRgABAQAAAQ...',
-          adminNotes: 'Application under review',
-          userId: 'john_doe_4567',
-          password: '12345678'
-        }
-      ];
-      
-      setCustomers(mockCustomers);
+      console.error('❌ Error loading customer data from database:', error);
+      console.error('Error details:', error.message || error);
       setLoading(false);
+      setCustomers([]);
+    }
+  }
+
+  const handleStatusChange = async (applicationId, newStatus) => {
+    try {
+      await updateCustomerStatus(applicationId, newStatus);
+      
+      // Refresh customer data
+      const updatedCustomers = await fetchAllCustomers();
+      setCustomers(updatedCustomers);
+    } catch (error) {
+      console.error('Error updating customer status:', error);
+      alert('Failed to update status. Please try again.');
     }
   };
 
@@ -294,7 +117,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const updateCustomerStatus = (customerId, newStatus) => {
+  const updateCustomerStatusLocal = (customerId, newStatus) => {
     setCustomers(prevCustomers =>
       prevCustomers.map(customer =>
         customer.id === customerId ? { ...customer, status: newStatus } : customer
@@ -310,12 +133,27 @@ const AdminDashboard = () => {
     );
   };
 
-  const rejectCustomer = (customerId, rejectionReason) => {
-    setCustomers(prevCustomers =>
-      prevCustomers.map(customer =>
-        customer.id === customerId ? { ...customer, status: 'rejected', rejectionReason } : customer
-      )
-    );
+  const rejectCustomer = async (customerId, rejectionReason) => {
+    try {
+      const customer = customers.find(c => c.id === customerId);
+      if (!customer) return;
+      
+      const updateData = {
+        status: 'rejected',
+        adminNotes: (customer.adminNotes || '') + 
+          (customer.adminNotes ? '\n' : '') + 
+          'Rejection Reason: ' + rejectionReason
+      };
+      
+      await updateCustomerInDatabase(customer.applicationId, updateData);
+      console.log('✅ Customer rejected in database');
+      
+      const updatedCustomers = await fetchAllCustomers();
+      setCustomers(updatedCustomers);
+    } catch (error) {
+      console.error('❌ Error rejecting customer:', error);
+      alert('Failed to reject customer: ' + (error.message || error));
+    }
   };
 
   const filteredCustomers = customers.filter(customer => {
@@ -521,7 +359,7 @@ const AdminDashboard = () => {
                     Submitted
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID Proof
+                    Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     User ID
@@ -538,6 +376,17 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
+                {filteredCustomers.length === 0 && (
+                  <tr>
+                    <td colSpan="18" className="px-6 py-12 text-center">
+                      <div className="text-gray-500">
+                        <p className="text-lg font-medium mb-1">No customer applications found</p>
+                        <p className="text-sm">Customer data will appear here after a loan application is submitted.</p>
+                        <p className="text-xs mt-2 text-gray-400">Check browser console for any Supabase connection errors.</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
                 {filteredCustomers.map((customer) => (
                   <tr key={customer.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -547,10 +396,21 @@ const AdminDashboard = () => {
                       <div className="text-sm font-medium text-gray-900">
                         {customer.firstName} {customer.lastName}
                       </div>
-                      <div className="text-sm text-gray-500">{customer.phoneNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {customer.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {customer.phoneNumber}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {customer.homeAddress}, {customer.city}, {customer.state} {customer.zipCode}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {customer.dateOfBirth}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      ***-**-{customer.ssnNumber?.slice(-4)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       ${customer.loanAmount}
@@ -568,28 +428,12 @@ const AdminDashboard = () => {
                       {customer.loanAgent}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {customer.submissionDate}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {customer.homeAddress}, {customer.city}, {customer.state} {customer.zipCode}
+                      {customer.submissionDate ? new Date(customer.submissionDate).toLocaleDateString() : '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {customer.dateOfBirth}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ***-**-{customer.ssnNumber?.slice(-4)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {customer.bankName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ***-**-{customer.routingNumber?.slice(-4)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ***-***-{customer.accountNumber?.slice(-4)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {customer.idProofName} ({customer.idProofSize}, {customer.idProofType})
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(customer.status)}`}>
+                        {getStatusText(customer.status)}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {customer.userId}
@@ -597,13 +441,22 @@ const AdminDashboard = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {customer.password}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
                       {customer.adminNotes || 'No notes'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => setSelectedCustomer(customer)}
+                          onClick={async () => {
+                            setSelectedCustomer(customer);
+                            try {
+                              const docs = await getCustomerKYCDocuments(customer.id);
+                              setSelectedCustomerDocs(docs || []);
+                            } catch (err) {
+                              console.error('Error loading KYC docs:', err);
+                              setSelectedCustomerDocs([]);
+                            }
+                          }}
                           className="text-blue-600 hover:text-blue-900"
                           title="View Details"
                         >
@@ -637,7 +490,7 @@ const AdminDashboard = () => {
                         </button>
                         <select
                           value={customer.status}
-                          onChange={(e) => updateCustomerStatus(customer.id, e.target.value)}
+                          onChange={(e) => handleStatusChange(customer.applicationId, e.target.value)}
                           className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         >
                           <option value="review">Review</option>
@@ -792,78 +645,33 @@ const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-500">ID Proof</label>
-                  <div className="space-y-3">
-                    {selectedCustomer.idProofUploaded ? (
-                      <div>
-                        <div className="flex items-center text-green-600 mb-2">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          <span>Uploaded</span>
-                        </div>
-                        <div className="text-sm text-gray-600 mb-2">
-                          <p>File: {selectedCustomer.idProofName}</p>
-                          <p>Size: {selectedCustomer.idProofSize}</p>
-                          <p>Type: {selectedCustomer.idProofType}</p>
-                        </div>
-                        <div className="flex items-center justify-center">
-                          {selectedCustomer.idProofType === 'PDF' ? (
-                            <div className="bg-gray-100 p-4 rounded-lg text-center">
-                              <FileText className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                              <p className="text-sm text-gray-600">PDF Document</p>
-                              <button
-                                onClick={() => {
-                                  if (selectedCustomer.idProofBase64) {
-                                    const link = document.createElement('a');
-                                    link.href = `data:application/pdf;base64,${selectedCustomer.idProofBase64}`;
-                                    link.download = selectedCustomer.idProofName;
-                                    link.click();
-                                  } else {
-                                    alert('ID proof file not available');
-                                  }
-                                }}
-                                className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                              >
-                                <Download className="w-4 h-4 mr-2" />
-                                Download PDF
-                              </button>
+                  <label className="text-sm font-medium text-gray-500">KYC Documents</label>
+                  <div className="space-y-3 mt-2">
+                    {selectedCustomerDocs.length > 0 ? (
+                      selectedCustomerDocs.map((doc) => (
+                        <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className="flex items-center space-x-3">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{doc.document_name}</p>
+                              <p className="text-xs text-gray-500">
+                                {doc.document_type === 'id_front' && 'Government ID Front'}
+                                {doc.document_type === 'id_back' && 'Government ID Back'}
+                                {doc.document_type === 'selfie' && 'Selfie Photo'}
+                                {doc.document_type === 'head_rotation' && '360° Head Rotation Video'}
+                                {' · '}{doc.document_size}
+                              </p>
                             </div>
-                          ) : (
-                            <div className="space-y-2">
-                              <img 
-                                src={`data:image/jpeg;base64,${selectedCustomer.idProofBase64}`}
-                                alt="ID Proof"
-                                className="max-w-full h-auto max-h-48 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow mx-auto"
-                                onClick={() => {
-                                  const link = document.createElement('a');
-                                  link.href = `data:image/jpeg;base64,${selectedCustomer.idProofBase64}`;
-                                  link.download = selectedCustomer.idProofName;
-                                  link.click();
-                                }}
-                              />
-                              <button
-                                onClick={() => {
-                                  if (selectedCustomer.idProofBase64) {
-                                    const link = document.createElement('a');
-                                    link.href = `data:image/jpeg;base64,${selectedCustomer.idProofBase64}`;
-                                    link.download = selectedCustomer.idProofName;
-                                    link.click();
-                                  } else {
-                                    alert('ID proof file not available');
-                                  }
-                                }}
-                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                              >
-                                <Download className="w-4 h-4 mr-2" />
-                                Download Image
-                              </button>
-                            </div>
-                          )}
+                          </div>
+                          <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                            {doc.verification_status || 'Uploaded'}
+                          </span>
                         </div>
-                      </div>
+                      ))
                     ) : (
-                      <div className="flex items-center text-red-600">
-                        <XCircle className="w-4 h-4 mr-1" />
-                        <span>Not Uploaded</span>
+                      <div className="flex items-center text-gray-500">
+                        <AlertCircle className="w-4 h-4 mr-1" />
+                        <span>No KYC documents uploaded</span>
                       </div>
                     )}
                   </div>
@@ -928,7 +736,7 @@ const AdminDashboard = () => {
                       onChange={(e) => {
                         const updatedCustomer = { ...selectedCustomer, status: e.target.value };
                         setSelectedCustomer(updatedCustomer);
-                        updateCustomerStatus(selectedCustomer.id, e.target.value);
+                        updateCustomerStatusLocal(selectedCustomer.id, e.target.value);
                       }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
@@ -1017,14 +825,34 @@ const AdminDashboard = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    updateCustomerStatus(selectedCustomer.id, selectedCustomer.status);
-                    updateCustomerNotes(selectedCustomer.id, selectedCustomer.adminNotes);
-                    if (selectedCustomer.rejectionReason) {
-                      rejectCustomer(selectedCustomer.id, selectedCustomer.rejectionReason);
+                  onClick={async () => {
+                    try {
+                      const updateData = {
+                        status: selectedCustomer.status,
+                        adminNotes: selectedCustomer.adminNotes || '',
+                        loanAgent: selectedCustomer.loanAgent,
+                        monthlyPayment: selectedCustomer.monthlyPayment,
+                      };
+                      if (selectedCustomer.status === 'rejected' && selectedCustomer.rejectionReason) {
+                        updateData.adminNotes = (selectedCustomer.adminNotes || '') + 
+                          (selectedCustomer.adminNotes ? '\n' : '') + 
+                          'Rejection Reason: ' + selectedCustomer.rejectionReason;
+                      }
+                      console.log('Saving customer update to database:', updateData);
+                      await updateCustomerInDatabase(selectedCustomer.applicationId, updateData);
+                      console.log('✅ Customer updated in database');
+                      
+                      // Refresh from database
+                      const updatedCustomers = await fetchAllCustomers();
+                      setCustomers(updatedCustomers);
+                      
+                      setShowEditModal(false);
+                      setSelectedCustomer(null);
+                      alert('Customer updated and saved to database successfully!');
+                    } catch (error) {
+                      console.error('❌ Error saving customer update:', error);
+                      alert('Failed to save changes to database: ' + (error.message || error));
                     }
-                    setShowEditModal(false);
-                    alert('Customer updated successfully!');
                   }}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
