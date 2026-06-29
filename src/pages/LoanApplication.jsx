@@ -392,7 +392,7 @@ const LoanApplication = () => {
       }
 
       // Use deployed email script (original approach - works in production)
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbxQdFZ9OUAK2b9cdELZ3iVNesYV6DE_wYxu7-PzHIA/dev'
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzXHXfYA_1VJ9Q8aDpyCnUGlhR1jrcplov7xcgTy2_nOR-T9sUGUkyKMlfE-2DB0wPa/exec'
 
       // Submit to Google Apps Script (may fail on localhost due to CORS, but works in production)
       const response = await fetch(scriptUrl, {
