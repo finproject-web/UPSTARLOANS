@@ -282,6 +282,22 @@ const LoanApplication = () => {
 
   const handleStep1Submit = (e) => {
     e.preventDefault()
+    
+    // Validate date of birth format
+    const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d{2}$/
+    if (!dateRegex.test(formData.dateOfBirth)) {
+      alert('Please enter a valid date of birth in MM/DD/YYYY format (e.g., 01/15/1990)')
+      return
+    }
+    
+    // Additional date validation
+    const [month, day, year] = formData.dateOfBirth.split('/').map(Number)
+    const date = new Date(year, month - 1, day)
+    if (date.getMonth() !== month - 1 || date.getDate() !== day) {
+      alert('Please enter a valid date (e.g., 01/15/1990 not 02/30/1990)')
+      return
+    }
+    
     if (formData.loanAgent && formData.loanAmount && formData.loanTerm && formData.loanPurpose && formData.firstName && formData.lastName && 
         formData.email && formData.homeAddress && formData.city && formData.state && formData.zipCode && formData.dateOfBirth &&
         formData.ssnNumber && formData.bankName && formData.routingNumber && formData.accountNumber && 
