@@ -111,10 +111,10 @@ const CustomerLoginDetails = () => {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-yellow-900">
-                  <strong>Password:</strong> {DEFAULT_PASSWORD}
+                  <strong>Password:</strong> Use the password provided in your email
                 </p>
                 <p className="text-xs text-yellow-600 mt-1">
-                  Use this password to sign in to your customer portal anytime
+                  Check your email for your login password
                 </p>
               </div>
             </div>
@@ -165,22 +165,10 @@ const CustomerLoginDetails = () => {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={DEFAULT_PASSWORD}
-                  readOnly
-                  className="block w-full pr-10 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                  type="password"
+                  placeholder="Enter password from email"
+                  className="block w-full pr-10 px-3 py-2 border border-gray-300 rounded-lg"
                 />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
-                </button>
               </div>
             </div>
           </div>
