@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, FileText, CheckCircle, Gavel, IdCard, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Shield, FileText, CheckCircle, Gavel, CreditCard, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { saveInsuranceReview } from '../services/databaseService';
 
 const InsurancePolicyReview = () => {
@@ -397,7 +397,7 @@ const InsurancePolicyReview = () => {
         {currentStep === 4 && (
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <IdCard className="w-6 h-6 mr-2 text-orange-500" />
+              <CreditCard className="w-6 h-6 mr-2 text-orange-500" />
               Step 4: Identity Verification
             </h2>
 
