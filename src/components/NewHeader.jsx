@@ -242,7 +242,7 @@ const NewHeader = () => {
             </div>
 
             {/* ACCOUNT ACCESS */}
-            <a href="#" className="text-gray-800 font-semibold uppercase tracking-wide hover:text-indigo-600 transition-colors duration-300 py-2">
+            <a href="/customer-login" className="text-gray-800 font-semibold uppercase tracking-wide hover:text-indigo-600 transition-colors duration-300 py-2">
               Account Access
             </a>
           </div>
