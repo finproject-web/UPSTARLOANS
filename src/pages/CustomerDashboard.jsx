@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, FileText, Download, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react';
-import { fetchCustomerByEmail } from '../services/databaseService';
+import { User, FileText, Download, CheckCircle, Clock, XCircle, AlertCircle, Shield } from 'lucide-react';
+import { fetchCustomerByEmail, loadAdminNotes } from '../services/databaseService';
 import { getCustomerKYCDocuments } from '../services/documentService';
 
 const CustomerDashboard = () => {
@@ -10,6 +10,7 @@ const CustomerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [documents, setDocuments] = useState([]);
+  const [adminNotes, setAdminNotes] = useState([]);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -42,6 +43,10 @@ const CustomerDashboard = () => {
               const docs = await getCustomerKYCDocuments(freshData.id);
               setDocuments(docs);
             }
+            
+            // Fetch admin notes
+            const notes = await loadAdminNotes(freshData.email);
+            setAdminNotes(notes);
           }
         } catch (err) {
           console.warn('Could not refresh application from server:', err);
@@ -165,6 +170,48 @@ const CustomerDashboard = () => {
           </h2>
           <p className="text-gray-600">Manage your loan application and track its status</p>
         </div>
+
+        {/* Notifications Section */}
+        {adminNotes.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <AlertCircle className="w-5 h-5 mr-2" />
+              Notifications & Updates
+            </h3>
+            <div className="space-y-3">
+              {adminNotes.map((note) => (
+                <div
+                  key={note.id}
+                  className={`rounded-lg p-4 ${
+                    note.note_type === 'insurance_review'
+                      ? 'bg-blue-50 border border-blue-200'
+                      : note.note_type === 'insurance_completed'
+                      ? 'bg-green-50 border border-green-200'
+                      : 'bg-gray-50 border border-gray-200'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-gray-900 text-sm mb-2">{note.note_text}</p>
+                      {note.note_type === 'insurance_review' && (
+                        <button
+                          onClick={() => navigate('/insurance-policy-review')}
+                          className="inline-flex items-center bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                        >
+                          <Shield className="w-4 h-4 mr-2" />
+                          Start Insurance Review
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-gray-500 text-xs ml-4">
+                      {new Date(note.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Application Status */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">

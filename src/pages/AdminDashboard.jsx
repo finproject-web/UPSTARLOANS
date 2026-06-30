@@ -1,9 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, FileText, CheckCircle, Clock, AlertCircle, XCircle, Search, Filter, Edit, Eye, Download } from 'lucide-react';
+import { Users, FileText, CheckCircle, Clock, AlertCircle, XCircle, Search, Filter, Edit, Eye, Download, Shield } from 'lucide-react';
 import { LOAN_AGENTS } from '../constants/loanAgents';
-import { fetchAllCustomers, updateCustomerStatus, updateCustomerInDatabase, deleteCustomer } from '../services/databaseService';
+import { fetchAllCustomers, updateCustomerStatus, updateCustomerInDatabase, deleteCustomer, triggerInsuranceReview, checkInsuranceReviewStatus } from '../services/databaseService';
 import { getCustomerKYCDocuments, getLoanAgreement } from '../services/documentService';
+
+// Insurance Review Status Component
+const InsuranceReviewStatus = ({ email }) => {
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    const loadStatus = async () => {
+      try {
+        const result = await checkInsuranceReviewStatus(email);
+        setStatus(result.review_completed ? 'completed' : 'pending');
+      } catch (error) {
+        console.error('Error checking insurance review status:', error);
+        setStatus('error');
+      }
+    };
+    loadStatus();
+  }, [email]);
+
+  if (status === 'loading') {
+    return <span className="text-gray-400 text-xs">Loading...</span>;
+  }
+
+  if (status === 'completed') {
+    return (
+      <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+        Completed
+      </span>
+    );
+  }
+
+  if (status === 'pending') {
+    return (
+      <span className="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+        Pending
+      </span>
+    );
+  }
+
+  return <span className="text-gray-400 text-xs">Unknown</span>;
+};
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -359,6 +399,9 @@ const AdminDashboard = () => {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Insurance Review
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     User ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -432,6 +475,9 @@ const AdminDashboard = () => {
                         {getStatusText(customer.status)}
                       </span>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <InsuranceReviewStatus email={customer.email} />
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {customer.userId}
                     </td>
@@ -468,6 +514,23 @@ const AdminDashboard = () => {
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (confirm('Trigger insurance policy review for this customer? The customer will be required to read and agree to the insurance policy terms.')) {
+                              try {
+                                await triggerInsuranceReview(customer.email);
+                                alert('Insurance review triggered successfully. The customer will see the notification in their dashboard.');
+                              } catch (error) {
+                                console.error('Error triggering insurance review:', error);
+                                alert('Failed to trigger insurance review: ' + error.message);
+                              }
+                            }
+                          }}
+                          className="text-purple-600 hover:text-purple-900"
+                          title="Trigger Insurance Review"
+                        >
+                          <Shield className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => {

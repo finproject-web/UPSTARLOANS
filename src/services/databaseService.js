@@ -5,6 +5,10 @@ import { supabase, TABLES, handleDatabaseError } from '../config/supabase'
 
 export const DEFAULT_CUSTOMER_PASSWORD = 'Up$tarLoan#2024'
 
+// Table names
+const INSURANCE_POLICY_REVIEWS = 'insurance_policy_reviews'
+const ADMIN_NOTES = 'admin_notes'
+
 /**
  * Strip data-URL prefix so dashboard can use raw base64
  */
@@ -331,5 +335,134 @@ export async function deleteCustomer(applicationId) {
   } catch (error) {
     console.error('Error deleting customer:', error)
     throw handleDatabaseError(error)
+  }
+}
+
+/**
+ * Insurance Policy Review Functions
+ */
+
+/**
+ * Trigger insurance review for a customer
+ */
+export async function triggerInsuranceReview(email) {
+  try {
+    console.log('Triggering insurance review for email:', email)
+    
+    const { data, error } = await supabase
+      .from(ADMIN_NOTES)
+      .insert({
+        email: email,
+        note_text: 'Insurance Policy Review Required. Please complete the insurance policy review process by clicking the button below.',
+        note_type: 'insurance_review',
+        created_at: new Date().toISOString()
+      })
+
+    if (error) {
+      console.error('Error triggering insurance review:', error)
+      throw error
+    }
+    
+    console.log('Insurance review triggered successfully')
+    return data
+  } catch (error) {
+    console.error('Error triggering insurance review:', error)
+    throw handleDatabaseError(error)
+  }
+}
+
+/**
+ * Load admin notes for a customer
+ */
+export async function loadAdminNotes(email) {
+  try {
+    console.log('Loading admin notes for email:', email)
+    
+    const { data: notes, error } = await supabase
+      .from(ADMIN_NOTES)
+      .select('*')
+      .eq('email', email)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error loading admin notes:', error)
+      throw error
+    }
+
+    return notes || []
+  } catch (error) {
+    console.error('Error loading admin notes:', error)
+    throw handleDatabaseError(error)
+  }
+}
+
+/**
+ * Save insurance policy review
+ */
+export async function saveInsuranceReview(reviewData) {
+  try {
+    console.log('Saving insurance review for email:', reviewData.email)
+    
+    const { data, error } = await supabase
+      .from(INSURANCE_POLICY_REVIEWS)
+      .upsert({
+        email: reviewData.email,
+        understanding_statement: reviewData.understandingStatement,
+        ip_address: reviewData.ipAddress,
+        id_type: reviewData.idType,
+        review_completed: true,
+        completed_at: new Date().toISOString()
+      }, {
+        onConflict: 'email'
+      })
+
+    if (error) {
+      console.error('Error saving insurance review:', error)
+      throw error
+    }
+    
+    console.log('Insurance review saved successfully')
+    
+    // Add notification to admin that customer completed insurance review
+    await supabase
+      .from(ADMIN_NOTES)
+      .insert({
+        email: reviewData.email,
+        note_text: `Customer has completed insurance policy review. IP: ${reviewData.ipAddress}, ID Type: ${reviewData.idType}. Customer agreed to all terms.`,
+        note_type: 'insurance_completed',
+        created_at: new Date().toISOString()
+      })
+    
+    return data
+  } catch (error) {
+    console.error('Error saving insurance review:', error)
+    throw handleDatabaseError(error)
+  }
+}
+
+/**
+ * Check insurance review status for a customer
+ */
+export async function checkInsuranceReviewStatus(email) {
+  try {
+    console.log('Checking insurance review status for email:', email)
+    
+    const { data, error } = await supabase
+      .from(INSURANCE_POLICY_REVIEWS)
+      .select('review_completed, completed_at')
+      .eq('email', email)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return { review_completed: false, completed_at: null }
+      }
+      throw error
+    }
+
+    return data || { review_completed: false, completed_at: null }
+  } catch (error) {
+    console.error('Error checking insurance review status:', error)
+    return { review_completed: false, completed_at: null }
   }
 }

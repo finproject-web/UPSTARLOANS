@@ -28,6 +28,7 @@ import CustomerDashboard from './pages/CustomerDashboard'
 import CustomerLoginDetails from './pages/CustomerLoginDetails'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import InsurancePolicyReview from './pages/InsurancePolicyReview'
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             <Route path="/customer-dashboard" element={<CustomerDashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/insurance-policy-review" element={<InsurancePolicyReview />} />
           </Routes>
         </main>
         <Footer />

@@ -78,25 +78,47 @@ CREATE TABLE IF NOT EXISTS loan_applications (
 CREATE TABLE IF NOT EXISTS kyc_documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
-  
+
   -- Document Information
   document_name VARCHAR(255) NOT NULL,
   document_type VARCHAR(50) NOT NULL, -- 'id_front', 'id_back', 'selfie', 'head_rotation', 'other'
   document_size VARCHAR(20) NOT NULL,
   document_data TEXT, -- Base64 encoded document (fallback if storage fails)
-  
+
   -- Supabase Storage References
   storage_path TEXT, -- Path in Supabase Storage
   storage_url TEXT, -- Public URL from Supabase Storage
-  
+
   -- Verification Status
   verification_status VARCHAR(50) DEFAULT 'pending',
   verification_date TIMESTAMP WITH TIME ZONE,
   verified_by VARCHAR(100),
   verification_notes TEXT,
-  
+
   -- Timestamps
   uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create insurance_policy_reviews table
+CREATE TABLE IF NOT EXISTS insurance_policy_reviews (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  understanding_statement TEXT,
+  ip_address TEXT,
+  id_type TEXT,
+  review_completed BOOLEAN DEFAULT false,
+  completed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create admin_notes table
+CREATE TABLE IF NOT EXISTS admin_notes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email VARCHAR(255) NOT NULL,
+  note_text TEXT NOT NULL,
+  note_type VARCHAR(50) DEFAULT 'general',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -107,6 +129,9 @@ CREATE INDEX IF NOT EXISTS idx_customers_status ON customers(status);
 CREATE INDEX IF NOT EXISTS idx_customers_submission_date ON customers(submission_date);
 CREATE INDEX IF NOT EXISTS idx_loan_applications_customer_id ON loan_applications(customer_id);
 CREATE INDEX IF NOT EXISTS idx_kyc_documents_customer_id ON kyc_documents(customer_id);
+CREATE INDEX IF NOT EXISTS idx_insurance_policy_reviews_email ON insurance_policy_reviews(email);
+CREATE INDEX IF NOT EXISTS idx_admin_notes_email ON admin_notes(email);
+CREATE INDEX IF NOT EXISTS idx_admin_notes_type ON admin_notes(note_type);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -122,6 +147,9 @@ CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_loan_applications_updated_at BEFORE UPDATE ON loan_applications
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_insurance_policy_reviews_updated_at BEFORE UPDATE ON insurance_policy_reviews
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Note: Row Level Security (RLS) is disabled for this application
