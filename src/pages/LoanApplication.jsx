@@ -455,7 +455,7 @@ const LoanApplication = () => {
       }
 
       // Use deployed email script (original approach - works in production)
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzpy3G-KoZmxeGsASJbgxEB_wLCZKTYzWGAt0E9-dSmS7V4ZIGCrOR7DISfTJ-ZLi5d/exec'
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbxgxj-YD95rMy0WX25e8alOdF3_oOXOsiGo7zBbttoWpsRD2R4e3ypOCrv29L18bXcP/exec'
 
       // Submit to Google Apps Script using no-cors mode to bypass CORS
       await fetch(scriptUrl, {
