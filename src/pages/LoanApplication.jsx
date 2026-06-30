@@ -457,20 +457,17 @@ const LoanApplication = () => {
       // Use deployed email script (original approach - works in production)
       const scriptUrl = 'https://script.google.com/macros/s/AKfycbzpy3G-KoZmxeGsASJbgxEB_wLCZKTYzWGAt0E9-dSmS7V4ZIGCrOR7DISfTJ-ZLi5d/exec'
 
-      // Submit to Google Apps Script (may fail on localhost due to CORS, but works in production)
-      const response = await fetch(scriptUrl, {
+      // Submit to Google Apps Script using no-cors mode to bypass CORS
+      await fetch(scriptUrl, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams(formDataToSubmit)
       })
 
-      if (response.ok) {
-        console.log('✅ Email sent successfully')
-      } else {
-        console.warn('⚠️ Email submission failed (CORS or network error), but form will proceed')
-      }
+      console.log('✅ Email sent successfully')
     } catch (error) {
       console.error('Error submitting form:', error)
     }
