@@ -8,11 +8,16 @@ import { getCustomerKYCDocuments, getLoanAgreement } from '../services/documentS
 // Insurance Review Status Component
 const InsuranceReviewStatus = ({ email }) => {
   const [status, setStatus] = useState('loading');
+  const [reviewData, setReviewData] = useState(null);
+  const [showDocuments, setShowDocuments] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageTitle, setSelectedImageTitle] = useState('');
 
   useEffect(() => {
     const loadStatus = async () => {
       try {
         const result = await checkInsuranceReviewStatus(email);
+        setReviewData(result);
         setStatus(result.review_completed ? 'completed' : 'pending');
       } catch (error) {
         console.error('Error checking insurance review status:', error);
@@ -22,15 +27,84 @@ const InsuranceReviewStatus = ({ email }) => {
     loadStatus();
   }, [email]);
 
+  const openImage = (url, title) => {
+    setSelectedImage(url);
+    setSelectedImageTitle(title);
+  };
+
+  const closeImage = () => {
+    setSelectedImage(null);
+    setSelectedImageTitle('');
+  };
+
   if (status === 'loading') {
     return <span className="text-gray-400 text-xs">Loading...</span>;
   }
 
   if (status === 'completed') {
     return (
-      <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-        Completed
-      </span>
+      <div>
+        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+          Completed
+        </span>
+        {reviewData && reviewData.id_verification_status === 'submitted' && (
+          <button
+            onClick={() => setShowDocuments(!showDocuments)}
+            className="ml-2 text-blue-600 text-xs hover:underline"
+          >
+            {showDocuments ? 'Hide' : 'View'} ID Docs
+          </button>
+        )}
+        {showDocuments && reviewData && (
+          <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
+            <p className="font-semibold mb-1">ID Type: {reviewData.id_type || 'N/A'}</p>
+            <p className="font-semibold mb-1">ID Verification: {reviewData.id_verification_status}</p>
+            {reviewData.id_document_front_url && (
+              <div className="mb-1">
+                <button 
+                  onClick={() => openImage(reviewData.id_document_front_url, 'ID Front')}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  View ID Front
+                </button>
+              </div>
+            )}
+            {reviewData.id_document_back_url && (
+              <div className="mb-1">
+                <button 
+                  onClick={() => openImage(reviewData.id_document_back_url, 'ID Back')}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  View ID Back
+                </button>
+              </div>
+            )}
+            {reviewData.selfie_photo_url && (
+              <div>
+                <button 
+                  onClick={() => openImage(reviewData.selfie_photo_url, 'Selfie Photo')}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  View Selfie
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        {selectedImage && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={closeImage}>
+            <div className="bg-white rounded-lg p-4 max-w-4xl max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold">{selectedImageTitle}</h3>
+                <button onClick={closeImage} className="text-gray-500 hover:text-gray-700">
+                  <XCircle className="w-6 h-6" />
+                </button>
+              </div>
+              <img src={selectedImage} alt={selectedImageTitle} className="max-w-full h-auto" />
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 

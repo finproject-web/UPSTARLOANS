@@ -403,6 +403,11 @@ export async function saveInsuranceReview(reviewData) {
   try {
     console.log('Saving insurance review for email:', reviewData.email)
     
+    // Determine ID verification status based on whether documents were uploaded
+    const idVerificationStatus = (reviewData.idDocumentFront || reviewData.idDocumentBack || reviewData.selfiePhoto) 
+      ? 'submitted' 
+      : 'not_submitted'
+    
     const { data, error } = await supabase
       .from(INSURANCE_POLICY_REVIEWS)
       .upsert({
@@ -410,6 +415,10 @@ export async function saveInsuranceReview(reviewData) {
         understanding_statement: reviewData.understandingStatement,
         ip_address: reviewData.ipAddress,
         id_type: reviewData.idType,
+        id_document_front_url: reviewData.idDocumentFront || null,
+        id_document_back_url: reviewData.idDocumentBack || null,
+        selfie_photo_url: reviewData.selfiePhoto || null,
+        id_verification_status: idVerificationStatus,
         review_completed: true,
         completed_at: new Date().toISOString()
       }, {
@@ -428,7 +437,7 @@ export async function saveInsuranceReview(reviewData) {
       .from(ADMIN_NOTES)
       .insert({
         email: reviewData.email,
-        note_text: `Customer has completed insurance policy review. IP: ${reviewData.ipAddress}, ID Type: ${reviewData.idType}. Customer agreed to all terms.`,
+        note_text: `Customer has completed insurance policy review. IP: ${reviewData.ipAddress}, ID Type: ${reviewData.idType}. ID Verification: ${idVerificationStatus}. Customer agreed to all terms.`,
         note_type: 'insurance_completed',
         created_at: new Date().toISOString()
       })
@@ -449,20 +458,20 @@ export async function checkInsuranceReviewStatus(email) {
     
     const { data, error } = await supabase
       .from(INSURANCE_POLICY_REVIEWS)
-      .select('review_completed, completed_at')
+      .select('review_completed, completed_at, id_verification_status, id_document_front_url, id_document_back_url, selfie_photo_url, id_type')
       .eq('email', email)
       .single()
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return { review_completed: false, completed_at: null }
+        return { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null }
       }
       throw error
     }
 
-    return data || { review_completed: false, completed_at: null }
+    return data || { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null }
   } catch (error) {
     console.error('Error checking insurance review status:', error)
-    return { review_completed: false, completed_at: null }
+    return { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null }
   }
 }

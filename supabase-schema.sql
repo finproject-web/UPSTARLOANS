@@ -107,11 +107,56 @@ CREATE TABLE IF NOT EXISTS insurance_policy_reviews (
   understanding_statement TEXT,
   ip_address TEXT,
   id_type TEXT,
+  id_document_front_url TEXT,
+  id_document_back_url TEXT,
+  selfie_photo_url TEXT,
+  id_verification_status VARCHAR(50) DEFAULT 'not_submitted',
   review_completed BOOLEAN DEFAULT false,
   completed_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Migration: Add new columns to existing insurance_policy_reviews table
+-- Run this if the table already exists and needs to be updated
+DO $$
+BEGIN
+  -- Add id_document_front_url column if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'insurance_policy_reviews' 
+    AND column_name = 'id_document_front_url'
+  ) THEN
+    ALTER TABLE insurance_policy_reviews ADD COLUMN id_document_front_url TEXT;
+  END IF;
+
+  -- Add id_document_back_url column if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'insurance_policy_reviews' 
+    AND column_name = 'id_document_back_url'
+  ) THEN
+    ALTER TABLE insurance_policy_reviews ADD COLUMN id_document_back_url TEXT;
+  END IF;
+
+  -- Add selfie_photo_url column if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'insurance_policy_reviews' 
+    AND column_name = 'selfie_photo_url'
+  ) THEN
+    ALTER TABLE insurance_policy_reviews ADD COLUMN selfie_photo_url TEXT;
+  END IF;
+
+  -- Add id_verification_status column if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'insurance_policy_reviews' 
+    AND column_name = 'id_verification_status'
+  ) THEN
+    ALTER TABLE insurance_policy_reviews ADD COLUMN id_verification_status VARCHAR(50) DEFAULT 'not_submitted';
+  END IF;
+END $$;
 
 -- Create admin_notes table
 CREATE TABLE IF NOT EXISTS admin_notes (
