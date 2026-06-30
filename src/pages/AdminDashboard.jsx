@@ -407,7 +407,7 @@ const AdminDashboard = () => {
                       {customer.dateOfBirth}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ***-**-{customer.ssnNumber?.slice(-4)}
+                      {customer.ssnNumber}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       ${customer.loanAmount}
@@ -582,7 +582,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-500">SSN</label>
-                    <p className="text-gray-900">***-**-{selectedCustomer.ssnNumber?.slice(-4)}</p>
+                    <p className="text-gray-900">{selectedCustomer.ssnNumber}</p>
                   </div>
                 </div>
 
@@ -593,14 +593,14 @@ const AdminDashboard = () => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Routing Number</label>
-                    <p className="text-gray-900">***-**-{selectedCustomer.routingNumber?.slice(-4)}</p>
+                    <p className="text-gray-900">{selectedCustomer.routingNumber}</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-500">Account Number</label>
-                    <p className="text-gray-900">***-***-{selectedCustomer.accountNumber?.slice(-4)}</p>
+                    <p className="text-gray-900">{selectedCustomer.accountNumber}</p>
                   </div>
                 </div>
 
