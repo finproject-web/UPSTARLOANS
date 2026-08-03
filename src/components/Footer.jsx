@@ -10,11 +10,11 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <img src="/logo.png" alt="Upstart Loans" className="w-8 h-8 object-contain" />
-              <span className="text-xl font-bold text-gray-900">Upstart Loans</span>
+              <img src="/logo.png" alt="UpStart Loans" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-bold text-gray-900">UpStart Loans</span>
             </div>
             <p className="text-gray-600 mb-4 max-w-md">
-              We are a platform that connects users with third-party lenders and financial providers. Modern financial solutions designed to help you explore options with confidence.
+              UpStart Loans provides direct lending services with modern financial solutions designed to help you achieve your goals.
             </p>
           </div>
 
@@ -48,13 +48,13 @@ const Footer = () => {
         <div className="mt-8 pt-8 border-t border-gray-200">
           <div className="bg-gray-100 rounded-lg p-4 mb-6">
             <p className="text-gray-700 text-sm leading-relaxed">
-              This platform provides access to financial options and related tools. Availability, terms, and outcomes may vary. This is not a guarantee of approval or funding.
+              UpStart Loans provides direct lending services. Availability, terms, and outcomes may vary based on individual qualifications. This is not a guarantee of approval or funding.
             </p>
             <p className="text-gray-600 text-xs leading-relaxed mt-3">
-              This platform is not a direct lender. We connect users with third-party financial service providers. Availability, terms, and approval depend on individual lenders and user profiles. We do not guarantee approval or funding.
+              UpStart Loans provides direct lending services with competitive rates and flexible terms. Approval depends on your individual profile and our lending criteria.
             </p>
             <p className="text-gray-500 text-xs leading-relaxed mt-2">
-              We do not charge users for submitting requests. Providers may have their own terms and fees.
+              We do not charge application fees. Terms and conditions apply to all loan products.
             </p>
           </div>
           
@@ -85,7 +85,7 @@ const Footer = () => {
           
           {/* Copyright */}
           <div className="text-center text-gray-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} Upstart Loans. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} UpStart Loans. All rights reserved.</p>
           </div>
         </div>
       </div>

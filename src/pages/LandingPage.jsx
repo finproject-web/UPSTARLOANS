@@ -15,7 +15,7 @@ const LandingPage = () => {
               Financial options designed around your needs
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-3xl mx-auto">
-              We are a platform that connects users with third-party lenders and financial providers. Explore personalized solutions through our simple online experience. Get started without obligation and see what options are available to you.
+              UpStart Loans provides direct lending services with personalized solutions. Explore our simple online experience and get started to see the options available to you.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
               <button className="bg-gradient-to-r from-teal-600 to-blue-600 text-white font-bold py-4 px-8 rounded-xl text-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
@@ -24,7 +24,7 @@ const LandingPage = () => {
               </button>
             </div>
             <p className="text-sm text-gray-500 text-center max-w-2xl mx-auto">
-              We are not a direct lender. We connect users with independent providers.
+              UpStart Loans is a direct lender providing comprehensive financial services.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-x-4 space-y-2 sm:space-y-0 text-sm text-gray-600">
               <span className="flex items-center">
@@ -310,7 +310,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 Upstart Loans. All rights reserved.
+              © 2024 UpStart Loans. All rights reserved.
             </p>
             <div className="hidden md:block mt-4 md:mt-0">
               <button

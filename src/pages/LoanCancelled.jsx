@@ -11,7 +11,7 @@ const LoanCancelled = () => {
         <nav className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-bold text-white">
-              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Upstart Loans</span>
+              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">UpStart Loans</span>
             </div>
           </div>
         </nav>

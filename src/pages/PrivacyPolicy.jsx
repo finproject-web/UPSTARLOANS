@@ -41,7 +41,7 @@ const PrivacyPolicy = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Upstart Loans ("we," "us," or "our") is committed to protecting your privacy. 
+                  UpStart Loans ("we," "us," or "our") is committed to protecting your privacy. 
                   This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
                   when you visit our website upstarsloans.com and use our services.
                 </p>
@@ -143,21 +143,16 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
 
-              {/* Third-Party Sharing */}
+              {/* Information Sharing */}
               <div className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Third-Party Sharing</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Information Sharing</h2>
                 <p className="text-gray-600 mb-4">
-                  We may share your information with third parties in the following circumstances:
+                  We may share your information in the following circumstances:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
                   <li>
-                    <strong>Financial Service Providers:</strong> We share your information with 
-                    lenders and financial service providers in our network to process your application 
-                    and provide you with financing options.
-                  </li>
-                  <li>
-                    <strong>Service Providers:</strong> We work with third-party service providers 
-                    who assist us in operating our platform (e.g., payment processors, analytics providers).
+                    <strong>Service Providers:</strong> We work with service providers 
+                    who assist us in operating our lending services (e.g., payment processors, analytics providers).
                   </li>
                   <li>
                     <strong>Legal Requirements:</strong> We may disclose information if required by law 
@@ -165,7 +160,7 @@ const PrivacyPolicy = () => {
                   </li>
                 </ul>
                 <p className="text-gray-600 mt-4">
-                  We never sell your personal information to third parties for marketing purposes.
+                  We never sell your personal information for marketing purposes.
                 </p>
               </div>
 

@@ -56,7 +56,7 @@ const AdminLogin = () => {
         <div className="text-center">
           <div className="flex items-center justify-center">
             <Shield className="w-12 h-12 text-blue-600 mr-3" />
-            <h1 className="text-3xl font-bold text-gray-900">Upstart Loans</h1>
+            <h1 className="text-3xl font-bold text-gray-900">UpStart Loans</h1>
           </div>
           <p className="mt-2 text-gray-600">Admin Portal Login</p>
         </div>

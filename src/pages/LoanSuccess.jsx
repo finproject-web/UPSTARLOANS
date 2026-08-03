@@ -51,7 +51,7 @@ const LoanSuccess = () => {
         <nav className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-bold text-white">
-              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Upstart Loans</span>
+              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">UpStart Loans</span>
             </div>
           </div>
         </nav>
@@ -64,7 +64,7 @@ const LoanSuccess = () => {
             <div className="text-6xl mb-4">🎉</div>
             <h1 className="text-4xl font-bold text-green-400 mb-4">Congratulations!</h1>
             <p className="text-xl text-gray-300 mb-2">Your loan has been approved and agreement signed!</p>
-            <p className="text-lg text-gray-400">Your Upstart Loans account has been created successfully.</p>
+            <p className="text-lg text-gray-400">Your UpStart Loans account has been created successfully.</p>
           </div>
 
           {/* Credentials Section */}

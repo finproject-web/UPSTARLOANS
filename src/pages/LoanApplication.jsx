@@ -469,7 +469,7 @@ const LoanApplication = () => {
     console.log('Signature exists:', !!signature)
     console.log('Form data:', formData)
     
-    const agreementContent = `${currentLoanConfig.title} AGREEMENT - Upstart Loans
+    const agreementContent = `${currentLoanConfig.title} AGREEMENT - UpStart Loans
     
 Date: ${new Date().toLocaleDateString()}
 Application ID: #${Math.random().toString(36).substr(2, 9).toUpperCase()}
@@ -490,8 +490,8 @@ Terms: ${currentLoanConfig.terms}
 Bank: ${formData.bankName}
 
 TERMS AND CONDITIONS:
-1. The borrower acknowledges that Upstart Loans is a platform connecting borrowers with third-party lenders.
-2. The borrower authorizes Upstart Loans to share their information with potential lenders.
+1. The borrower acknowledges that UpStart Loans is a direct lender providing loan services.
+2. The borrower authorizes UpStart Loans to share their information with potential lenders.
 3. The borrower confirms that all provided information is accurate and complete.
 4. The borrower understands that loan approval is at the discretion of individual lenders.
 5. The borrower agrees to repay any approved loan according to the lender terms.
@@ -1012,7 +1012,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
     const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
     const totalRepayment = monthlyPayment * months
 
-    return `${currentLoanConfig.title} AGREEMENT - Upstart Loans
+    return `${currentLoanConfig.title} AGREEMENT - UpStart Loans
 
 Agreement Number: LS-${Date.now().toString()}
 Date: ${new Date().toLocaleDateString()}
@@ -1177,7 +1177,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       
       pdf.setFontSize(14)
       pdf.setTextColor(0, 0, 0)
-      pdf.text('Upstart Loans', 105, 30, { align: 'center' })
+      pdf.text('UpStart Loans', 105, 30, { align: 'center' })
       
       // Add agreement details
       pdf.setFontSize(10)
@@ -2325,7 +2325,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
     return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Upstart Loans Loan Agreement</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">UpStart Loans Loan Agreement</h1>
         <p className="text-gray-600">Review and Sign Your Personal Loan Agreement</p>
       </div>
 
@@ -2909,10 +2909,10 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         {/* Platform Notice */}
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8">
           <p className="text-blue-800 text-sm text-center">
-            We are a platform that connects users with third-party lenders and financial providers. Your application will be reviewed by our network of financial partners.
+            UpStart Loans provides direct lending services. Your application will be reviewed by our lending team.
           </p>
           <p className="text-sm text-gray-500 text-center max-w-2xl mx-auto">
-              We are not a direct lender. We connect users with independent providers.
+              UpStart Loans is a direct lender providing comprehensive financial services.
             </p>
         </div>
         {/* Progress Bar */}

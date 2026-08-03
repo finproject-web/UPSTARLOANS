@@ -17,11 +17,11 @@ const About = () => {
               Connecting people with financial opportunities
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto">
-              Our platform helps individuals and businesses explore financial options by connecting them with a network of third-party providers.
+              UpStart Loans helps individuals and businesses achieve their financial goals through direct lending services.
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 max-w-4xl mx-auto">
               <p className="text-blue-800 text-sm text-center">
-                We do not provide loans directly.
+                UpStart Loans provides direct lending services with transparent terms.
               </p>
             </div>
           </div>
@@ -37,7 +37,7 @@ const About = () => {
                 Our Mission
               </h2>
               <p className="text-xl text-gray-600 mb-8">
-                We are a platform that connects users with third-party lenders and financial providers. Our goal is to help you explore available options while maintaining transparency about our role as a connector, not a direct lender.
+                UpStart Loans is a direct lender providing financial services. Our goal is to help you achieve your financial goals through transparent lending practices.
               </p>
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">

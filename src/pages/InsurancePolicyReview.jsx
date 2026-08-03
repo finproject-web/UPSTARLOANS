@@ -400,7 +400,7 @@ const InsurancePolicyReview = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
-                <h1 className="text-xl font-bold text-gray-900">Upstart Loans</h1>
+                <h1 className="text-xl font-bold text-gray-900">UpStart Loans</h1>
                 <span className="ml-2 text-sm text-gray-500">Insurance Policy Review</span>
               </div>
             </div>
@@ -434,7 +434,7 @@ const InsurancePolicyReview = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">Upstart Loans</h1>
+              <h1 className="text-xl font-bold text-gray-900">UpStart Loans</h1>
               <span className="ml-2 text-sm text-gray-500">Insurance Policy Review</span>
             </div>
             <span className="text-gray-500 text-sm flex items-center">

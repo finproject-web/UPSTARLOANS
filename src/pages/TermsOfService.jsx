@@ -45,8 +45,8 @@ const TermsOfService = () => {
                     <div>
                       <h3 className="font-semibold text-yellow-900 mb-2">Important Disclaimer</h3>
                       <p className="text-yellow-800">
-                        Upstart Loans is not a lender, financial advisor, or direct provider of financial products. 
-                        We are a platform that connects users with third-party financial service providers. 
+                        UpStart Loans is not a lender, financial advisor, or direct provider of financial products. 
+                        UpStart Loans is a direct lender providing financial services. 
                         All financial products and services are provided by independent third parties.
                       </p>
                     </div>
@@ -58,7 +58,7 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Agreement to Terms</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  By accessing and using Upstart Loans (the "Platform"), you accept and agree to be bound by the 
+                  By accessing and using UpStart Loans (the "Platform"), you accept and agree to be bound by the 
                   terms and provision of this agreement. If you do not agree to abide by the above, please do not 
                   use this service.
                 </p>
@@ -68,10 +68,10 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Description of Service</h2>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  Upstart Loans provides a platform that:
+                  UpStart Loans provides a platform that:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
-                  <li>Connects users with third-party financial service providers</li>
+                  <li>Provides direct lending services to qualified borrowers</li>
                   <li>Allows users to submit financing requests</li>
                   <li>Provides information about available financial options</li>
                   <li>Facilitates communication between users and providers</li>
@@ -94,34 +94,34 @@ const TermsOfService = () => {
                   <li>Use the platform for lawful purposes only</li>
                   <li>Not attempt to gain unauthorized access to our systems</li>
                   <li>Not interfere with or disrupt the platform's operation</li>
-                  <li>Respect the rights of other users and third-party providers</li>
+                  <li>Respect the rights of other users and service providers</li>
                 </ul>
               </div>
 
-              {/* Third-Party Providers */}
+              {/* Lending Services */}
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <Users className="w-6 h-6 mr-2 text-primary-600" />
-                  Third-Party Providers
+                  Lending Services
                 </h2>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  Our platform works with independent third-party financial service providers. You understand and agree that:
+                  UpStart Loans provides direct lending services. You understand and agree that:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
                   <li>
-                    We are not responsible for the actions, policies, or practices of third-party providers
+                    We are responsible for our lending decisions and services
                   </li>
                   <li>
-                    All financial products and services are provided directly by third-party providers
+                    All financial products and services are provided directly by UpStart Loans
                   </li>
                   <li>
-                    Terms, conditions, and rates are determined by individual providers
+                    Terms, conditions, and rates are determined by UpStart Loans
                   </li>
                   <li>
-                    We do not endorse or guarantee any specific provider or product
+                    We provide transparent information about our lending products
                   </li>
                   <li>
-                    You should carefully review all terms before proceeding with any provider
+                    You should carefully review all terms before proceeding with any loan
                   </li>
                 </ul>
               </div>
@@ -140,7 +140,7 @@ const TermsOfService = () => {
                   <li>The availability of specific financial products</li>
                 </ul>
                 <p className="text-gray-600 leading-relaxed mt-4">
-                  All outcomes depend on your individual circumstances and the decisions of independent third-party providers.
+                  All outcomes depend on your individual circumstances and our lending decisions.
                 </p>
               </div>
 
@@ -175,12 +175,12 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Limitation of Liability</h2>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  To the fullest extent permitted by law, Upstart Loans shall not be liable for:
+                  To the fullest extent permitted by law, UpStart Loans shall not be liable for:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
                   <li>Any indirect, incidental, special, or consequential damages</li>
                   <li>Loss of profits, data, or business opportunities</li>
-                  <li>Actions or omissions of third-party providers</li>
+                  <li>Actions or omissions of service providers</li>
                   <li>Decisions made based on information provided through our platform</li>
                   <li>Technical issues or service interruptions</li>
                 </ul>
@@ -193,7 +193,7 @@ const TermsOfService = () => {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Indemnification</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  You agree to indemnify and hold harmless Upstart Loans, its affiliates, officers, directors, 
+                  You agree to indemnify and hold harmless UpStart Loans, its affiliates, officers, directors, 
                   employees, and agents from any claims, damages, or expenses arising from your use of the platform 
                   or violation of these terms.
                 </p>

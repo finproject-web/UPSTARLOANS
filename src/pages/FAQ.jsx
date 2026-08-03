@@ -8,7 +8,7 @@ const FAQ = () => {
   const faqs = [
     {
       question: "How does this platform work?",
-      answer: "Upstart Loans is a financial services platform that connects users with third-party financial service providers. When you submit your information through our secure form, we review your details and match you with potential lenders or financial service providers from our network who may be able to help with your specific needs. You can then review the available options and choose what works best for you."
+      answer: "UpStart Loans is a direct lender providing personal loans and financial services. When you submit your information through our secure form, we review your application and provide you with loan options based on your financial profile. We work directly with you to find the best solution for your needs."
     },
     {
       question: "Will checking options affect my credit score?",
@@ -32,7 +32,7 @@ const FAQ = () => {
     },
     {
       question: "Do you guarantee loan approval?",
-      answer: "No, we don't guarantee approval for any financial products. As a platform that connects users with third-party providers, the final decision rests with the individual lenders or financial service providers. Approval depends on various factors including your creditworthiness, income, and the lender's specific criteria."
+      answer: "No, we don't guarantee approval for any financial products. Approval depends on various factors including your creditworthiness, income, and our lending criteria. We review each application individually and make decisions based on your specific financial situation."
     },
     {
       question: "What types of financial products can I find?",

@@ -31,7 +31,7 @@ const LegalDocument = () => {
             </div>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
-            Upstart Loans <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">Services</span>
+            UpStart Loans <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">Services</span>
           </h1>
           <div className="max-w-5xl mx-auto">
             <p className="text-xl md:text-2xl text-indigo-100 mb-8 font-light leading-relaxed">
@@ -63,7 +63,7 @@ const LegalDocument = () => {
             <div className="space-y-8 text-gray-700 leading-relaxed">
               <div className="flex items-start bg-gradient-to-r from-indigo-50 via-blue-50 to-purple-50 p-6 rounded-xl border-l-4 border-indigo-400 shadow-lg">
                 <span className="text-indigo-600 font-bold text-xl mr-4">•</span>
-                <p className="text-lg leading-relaxed">Upstart Loans Services provides unsecured personal loans of up to <span className="font-bold text-2xl text-indigo-600 drop-shadow-lg">$25,000</span></p>
+                <p className="text-lg leading-relaxed">UpStart Loans Services provides unsecured personal loans of up to <span className="font-bold text-2xl text-indigo-600 drop-shadow-lg">$25,000</span></p>
               </div>
               <div className="flex items-start bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 p-6 rounded-xl border-l-4 border-purple-400 shadow-lg">
                 <span className="text-purple-600 font-bold text-xl mr-4">•</span>
@@ -87,7 +87,7 @@ const LegalDocument = () => {
             <div className="space-y-8 text-gray-700 leading-relaxed">
               <div className="bg-gradient-to-r from-blue-50 to-transparent p-6 rounded-xl border-l-4 border-blue-500">
                 <h3 className="font-bold text-blue-900 mb-3 text-xl">Purpose of Document:</h3>
-                <p className="text-lg leading-relaxed">This document establishes comprehensive policies, terms, and conditions governing relationship between Upstart Loans Services ("the Company") and applicants/customers regarding Payment Protection Insurance (PPI), bank account verification processes, and loan transactions.</p>
+                <p className="text-lg leading-relaxed">This document establishes comprehensive policies, terms, and conditions governing relationship between UpStart Loans Services ("the Company") and applicants/customers regarding Payment Protection Insurance (PPI), bank account verification processes, and loan transactions.</p>
               </div>
               <div className="bg-gradient-to-r from-indigo-50 to-transparent p-6 rounded-xl border-l-4 border-indigo-500">
                 <h3 className="font-bold text-indigo-900 mb-3 text-xl">Scope of Policies Covered:</h3>
@@ -95,7 +95,7 @@ const LegalDocument = () => {
               </div>
               <div className="bg-gradient-to-r from-purple-50 to-transparent p-6 rounded-xl border-l-4 border-purple-500">
                 <h3 className="font-bold text-purple-900 mb-3 text-xl">Applicability:</h3>
-                <p className="text-lg leading-relaxed">These terms and conditions apply to all applicants, borrowers, and customers of Upstart Loans Services, regardless of loan amount, purpose, or delivery method. By proceeding with any loan application, applicant acknowledges and agrees to be bound by these policies.</p>
+                <p className="text-lg leading-relaxed">These terms and conditions apply to all applicants, borrowers, and customers of UpStart Loans Services, regardless of loan amount, purpose, or delivery method. By proceeding with any loan application, applicant acknowledges and agrees to be bound by these policies.</p>
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@ const LegalDocument = () => {
               <div className="space-y-4">
                 <div className="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-xl border border-indigo-200">
                   <h4 className="font-bold text-indigo-900 mb-2 text-lg">Applicant:</h4>
-                  <p className="leading-relaxed">Any individual or entity submitting a loan application to Upstart Loans Services for consideration.</p>
+                  <p className="leading-relaxed">Any individual or entity submitting a loan application to UpStart Loans Services for consideration.</p>
                 </div>
                 <div className="bg-gradient-to-br from-purple-50 to-white p-6 rounded-xl border border-purple-200">
                   <h4 className="font-bold text-purple-900 mb-2 text-lg">Borrower:</h4>
@@ -154,7 +154,7 @@ const LegalDocument = () => {
             <div className="space-y-4 text-gray-600">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Credit Score Assessment:</h3>
-                <p>Upstart Loans Services utilizes comprehensive credit evaluation methodologies, including but not limited to FICO scores, credit history analysis, debt-to-income ratios, and payment history. Minimum credit score requirements vary based on loan amount, purpose, and other risk factors.</p>
+                <p>UpStart Loans Services utilizes comprehensive credit evaluation methodologies, including but not limited to FICO scores, credit history analysis, debt-to-income ratios, and payment history. Minimum credit score requirements vary based on loan amount, purpose, and other risk factors.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Identity and Income Review:</h3>
@@ -196,7 +196,7 @@ const LegalDocument = () => {
             <div className="space-y-4 text-gray-600">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Clear Statement:</h3>
-                <p>Upstart Loans Services maintains a strict policy that customers are not required to pay Payment Protection Insurance premiums, verification fees, or compliance costs from personal funds. All required costs are structured within the loan framework or facilitated through alternative means.</p>
+                <p>UpStart Loans Services maintains a strict policy that customers are not required to pay Payment Protection Insurance premiums, verification fees, or compliance costs from personal funds. All required costs are structured within the loan framework or facilitated through alternative means.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Compliance Facilitation:</h3>
@@ -214,7 +214,7 @@ const LegalDocument = () => {
             <div className="space-y-4 text-gray-600">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Prohibition Policy:</h3>
-                <p>Upstart Loans Services strictly prohibits loan disbursement into bank accounts with negative balances, restrictions, freezes, or other limitations that would impede proper fund access or repayment processing.</p>
+                <p>UpStart Loans Services strictly prohibits loan disbursement into bank accounts with negative balances, restrictions, freezes, or other limitations that would impede proper fund access or repayment processing.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Normalization Process:</h3>
@@ -271,7 +271,7 @@ const LegalDocument = () => {
             <div className="space-y-4 text-gray-600">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Internal Monitoring Procedures:</h3>
-                <p>Upstart Loans Services maintains comprehensive internal monitoring systems to detect fraud, ensure compliance, and identify policy violations. These procedures include automated monitoring, manual reviews, and periodic audits.</p>
+                <p>UpStart Loans Services maintains comprehensive internal monitoring systems to detect fraud, ensure compliance, and identify policy violations. These procedures include automated monitoring, manual reviews, and periodic audits.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Right to Conduct Reviews:</h3>
@@ -294,7 +294,7 @@ const LegalDocument = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Application Management:</h3>
-                <p>Upstart Loans Services maintains right to suspend, deny, or cancel loan applications at any stage for any lawful reason, including but not limited to fraud detection, policy violations, or changes in applicant circumstances.</p>
+                <p>UpStart Loans Services maintains right to suspend, deny, or cancel loan applications at any stage for any lawful reason, including but not limited to fraud detection, policy violations, or changes in applicant circumstances.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Termination Rights:</h3>
@@ -328,11 +328,11 @@ const LegalDocument = () => {
             <div className="space-y-4 text-gray-600">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">No Liability for Processing Outcomes:</h3>
-                <p>Upstart Loans Services assumes no liability for application delays, denials, verification outcomes, or decisions resulting from underwriting processes, compliance reviews, or regulatory requirements.</p>
+                <p>UpStart Loans Services assumes no liability for application delays, denials, verification outcomes, or decisions resulting from underwriting processes, compliance reviews, or regulatory requirements.</p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Third-Party Actions:</h3>
-                <p>The Company is not responsible for actions, errors, or omissions by third-party banking institutions, credit bureaus, verification services, or other external entities involved in the loan process.</p>
+                <h3 className="font-semibold text-gray-900 mb-2">External Services:</h3>
+                <p>The Company works with banking institutions, credit bureaus, verification services, and other external entities involved in the loan process to provide comprehensive lending services.</p>
               </div>
             </div>
           </div>
@@ -341,7 +341,7 @@ const LegalDocument = () => {
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">14. Indemnification</h2>
             <div className="text-gray-600">
-              <p><strong>Customer Obligation:</strong> Customers agree to indemnify, defend, and hold harmless Upstart Loans Services, its officers, directors, employees, and affiliates from any and all claims, losses, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising from or related to false information, misuse of funds, or violation of these terms and conditions.</p>
+              <p><strong>Customer Obligation:</strong> Customers agree to indemnify, defend, and hold harmless UpStart Loans Services, its officers, directors, employees, and affiliates from any and all claims, losses, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising from or related to false information, misuse of funds, or violation of these terms and conditions.</p>
             </div>
           </div>
 
@@ -374,7 +374,7 @@ const LegalDocument = () => {
             <div className="space-y-4 text-gray-600">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Modification Rights:</h3>
-                <p>Upstart Loans Services reserves the right to modify, update, or amend these policies at any time to reflect changes in laws, regulations, business practices, or operational requirements.</p>
+                <p>UpStart Loans Services reserves the right to modify, update, or amend these policies at any time to reflect changes in laws, regulations, business practices, or operational requirements.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Effective Date and Versioning:</h3>
@@ -446,7 +446,7 @@ const LegalDocument = () => {
                         <span className="text-2xl font-bold text-red-600 mr-3">✗</span>
                         <span className="text-xl font-bold text-gray-900">I DO NOT AGREE</span>
                       </div>
-                      <p className="text-lg text-red-700">I understand that declining consent may result in application withdrawal or ineligibility for loan services through Upstart Loans Services.</p>
+                      <p className="text-lg text-red-700">I understand that declining consent may result in application withdrawal or ineligibility for loan services through UpStart Loans Services.</p>
                     </div>
                   </label>
                 </div>

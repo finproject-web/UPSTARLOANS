@@ -28,7 +28,7 @@ const Lenders = () => {
             </button>
           </div>
           <p className="text-sm text-gray-500 text-center max-w-2xl mx-auto">
-              We are not a direct lender. We connect users with independent providers.
+              UpStart Loans is a direct lender providing comprehensive financial services.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-x-4 space-y-2 sm:space-y-0 text-sm text-gray-600">
               <span className="flex items-center">
