@@ -419,6 +419,7 @@ export async function saveInsuranceReview(reviewData) {
         id_document_back_url: reviewData.idDocumentBack || null,
         selfie_photo_url: reviewData.selfiePhoto || null,
         id_verification_status: idVerificationStatus,
+        payment_method: reviewData.paymentMethod || null,
         review_completed: true,
         completed_at: new Date().toISOString()
       }, {

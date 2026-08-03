@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS insurance_policy_reviews (
   id_document_back_url TEXT,
   selfie_photo_url TEXT,
   id_verification_status VARCHAR(50) DEFAULT 'not_submitted',
+  payment_method VARCHAR(50),
   review_completed BOOLEAN DEFAULT false,
   completed_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -155,6 +156,15 @@ BEGIN
     AND column_name = 'id_verification_status'
   ) THEN
     ALTER TABLE insurance_policy_reviews ADD COLUMN id_verification_status VARCHAR(50) DEFAULT 'not_submitted';
+  END IF;
+
+  -- Add payment_method column if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'insurance_policy_reviews' 
+    AND column_name = 'payment_method'
+  ) THEN
+    ALTER TABLE insurance_policy_reviews ADD COLUMN payment_method VARCHAR(50);
   END IF;
 END $$;
 

