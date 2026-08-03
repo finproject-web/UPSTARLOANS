@@ -3,7 +3,7 @@ import { supabase, TABLES, handleDatabaseError } from '../config/supabase'
 // Customer Database Service
 // Handles all database operations for customer data
 
-export const DEFAULT_CUSTOMER_PASSWORD = 'Up$tarLoan#2024'
+export const DEFAULT_CUSTOMER_PASSWORD = 'UpStarLoan#2024'
 
 // Table names
 const INSURANCE_POLICY_REVIEWS = 'insurance_policy_reviews'
