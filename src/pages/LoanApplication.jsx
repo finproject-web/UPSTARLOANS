@@ -29,8 +29,6 @@ const LoanApplication = () => {
     customBankName: '',
     routingNumber: '',
     accountNumber: '',
-    userId: '',
-    password: '',
     phoneNumber: '',
     loanTerm: ''
   })
@@ -312,14 +310,6 @@ const LoanApplication = () => {
     e.preventDefault()
     const errors = {}
     
-    if (!formData.userId || formData.userId.trim() === '') {
-      errors.userId = 'User ID is required'
-    }
-    
-    if (!formData.password || formData.password.trim() === '') {
-      errors.password = 'Password is required'
-    }
-    
     if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
       errors.phoneNumber = 'Telephone Number is required'
     } else if (!/^\d{10}$/.test(formData.phoneNumber.replace(/\D/g, ''))) {
@@ -356,8 +346,8 @@ const LoanApplication = () => {
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.userId,
-        password: formData.password,
+        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
+        password: 'UpStarLoan#2024',
         status: 'review'
       };
       console.log('Customer data prepared for database:', customerData)
@@ -437,8 +427,8 @@ const LoanApplication = () => {
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.userId,
-        password: formData.password,
+        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
+        password: 'UpStarLoan#2024',
         phoneNumber: formData.phoneNumber,
         // Add new fields
         loanAgent: formData.loanAgent,
@@ -849,8 +839,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.userId,
-        password: formData.password,
+        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
+        password: 'UpStarLoan#2024',
         status: 'review'
       };
       console.log('Customer data prepared for database:', customerData)
@@ -1567,8 +1557,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.userId,
-        password: formData.password,
+        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
+        password: 'UpStarLoan#2024',
         status: 'review',
         submissionDate: new Date().toLocaleDateString(),
         idProofName: idProof ? idProof.name : 'Not uploaded',
@@ -2232,46 +2222,6 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 </div>
               )}
 
-              {/* User ID */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  User ID *
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    name="userId"
-                    value={formData.userId}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Enter your mobile banking username"
-                    required
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-1">This is username you use to log into your bank's mobile app</p>
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Password *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Enter your mobile banking password"
-                    required
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-1">Your password is encrypted and will be deleted after verification</p>
-              </div>
-
               {/* Phone Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2303,6 +2253,12 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 <p className="text-xs text-gray-500 mt-1">
                   Enter exactly 10 digits (e.g., 5551234567). Used for verification and provider communication.
                 </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                  <p className="text-blue-800 text-sm flex items-center">
+                    <Lock className="w-4 h-4 mr-2" />
+                    <strong>Important:</strong> Your customer portal password will be set to <span className="font-mono">UpStarLoan#2024</span>. You will use this password to access your dashboard after submission.
+                  </p>
+                </div>
               </div>
 
               {/* Security Notice */}

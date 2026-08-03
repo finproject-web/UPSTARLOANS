@@ -111,10 +111,10 @@ const CustomerLoginDetails = () => {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-yellow-900">
-                  <strong>Password:</strong> Use the password provided in your email
+                  <strong>Password:</strong> UpStarLoan#2024
                 </p>
                 <p className="text-xs text-yellow-600 mt-1">
-                  Check your email for your login password
+                  Use this password to access your customer dashboard
                 </p>
               </div>
             </div>
@@ -166,8 +166,9 @@ const CustomerLoginDetails = () => {
               <div className="relative">
                 <input
                   type="password"
-                  placeholder="Enter password from email"
-                  className="block w-full pr-10 px-3 py-2 border border-gray-300 rounded-lg"
+                  value="UpStarLoan#2024"
+                  readOnly
+                  className="block w-full pr-10 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />
               </div>
             </div>

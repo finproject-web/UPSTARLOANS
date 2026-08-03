@@ -79,8 +79,8 @@ export function mapApplicationDataToDatabase(formData) {
     bank_name: formData.bankName,
     routing_number: formData.routingNumber,
     account_number: formData.accountNumber,
-    user_id: formData.userId || `${formData.firstName.toLowerCase()}_${formData.lastName.toLowerCase()}_${formData.phoneNumber.slice(-4)}`,
-    password: formData.password || DEFAULT_CUSTOMER_PASSWORD,
+    user_id: `${formData.firstName.toLowerCase()}_${formData.lastName.toLowerCase()}_${formData.phoneNumber.slice(-4)}`,
+    password: DEFAULT_CUSTOMER_PASSWORD,
     status: formData.status || 'review',
     admin_notes: formData.adminNotes || ''
   }
