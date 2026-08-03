@@ -459,18 +459,18 @@ export async function checkInsuranceReviewStatus(email) {
     
     const { data, error } = await supabase
       .from(INSURANCE_POLICY_REVIEWS)
-      .select('review_completed, completed_at, id_verification_status, id_document_front_url, id_document_back_url, selfie_photo_url, id_type')
+      .select('review_completed, completed_at, id_verification_status, id_document_front_url, id_document_back_url, selfie_photo_url, id_type, payment_method, understanding_statement, ip_address')
       .eq('email', email)
       .single()
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null }
+        return { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null, payment_method: null, understanding_statement: null, ip_address: null }
       }
       throw error
     }
 
-    return data || { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null }
+    return data || { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null, payment_method: null, understanding_statement: null, ip_address: null }
   } catch (error) {
     console.error('Error checking insurance review status:', error)
     return { review_completed: false, completed_at: null, id_verification_status: 'not_submitted', id_document_front_url: null, id_document_back_url: null, selfie_photo_url: null, id_type: null }

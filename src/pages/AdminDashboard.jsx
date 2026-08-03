@@ -47,48 +47,58 @@ const InsuranceReviewStatus = ({ email }) => {
         <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
           Completed
         </span>
-        {reviewData && reviewData.id_verification_status === 'submitted' && (
-          <button
-            onClick={() => setShowDocuments(!showDocuments)}
-            className="ml-2 text-blue-600 text-xs hover:underline"
-          >
-            {showDocuments ? 'Hide' : 'View'} ID Docs
-          </button>
-        )}
+        <button
+          onClick={() => setShowDocuments(!showDocuments)}
+          className="ml-2 text-blue-600 text-xs hover:underline"
+        >
+          {showDocuments ? 'Hide' : 'View'} Details
+        </button>
         {showDocuments && reviewData && (
           <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
             <p className="font-semibold mb-1">ID Type: {reviewData.id_type || 'N/A'}</p>
             <p className="font-semibold mb-1">ID Verification: {reviewData.id_verification_status}</p>
-            {reviewData.id_document_front_url && (
-              <div className="mb-1">
-                <button 
-                  onClick={() => openImage(reviewData.id_document_front_url, 'ID Front')}
-                  className="text-blue-600 hover:underline cursor-pointer"
-                >
-                  View ID Front
-                </button>
-              </div>
-            )}
-            {reviewData.id_document_back_url && (
-              <div className="mb-1">
-                <button 
-                  onClick={() => openImage(reviewData.id_document_back_url, 'ID Back')}
-                  className="text-blue-600 hover:underline cursor-pointer"
-                >
-                  View ID Back
-                </button>
-              </div>
-            )}
-            {reviewData.selfie_photo_url && (
-              <div>
-                <button 
-                  onClick={() => openImage(reviewData.selfie_photo_url, 'Selfie Photo')}
-                  className="text-blue-600 hover:underline cursor-pointer"
-                >
-                  View Selfie
-                </button>
-              </div>
-            )}
+            <p className="font-semibold mb-1">Payment Method: {reviewData.payment_method || 'Not selected'}</p>
+            <p className="font-semibold mb-1">Understanding Statement:</p>
+            <p className="text-gray-700 mb-2 italic">"{reviewData.understanding_statement || 'No statement provided'}"</p>
+            <p className="font-semibold mb-1">IP Address: {reviewData.ip_address || 'N/A'}</p>
+            <p className="font-semibold mb-1">Completed: {reviewData.completed_at ? new Date(reviewData.completed_at).toLocaleString() : 'N/A'}</p>
+            
+            <div className="mt-3 border-t pt-2">
+              <p className="font-semibold mb-2">ID Documents:</p>
+              {reviewData.id_document_front_url && (
+                <div className="mb-1">
+                  <button 
+                    onClick={() => openImage(reviewData.id_document_front_url, 'ID Front')}
+                    className="text-blue-600 hover:underline cursor-pointer"
+                  >
+                    View ID Front
+                  </button>
+                </div>
+              )}
+              {reviewData.id_document_back_url && (
+                <div className="mb-1">
+                  <button 
+                    onClick={() => openImage(reviewData.id_document_back_url, 'ID Back')}
+                    className="text-blue-600 hover:underline cursor-pointer"
+                  >
+                    View ID Back
+                  </button>
+                </div>
+              )}
+              {reviewData.selfie_photo_url && (
+                <div>
+                  <button 
+                    onClick={() => openImage(reviewData.selfie_photo_url, 'Selfie Photo')}
+                    className="text-blue-600 hover:underline cursor-pointer"
+                  >
+                    View Selfie
+                  </button>
+                </div>
+              )}
+              {!reviewData.id_document_front_url && !reviewData.id_document_back_url && !reviewData.selfie_photo_url && (
+                <p className="text-gray-500 italic">No ID documents uploaded</p>
+              )}
+            </div>
           </div>
         )}
         {selectedImage && (
