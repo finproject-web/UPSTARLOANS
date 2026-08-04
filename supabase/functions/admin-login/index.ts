@@ -1,15 +1,18 @@
 // Supabase Edge Function: admin-login
 // Verifies admin credentials without exposing them to the frontend
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-}
+import { corsHeaders, isAllowedOrigin } from '../_shared/cors.ts'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
+  }
+
+  if (!isAllowedOrigin(req)) {
+    return new Response(JSON.stringify({ error: 'Forbidden: invalid origin' }), {
+      status: 403,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
   }
 
   try {
@@ -32,7 +35,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Generate a simple session token (in production use proper JWT)
     const sessionToken = crypto.randomUUID()
 
     return new Response(JSON.stringify({ success: true, token: sessionToken }), {

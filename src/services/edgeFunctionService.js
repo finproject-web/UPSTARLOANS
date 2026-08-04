@@ -87,8 +87,11 @@ export async function customerLogin(email, password) {
 }
 
 /**
- * Get all customers for admin
+ * Submit data to any Google Sheet script through backend
  */
+export async function submitToSheets(formType, data) {
+  return callEdgeFunction('submit-to-sheets', { formType, data })
+}
 export async function getCustomers(token) {
   const result = await callEdgeFunction('get-customers', { token })
   if (!result.success) {

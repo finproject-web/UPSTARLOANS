@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Mail, Phone, MapPin, Send, CheckCircle, User, MessageSquare } from 'lucide-react'
-import { CONFIG } from '../config/env'
+import { submitToSheets } from '../services/edgeFunctionService'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -31,27 +31,18 @@ const Contact = () => {
         message: formData.message
       }
 
-      // Use simple email-only script
-      const scriptUrl = CONFIG.googleSheets.contact
-
-      // Submit to original working script
-      const response = await fetch(scriptUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(formDataToSubmit)
-      })
+      // Submit via Edge Function (hides Google Script URL)
+      const result = await submitToSheets('contact', formDataToSubmit)
 
       // Check response
-      if (response.ok) {
+      if (result.success) {
         setIsSubmitted(true)
         setFormData({ name: '', email: '', message: '' })
         console.log('Contact form submitted successfully')
-        console.log('Response:', await response.json())
+        console.log('Response:', result)
       } else {
         console.error('Error submitting contact form')
-        console.error('Response:', response)
+        console.error('Response:', result)
       }
     } catch (error) {
       console.error('Error submitting form:', error)

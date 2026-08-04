@@ -2,17 +2,18 @@
 // Receives customer application, saves to Supabase, and forwards to Google Sheets
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-}
+import { corsHeaders, isAllowedOrigin } from '../_shared/cors.ts'
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
+  }
+
+  if (!isAllowedOrigin(req)) {
+    return new Response(JSON.stringify({ error: 'Forbidden: invalid origin' }), {
+      status: 403,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
   }
 
   try {
@@ -24,7 +25,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Get secrets from environment
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const serviceRoleKey = Deno.env.get('SB_SERVICE_ROLE_KEY') || ''
     const googleScriptUrl = Deno.env.get('CUSTOMER_SERVICE_SCRIPT_URL') || ''
@@ -36,7 +36,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Save to Supabase using service role (bypasses RLS)
     const adminClient = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false }
     })
@@ -76,7 +75,6 @@ Deno.serve(async (req) => {
       throw error
     }
 
-    // Forward to Google Sheets (hidden from client)
     if (googleScriptUrl) {
       try {
         const sheetParams = new URLSearchParams()
@@ -91,7 +89,6 @@ Deno.serve(async (req) => {
           body: sheetParams
         })
       } catch (sheetErr) {
-        // Log but don't fail the whole request if Google Sheets is down
         console.error('Google Sheets forwarding error:', sheetErr)
       }
     }

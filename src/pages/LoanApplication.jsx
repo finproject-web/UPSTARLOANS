@@ -6,8 +6,7 @@ import { User, Mail, Phone, DollarSign, Lock, CheckCircle, ArrowRight, Shield, C
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { saveKYCDocument, saveLoanAgreement } from '../services/documentService'
-import { submitApplication } from '../services/edgeFunctionService'
-import { CONFIG } from '../config/env'
+import { submitApplication, submitToSheets } from '../services/edgeFunctionService'
 
 const LoanApplication = () => {
   const [searchParams] = useSearchParams()
@@ -445,18 +444,8 @@ const LoanApplication = () => {
         submissionDate: new Date().toLocaleDateString()
       }
 
-      // Use deployed email script (original approach - works in production)
-      const scriptUrl = CONFIG.googleSheets.loanApp
-
-      // Submit to Google Apps Script using no-cors mode to bypass CORS
-      await fetch(scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(formDataToSubmit)
-      })
+      // Send email notification via Edge Function (hides Google Script URL)
+      await submitToSheets('loanApp', formDataToSubmit)
 
       console.log('✅ Email sent successfully')
     } catch (error) {
@@ -957,10 +946,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       sessionStorage.setItem('customerLoggedIn', 'true');
       sessionStorage.setItem('customerData', JSON.stringify(dashboardData));
       
-      // Send email notification (optional - can be removed if not needed)
+      // Send email notification via Edge Function (hides Google Script URL)
       try {
-        const scriptUrl = CONFIG.googleSheets.loanApplication
-
         const completeData = { 
           ...dashboardData,
           borrower_name: formData.firstName + ' ' + formData.lastName,
@@ -969,17 +956,9 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
           submissionDate: new Date().toLocaleDateString()
         }
 
-        const response = await fetch(scriptUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams(completeData)
-        })
-
-        const responseData = await response.json()
+        const responseData = await submitToSheets('loanApplication', completeData)
         
-        if (response.ok && responseData.result === 'success') {
+        if (responseData.success) {
           console.log('Email notification response:', responseData)
         } else {
           console.error('Email notification failed:', responseData)
@@ -1576,7 +1555,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       // Store in sessionStorage for dashboard access
       sessionStorage.setItem('customerData', JSON.stringify(customerData));
       
-      // Save customer data to Google Sheets for admin dashboard
+      // Save customer data to Google Sheets via Edge Function (hides URL)
       try {
         const googleSheetsData = {
           action: 'saveCustomer',
@@ -1586,15 +1565,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
           adminNotes: ''
         };
         
-        const response = await fetch(CONFIG.googleSheets.customerService, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams(googleSheetsData)
-        });
-        
-        const result = await response.json();
+        const result = await submitToSheets('customerService', googleSheetsData);
         console.log('Google Sheets response:', result);
       } catch (error) {
         console.error('Error saving to Google Sheets:', error);

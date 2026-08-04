@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, Mail, Phone, DollarSign, Lock, CheckCircle, ArrowRight, Shield, Calendar, MapPin, CreditCard, Building2, FileText, Download } from 'lucide-react'
-import { CONFIG } from '../config/env'
+import { submitToSheets } from '../services/edgeFunctionService'
 
 const PersonalFinancing = () => {
   const [currentStep, setCurrentStep] = useState(1)
@@ -144,8 +144,6 @@ const PersonalFinancing = () => {
 
   const submitToGoogleSheets = async () => {
     try {
-      const scriptUrl = CONFIG.googleSheets.personalFinancing
-      
       const formDataToSubmit = {
         formType: 'loanApplication',
         loanAmount: formData.loanAmount,
@@ -167,17 +165,9 @@ const PersonalFinancing = () => {
         phoneNumber: formData.phoneNumber
       }
 
-      const response = await fetch(scriptUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(formDataToSubmit)
-      })
-
-      const result = await response.json()
+      const result = await submitToSheets('personalFinancing', formDataToSubmit)
       
-      if (result.status === 'success') {
+      if (result.success) {
         console.log('Form submitted successfully:', result.message)
       } else {
         console.error('Form submission error:', result.message)
