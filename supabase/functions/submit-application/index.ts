@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
     }
 
     // Get secrets from environment
-    const supabaseUrl = Deno.env.get('SB_URL') || ''
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const serviceRoleKey = Deno.env.get('SB_SERVICE_ROLE_KEY') || ''
     const googleScriptUrl = Deno.env.get('CUSTOMER_SERVICE_SCRIPT_URL') || ''
 

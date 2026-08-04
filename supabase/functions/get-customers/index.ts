@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
       })
     }
 
-    const supabaseUrl = Deno.env.get('SB_URL') || ''
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const serviceRoleKey = Deno.env.get('SB_SERVICE_ROLE_KEY') || ''
 
     if (!supabaseUrl || !serviceRoleKey) {

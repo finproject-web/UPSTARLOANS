@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
   try {
     const { email, password } = await req.json()
 
-    const supabaseUrl = Deno.env.get('SB_URL') || ''
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const serviceRoleKey = Deno.env.get('SB_SERVICE_ROLE_KEY') || ''
     const defaultPassword = Deno.env.get('DEFAULT_CUSTOMER_PASSWORD') || 'UpStarLoan#2024'
 
