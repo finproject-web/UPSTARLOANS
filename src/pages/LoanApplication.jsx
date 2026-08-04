@@ -434,11 +434,10 @@ const LoanApplication = () => {
         loanAgent: formData.loanAgent,
         loanTerm: formData.loanTerm,
         monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
-        // Add ID proof information
+        // Add ID proof information (without base64 to keep email small)
         idProofName: idProofName,
         idProofType: idProofType,
         idProofSize: idProofSize,
-        idProofBase64: idProofBase64,
         agreementAccepted: agreementAccepted,
         signatureStatus: signature ? 'Signed' : 'Not signed',
         submissionDate: new Date().toLocaleDateString()

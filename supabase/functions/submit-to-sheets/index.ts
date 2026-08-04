@@ -62,7 +62,9 @@ Deno.serve(async (req) => {
     }
 
     const params = new URLSearchParams()
+    params.append('action', data.action || formType)
     Object.entries(data).forEach(([key, value]) => {
+      if (key === 'action') return
       params.append(key, value !== undefined && value !== null ? String(value) : '')
     })
 
