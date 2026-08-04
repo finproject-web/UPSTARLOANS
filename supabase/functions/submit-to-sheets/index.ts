@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
     })
 
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 8000)
+    const timeout = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(scriptUrl, {
       method: 'POST',

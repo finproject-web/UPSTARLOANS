@@ -81,9 +81,9 @@ Deno.serve(async (req) => {
         sheetParams.append(key, value !== undefined && value !== null ? String(value) : '')
       })
 
-      // Wait up to 5 seconds for Google Sheets, but don't fail the form if it's slow
+      // Wait up to 15 seconds for Google Sheets, but don't fail the form if it's slow
       const controller = new AbortController()
-      const timeout = setTimeout(() => controller.abort(), 5000)
+      const timeout = setTimeout(() => controller.abort(), 15000)
 
       try {
         await fetch(googleScriptUrl, {
