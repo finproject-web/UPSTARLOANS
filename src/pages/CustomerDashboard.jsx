@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, FileText, Download, CheckCircle, Clock, XCircle, AlertCircle, Shield } from 'lucide-react';
-import { fetchCustomerByEmail, loadAdminNotes } from '../services/databaseService';
+import { customerLogin } from '../services/edgeFunctionService';
 import { getCustomerKYCDocuments } from '../services/documentService';
 
 const CustomerDashboard = () => {
@@ -31,10 +31,11 @@ const CustomerDashboard = () => {
       const localData = JSON.parse(storedCustomerData);
       setCustomerData(localData);
 
-      if (localData.email) {
+      if (localData.email && localData.password) {
         try {
-          const freshData = await fetchCustomerByEmail(localData.email);
-          if (freshData) {
+          const loginResult = await customerLogin(localData.email, localData.password);
+          if (loginResult && loginResult.customer) {
+            const freshData = loginResult.customer;
             setCustomerData(freshData);
             sessionStorage.setItem('customerData', JSON.stringify(freshData));
             
@@ -44,9 +45,8 @@ const CustomerDashboard = () => {
               setDocuments(docs);
             }
             
-            // Fetch admin notes
-            const notes = await loadAdminNotes(freshData.email);
-            setAdminNotes(notes);
+            // Admin notes are included in customer data
+            setAdminNotes(freshData.adminNotes || []);
           }
         } catch (err) {
           console.warn('Could not refresh application from server:', err);

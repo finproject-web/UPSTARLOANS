@@ -99,3 +99,14 @@ export async function getCustomers(token) {
   }
   return result.customers.map(mapDatabaseCustomerToApplication)
 }
+
+/**
+ * Call admin-customers edge function for admin/customer data operations
+ */
+export async function callAdminCustomers(action, data = {}, token = null) {
+  const result = await callEdgeFunction('admin-customers', { action, data, token })
+  if (!result.success) {
+    throw new Error(result.error || `Admin customers action ${action} failed`)
+  }
+  return result
+}
