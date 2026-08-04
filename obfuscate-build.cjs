@@ -5,11 +5,6 @@ const path = require('path');
 const distDir = './dist';
 const assetsDir = path.join(distDir, 'assets');
 
-// Get allowed domains from environment or use wildcard for local
-const allowedDomains = process.env.ALLOWED_DOMAINS 
-  ? process.env.ALLOWED_DOMAINS.split(',')
-  : ['localhost'];
-
 // Obfuscation options (optimized for large files)
 const obfuscationOptions = {
   compact: true,
@@ -18,7 +13,6 @@ const obfuscationOptions = {
   debugProtection: true,
   debugProtectionInterval: 0,
   disableConsoleOutput: true,
-  domainLock: allowedDomains,
   identifierNamesGenerator: 'mangled',
   log: false,
   numbersToExpressions: false,
