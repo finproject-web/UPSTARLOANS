@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
       try {
         const sheetBody = sheetParams.toString()
         const bodyBytes = new TextEncoder().encode(sheetBody)
-        await fetch(googleScriptUrl, {
+        const sheetResponse = await fetch(googleScriptUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -97,7 +97,16 @@ Deno.serve(async (req) => {
           body: sheetBody,
           signal: controller.signal
         })
-        console.log('Google Sheets forwarded successfully')
+        const sheetText = await sheetResponse.text()
+        let sheetResult = { raw: sheetText, status: sheetResponse.status }
+        try {
+          sheetResult = JSON.parse(sheetText)
+        } catch { /* not JSON */ }
+        console.log('Google Sheets response:', sheetResult)
+        return new Response(JSON.stringify({ success: true, data, googleSheets: sheetResult }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
       } catch (sheetErr) {
         console.error('Google Sheets forwarding error:', sheetErr)
       } finally {
