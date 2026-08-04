@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Mail, Phone, MapPin, Send, CheckCircle, User, MessageSquare } from 'lucide-react'
+import { CONFIG } from '../config/env'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const Contact = () => {
       }
 
       // Use simple email-only script
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyYWqo6I3xnnPV9-MqIhOp75wcb7sMTKDkGcdZPNX1SEjRlq2nlx2AMn0p5X2gNhwfoKw/exec'
+      const scriptUrl = CONFIG.googleSheets.contact
 
       // Submit to original working script
       const response = await fetch(scriptUrl, {

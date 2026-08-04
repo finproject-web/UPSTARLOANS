@@ -1,7 +1,8 @@
-export const CUSTOMERS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbyPDjQJyRu3ZdBkhkTNPtFHUjo1ivDrsI8Rag_0wsguSU8rdsI6Uvg6T_Vt7pHh54i6/exec'
+import { CONFIG } from '../config/env'
 
-export const DEFAULT_CUSTOMER_PASSWORD = 'UpStarLoan#2024'
+export const CUSTOMERS_SCRIPT_URL = CONFIG.googleSheets.customerService
+
+export const DEFAULT_CUSTOMER_PASSWORD = CONFIG.adminPassword || 'UpStarLoan#2024'
 
 /** Strip data-URL prefix so dashboard can use raw base64 */
 export function stripBase64Prefix(dataUrl) {

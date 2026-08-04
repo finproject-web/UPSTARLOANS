@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, Mail, Phone, DollarSign, Lock, CheckCircle, ArrowRight, Shield, Calendar, MapPin, CreditCard, Building2, FileText, Download } from 'lucide-react'
+import { CONFIG } from '../config/env'
 
 const PersonalFinancing = () => {
   const [currentStep, setCurrentStep] = useState(1)
@@ -143,7 +144,7 @@ const PersonalFinancing = () => {
 
   const submitToGoogleSheets = async () => {
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIlAfBITq6kvRw1xG4cFEV_E09i2FmYuaviFdBGbuDEYHV7NRqFL9B14QFYzcIFkWa/exec'
+      const scriptUrl = CONFIG.googleSheets.personalFinancing
       
       const formDataToSubmit = {
         formType: 'loanApplication',

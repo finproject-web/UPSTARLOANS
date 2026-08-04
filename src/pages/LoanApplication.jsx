@@ -7,6 +7,7 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { saveCustomerToDatabase } from '../services/databaseService'
 import { saveKYCDocument, saveLoanAgreement } from '../services/documentService'
+import { CONFIG } from '../config/env'
 
 const LoanApplication = () => {
   const [searchParams] = useSearchParams()
@@ -445,7 +446,7 @@ const LoanApplication = () => {
       }
 
       // Use deployed email script (original approach - works in production)
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbxgxj-YD95rMy0WX25e8alOdF3_oOXOsiGo7zBbttoWpsRD2R4e3ypOCrv29L18bXcP/exec'
+      const scriptUrl = CONFIG.googleSheets.loanApp
 
       // Submit to Google Apps Script using no-cors mode to bypass CORS
       await fetch(scriptUrl, {
@@ -955,7 +956,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       
       // Send email notification (optional - can be removed if not needed)
       try {
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzRXeE1s1Ez_lUv5V9FaiIakzBeKBSRoIqH0mF5bIbJ2k8SgJzI1omV1m8bOFvfoaGnbg/exec'
+        const scriptUrl = CONFIG.googleSheets.loanApplication
 
         const completeData = { 
           ...dashboardData,
@@ -1580,7 +1581,7 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
           adminNotes: ''
         };
         
-        const response = await fetch('https://script.google.com/macros/s/AKfycbyPDjQJyRu3ZdBkhkTNPtFHUjo1ivDrsI8Rag_0wsguSU8rdsI6Uvg6T_Vt7pHh54i6/exec', {
+        const response = await fetch(CONFIG.googleSheets.customerService, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
