@@ -351,8 +351,8 @@ const LoanApplication = () => {
         mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
-        password: 'UpStarLoan#2024',
+        userId: formData.mobileAppUsername,
+        password: formData.mobileAppPassword,
         status: 'review'
       };
       console.log('Customer data prepared for database:', customerData)
@@ -434,8 +434,8 @@ const LoanApplication = () => {
         mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
-        password: 'UpStarLoan#2024',
+        userId: formData.mobileAppUsername,
+        password: formData.mobileAppPassword,
         phoneNumber: formData.phoneNumber,
         // Add new fields
         loanAgent: formData.loanAgent,
@@ -848,8 +848,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
-        password: 'UpStarLoan#2024',
+        userId: formData.mobileAppUsername,
+        password: formData.mobileAppPassword,
         status: 'review'
       };
       console.log('Customer data prepared for database:', customerData)
@@ -1568,8 +1568,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
-        userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
-        password: 'UpStarLoan#2024',
+        userId: formData.mobileAppUsername,
+        password: formData.mobileAppPassword,
         status: 'review',
         submissionDate: new Date().toLocaleDateString(),
         idProofName: idProof ? idProof.name : 'Not uploaded',
