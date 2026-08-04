@@ -81,13 +81,23 @@ Deno.serve(async (req) => {
         sheetParams.append(key, value !== undefined && value !== null ? String(value) : '')
       })
 
-      // Fire and forget to avoid Edge Function timeout if Google Sheets is slow
-      fetch(googleScriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: sheetParams
-      }).then(() => console.log('Google Sheets forwarded successfully'))
-        .catch((sheetErr) => console.error('Google Sheets forwarding error:', sheetErr))
+      // Wait up to 5 seconds for Google Sheets, but don't fail the form if it's slow
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 5000)
+
+      try {
+        await fetch(googleScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: sheetParams,
+          signal: controller.signal
+        })
+        console.log('Google Sheets forwarded successfully')
+      } catch (sheetErr) {
+        console.error('Google Sheets forwarding error:', sheetErr)
+      } finally {
+        clearTimeout(timeout)
+      }
     }
 
     return new Response(JSON.stringify({ success: true, data }), {
