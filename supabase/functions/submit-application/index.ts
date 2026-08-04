@@ -64,8 +64,7 @@ Deno.serve(async (req) => {
         account_number: customer.accountNumber,
         user_id: customer.userId,
         password: customer.password,
-        status: customer.status || 'review',
-        submission_date: customer.submissionDate || new Date().toISOString()
+        status: customer.status || 'review'
       })
       .select()
       .single()
