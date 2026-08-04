@@ -2254,12 +2254,6 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                 <p className="text-xs text-gray-500 mt-1">
                   Enter exactly 10 digits (e.g., 5551234567). Used for verification and provider communication.
                 </p>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
-                  <p className="text-blue-800 text-sm flex items-center">
-                    <Lock className="w-4 h-4 mr-2" />
-                    <strong>Important:</strong> Your customer portal password will be set to <span className="font-mono">UpStarLoan#2024</span>. You will use this password to access your dashboard after submission.
-                  </p>
-                </div>
               </div>
 
               {/* Security Notice */}
