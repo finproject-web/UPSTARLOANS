@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Shield, Calculator, HelpCircle, Lock } from 'lucide-react'
+import { Calculator, HelpCircle, Lock } from 'lucide-react'
 
 const Footer = () => {
   return (
@@ -70,19 +70,6 @@ const Footer = () => {
             </span>
           </div>
 
-          {/* Admin Access - Desktop Only */}
-          <div className="hidden lg:flex items-center justify-center mb-6">
-            <div className="bg-gray-100 rounded-lg px-4 py-2">
-              <a 
-                href="/admin-login" 
-                className="text-gray-600 hover:text-teal-600 transition-colors text-sm flex items-center"
-              >
-                <Shield className="w-4 h-4 mr-2" />
-                Admin Access
-              </a>
-            </div>
-          </div>
-          
           {/* Copyright */}
           <div className="text-center text-gray-500 text-sm">
             <p>&copy; {new Date().getFullYear()} UpStart Loans. All rights reserved.</p>

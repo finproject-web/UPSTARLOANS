@@ -1,9 +1,7 @@
 import React from 'react'
 import { ArrowRight, CheckCircle, Shield, Zap, Clock, Users, Lock, TrendingUp, Home, DollarSign, Target, Award, FileText, Briefcase } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 
 const LandingPage = () => {
-  const navigate = useNavigate()
   
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -312,14 +310,7 @@ const LandingPage = () => {
             <p className="text-gray-400 text-sm">
               © 2024 UpStart Loans. All rights reserved.
             </p>
-            <div className="hidden md:block mt-4 md:mt-0">
-              <button
-                onClick={() => navigate('/admin-login')}
-                className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
-              >
-                Admin Portal
-              </button>
-            </div>
+
           </div>
         </div>
       </footer>
