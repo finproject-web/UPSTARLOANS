@@ -7,6 +7,7 @@ const CustomerLoginDetails = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const [customerEmail, setCustomerEmail] = React.useState('');
+  const [customerUserId, setCustomerUserId] = React.useState('');
   const [showLoginDetails, setShowLoginDetails] = React.useState(false);
 
   const DEFAULT_PASSWORD = DEFAULT_CUSTOMER_PASSWORD;
@@ -17,6 +18,7 @@ const CustomerLoginDetails = () => {
     if (storedCustomerData) {
       const data = JSON.parse(storedCustomerData);
       setCustomerEmail(data.email);
+      setCustomerUserId(data.userId || '');
       setShowLoginDetails(true);
     } else {
       // If no data, redirect to customer login
@@ -111,11 +113,25 @@ const CustomerLoginDetails = () => {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-yellow-900">
-                  <strong>Password:</strong> UpStarLoan#2024
+                  <strong>Password:</strong> {DEFAULT_PASSWORD}
                 </p>
                 <p className="text-xs text-yellow-600 mt-1">
                   Use this password to access your customer dashboard
                 </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+            <h4 className="font-semibold text-gray-900 mb-4">Mobile App Credentials</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-700">User ID</p>
+                <p className="text-base font-semibold text-gray-900">{customerUserId}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Password</p>
+                <p className="text-base font-semibold text-gray-900">{DEFAULT_PASSWORD}</p>
               </div>
             </div>
           </div>
