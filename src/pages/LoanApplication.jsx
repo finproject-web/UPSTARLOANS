@@ -5,8 +5,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { User, Mail, Phone, DollarSign, Lock, CheckCircle, ArrowRight, Shield, Calendar, MapPin, CreditCard, Building2, FileText, Download } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import { saveCustomerToDatabase } from '../services/databaseService'
 import { saveKYCDocument, saveLoanAgreement } from '../services/documentService'
+import { submitApplication } from '../services/edgeFunctionService'
 import { CONFIG } from '../config/env'
 
 const LoanApplication = () => {
@@ -357,26 +357,20 @@ const LoanApplication = () => {
       };
       console.log('Customer data prepared for database:', customerData)
 
-      // Save customer to database
-      console.log('=== SAVING CUSTOMER TO DATABASE ===')
-      console.log('Calling saveCustomerToDatabase with:', customerData)
+      // Save customer to database via Edge Function (hides backend details)
+      console.log('=== SAVING CUSTOMER VIA EDGE FUNCTION ===')
+      console.log('Calling submitApplication with:', customerData)
       let savedCustomer = null
       try {
-        savedCustomer = await saveCustomerToDatabase(customerData)
+        const result = await submitApplication(customerData)
+        savedCustomer = result.data
         console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
-        console.log('Customer ID:', savedCustomer.id)
+        console.log('Customer ID:', savedCustomer?.id)
       } catch (dbError) {
-        console.error('❌ DATABASE SAVE FAILED:', dbError)
+        console.error('❌ EDGE FUNCTION SAVE FAILED:', dbError)
         console.error('❌ Error message:', dbError.message || dbError)
-        // Continue with email even if database save fails
-      }
-      
-      // Send email notification
-      try {
-        await submitToGoogleSheets()
-      } catch (emailError) {
-        console.warn('Email submission failed (CORS or network error), continuing to agreement:', emailError)
-        // Continue to agreement even if email fails
+        // Continue with agreement even if save fails
+        savedCustomer = { ...customerData, id: null }
       }
       
       setIsSubmittingEmail(false)
@@ -854,18 +848,19 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       };
       console.log('Customer data prepared for database:', customerData)
 
-      // Save customer to database
-      console.log('=== SAVING CUSTOMER TO DATABASE ===')
-      console.log('Calling saveCustomerToDatabase with:', customerData)
+      // Save customer to database via Edge Function (hides backend details)
+      console.log('=== SAVING CUSTOMER VIA EDGE FUNCTION ===')
+      console.log('Calling submitApplication with:', customerData)
       let savedCustomer = null
       try {
-        savedCustomer = await saveCustomerToDatabase(customerData)
+        const result = await submitApplication(customerData)
+        savedCustomer = result.data
         console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
-        console.log('Customer ID:', savedCustomer.id)
+        console.log('Customer ID:', savedCustomer?.id)
       } catch (dbError) {
-        console.error('❌ DATABASE SAVE FAILED:', dbError)
+        console.error('❌ EDGE FUNCTION SAVE FAILED:', dbError)
         console.error('❌ Error message:', dbError.message || dbError)
-        console.error('❌ Will continue with email notification...')
+        console.error('❌ Will continue with agreement...')
         // Create a fallback savedCustomer object so the rest of the flow works
         savedCustomer = { ...customerData, id: null }
       }

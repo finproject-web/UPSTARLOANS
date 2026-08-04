@@ -5,6 +5,7 @@ export const CONFIG = {
   // Supabase
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
   supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+  edgeFunctionBaseUrl: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`,
 
   // Admin
   adminEmail: import.meta.env.VITE_ADMIN_EMAIL,
