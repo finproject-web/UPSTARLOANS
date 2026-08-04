@@ -66,11 +66,15 @@ Deno.serve(async (req) => {
       params.append(key, value !== undefined && value !== null ? String(value) : '')
     })
 
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000)
+
     const response = await fetch(scriptUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params
-    })
+      body: params,
+      signal: controller.signal
+    }).finally(() => clearTimeout(timeout))
 
     const responseData = await response.json().catch(() => ({ result: 'success' }))
 

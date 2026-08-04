@@ -75,21 +75,19 @@ Deno.serve(async (req) => {
     }
 
     if (googleScriptUrl) {
-      try {
-        const sheetParams = new URLSearchParams()
-        sheetParams.append('action', 'saveCustomer')
-        Object.entries(customer).forEach(([key, value]) => {
-          sheetParams.append(key, value !== undefined && value !== null ? String(value) : '')
-        })
+      const sheetParams = new URLSearchParams()
+      sheetParams.append('action', 'saveCustomer')
+      Object.entries(customer).forEach(([key, value]) => {
+        sheetParams.append(key, value !== undefined && value !== null ? String(value) : '')
+      })
 
-        await fetch(googleScriptUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: sheetParams
-        })
-      } catch (sheetErr) {
-        console.error('Google Sheets forwarding error:', sheetErr)
-      }
+      // Fire and forget to avoid Edge Function timeout if Google Sheets is slow
+      fetch(googleScriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: sheetParams
+      }).then(() => console.log('Google Sheets forwarded successfully'))
+        .catch((sheetErr) => console.error('Google Sheets forwarding error:', sheetErr))
     }
 
     return new Response(JSON.stringify({ success: true, data }), {
