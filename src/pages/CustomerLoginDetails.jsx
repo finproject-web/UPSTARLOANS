@@ -7,7 +7,6 @@ const CustomerLoginDetails = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const [customerEmail, setCustomerEmail] = React.useState('');
-  const [customerUserId, setCustomerUserId] = React.useState('');
   const [showLoginDetails, setShowLoginDetails] = React.useState(false);
 
   const DEFAULT_PASSWORD = DEFAULT_CUSTOMER_PASSWORD;
@@ -18,7 +17,6 @@ const CustomerLoginDetails = () => {
     if (storedCustomerData) {
       const data = JSON.parse(storedCustomerData);
       setCustomerEmail(data.email);
-      setCustomerUserId(data.userId || '');
       setShowLoginDetails(true);
     } else {
       // If no data, redirect to customer login
