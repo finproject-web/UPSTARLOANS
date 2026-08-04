@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, Shield } from 'lucide-react';
+import { adminLogin } from '../services/edgeFunctionService';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -9,10 +10,6 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // Admin credentials from environment variables
-  const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@upstarsloans.com';
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,20 +23,19 @@ const AdminLogin = () => {
       return;
     }
 
-    // Check admin credentials
-    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-      setError('Invalid admin credentials');
-      setLoading(false);
-      return;
-    }
-
-    // Simulate login success
+    // Check admin credentials via Edge Function
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await adminLogin(email, password)
 
-      // Store admin login state
+      if (!result.success) {
+        setError('Invalid admin credentials');
+        setLoading(false);
+        return;
+      }
+
+      // Store admin login state and token
       sessionStorage.setItem('adminLoggedIn', 'true');
+      sessionStorage.setItem('adminToken', result.token);
 
       // Navigate to admin dashboard
       navigate('/admin-dashboard');

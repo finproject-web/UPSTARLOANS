@@ -4,6 +4,41 @@
 import { CONFIG } from '../config/env'
 
 /**
+ * Convert database record to application format
+ */
+export function mapDatabaseCustomerToApplication(customer) {
+  if (!customer) return null
+
+  return {
+    id: customer.id,
+    applicationId: customer.application_id,
+    firstName: customer.first_name,
+    lastName: customer.last_name,
+    email: customer.email,
+    phoneNumber: customer.phone_number,
+    homeAddress: customer.home_address,
+    city: customer.city,
+    state: customer.state,
+    zipCode: customer.zip_code,
+    dateOfBirth: customer.date_of_birth,
+    ssnNumber: customer.ssn_number,
+    loanAmount: customer.loan_amount,
+    loanPurpose: customer.loan_purpose,
+    loanTerm: customer.loan_term,
+    monthlyPayment: customer.monthly_payment,
+    loanAgent: customer.loan_agent,
+    bankName: customer.bank_name,
+    routingNumber: customer.routing_number,
+    accountNumber: customer.account_number,
+    userId: customer.user_id,
+    password: customer.password,
+    status: customer.status,
+    submissionDate: customer.submission_date,
+    adminNotes: customer.admin_notes
+  }
+}
+
+/**
  * Call a Supabase Edge Function
  */
 async function callEdgeFunction(functionName, body = {}, method = 'POST') {
@@ -44,12 +79,20 @@ export async function adminLogin(email, password) {
  * Customer login
  */
 export async function customerLogin(email, password) {
-  return callEdgeFunction('customer-login', { email, password })
+  const result = await callEdgeFunction('customer-login', { email, password })
+  if (!result.success) {
+    throw new Error(result.error || 'Login failed')
+  }
+  return { ...result, customer: mapDatabaseCustomerToApplication(result.customer) }
 }
 
 /**
  * Get all customers for admin
  */
 export async function getCustomers(token) {
-  return callEdgeFunction('get-customers', { token })
+  const result = await callEdgeFunction('get-customers', { token })
+  if (!result.success) {
+    throw new Error(result.error || 'Failed to load customers')
+  }
+  return result.customers.map(mapDatabaseCustomerToApplication)
 }

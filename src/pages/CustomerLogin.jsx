@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
-import {
-  DEFAULT_CUSTOMER_PASSWORD,
-  fetchCustomerByEmail,
-} from '../services/databaseService';
-import { fetchCustomerByEmail as fetchCustomerFromSheets } from '../utils/customerService';
+import { customerLogin } from '../services/edgeFunctionService';
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
@@ -27,42 +23,11 @@ const CustomerLogin = () => {
     }
 
     try {
-      // Try Supabase first, then fall back to Google Sheets
-      let customerData = null;
-      
-      try {
-        customerData = await fetchCustomerByEmail(email);
-        console.log('Supabase lookup result:', customerData ? 'Found' : 'Not found');
-      } catch (dbErr) {
-        console.warn('Supabase lookup failed, trying Google Sheets:', dbErr.message);
-      }
-
-      if (!customerData) {
-        try {
-          customerData = await fetchCustomerFromSheets(email);
-          console.log('Google Sheets lookup result:', customerData ? 'Found' : 'Not found');
-        } catch (sheetErr) {
-          console.warn('Google Sheets lookup also failed:', sheetErr.message);
-        }
-      }
-
-      if (!customerData) {
-        setError(
-          'No application found for this email. Please complete your loan application first, or check that you entered the correct email.'
-        );
-        setLoading(false);
-        return;
-      }
-
-      // Validate password against stored password or default
-      if (password !== customerData.password && password !== DEFAULT_CUSTOMER_PASSWORD) {
-        setError('Invalid password. Please use the password provided during registration.');
-        setLoading(false);
-        return;
-      }
+      // Call Supabase Edge Function to authenticate customer
+      const result = await customerLogin(email, password)
 
       sessionStorage.setItem('customerLoggedIn', 'true');
-      sessionStorage.setItem('customerData', JSON.stringify(customerData));
+      sessionStorage.setItem('customerData', JSON.stringify(result.customer));
 
       navigate('/customer-dashboard');
     } catch (err) {

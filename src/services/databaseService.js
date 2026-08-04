@@ -1,4 +1,5 @@
 import { supabase, TABLES, handleDatabaseError } from '../config/supabase'
+import { getCustomers } from './edgeFunctionService'
 
 // Customer Database Service
 // Handles all database operations for customer data
@@ -157,26 +158,19 @@ export async function updateCustomerInDatabase(applicationId, updateData) {
  */
 export async function fetchAllCustomers() {
   try {
-    console.log('fetchAllCustomers: querying table:', TABLES.CUSTOMERS)
-    console.log('fetchAllCustomers: supabase URL:', supabase.supabaseUrl)
+    const token = sessionStorage.getItem('adminToken')
+    if (!token) {
+      throw new Error('Admin not authenticated')
+    }
     
-    const { data, error, status, statusText } = await supabase
-      .from(TABLES.CUSTOMERS)
-      .select('*')
-      .order('submission_date', { ascending: false })
+    const customers = await getCustomers(token)
     
-    console.log('fetchAllCustomers: response status:', status, statusText)
-    console.log('fetchAllCustomers: raw data:', data)
-    console.log('fetchAllCustomers: error:', error)
-    
-    if (error) throw error
-    
-    if (!data || data.length === 0) {
-      console.log('fetchAllCustomers: No rows returned from customers table')
+    if (!customers || customers.length === 0) {
+      console.log('fetchAllCustomers: No rows returned')
       return []
     }
     
-    return data.map(mapDatabaseCustomerToApplication)
+    return customers
   } catch (error) {
     console.error('Error fetching customers from database:', error)
     throw handleDatabaseError(error)
