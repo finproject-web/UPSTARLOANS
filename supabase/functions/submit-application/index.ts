@@ -86,10 +86,15 @@ Deno.serve(async (req) => {
       const timeout = setTimeout(() => controller.abort(), 15000)
 
       try {
+        const sheetBody = sheetParams.toString()
+        const bodyBytes = new TextEncoder().encode(sheetBody)
         await fetch(googleScriptUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: sheetParams,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': String(bodyBytes.length)
+          },
+          body: sheetBody,
           signal: controller.signal
         })
         console.log('Google Sheets forwarded successfully')

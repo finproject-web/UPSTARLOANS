@@ -66,13 +66,19 @@ Deno.serve(async (req) => {
       params.append(key, value !== undefined && value !== null ? String(value) : '')
     })
 
+    const sheetBody = params.toString()
+    const bodyBytes = new TextEncoder().encode(sheetBody)
+
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(scriptUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': String(bodyBytes.length)
+      },
+      body: sheetBody,
       signal: controller.signal
     }).finally(() => clearTimeout(timeout))
 
