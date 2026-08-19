@@ -13,6 +13,27 @@ export function isAllowedOrigin(req: Request): boolean {
   if (!allowed) return true
 
   const origin = req.headers.get('origin') || ''
-  const allowedHost = allowed.replace(/^https?:\/\//, '')
-  return origin === allowed || origin.endsWith(allowedHost)
+
+  // ALLOWED_ORIGIN can be a comma-separated list, e.g.:
+  // https://upstarsloans.com,http://localhost:4173,http://127.0.0.1
+  const allowedList = allowed.split(',').map((s) => s.trim())
+
+  for (const entry of allowedList) {
+    const allowedHost = entry.replace(/^https?:\/\//, '')
+    if (!allowedHost) continue
+
+    if (origin === entry || origin.endsWith(allowedHost)) {
+      return true
+    }
+
+    // If the list includes "localhost" or "127.0.0.1" without a port,
+    // allow any port (useful for browser preview proxies)
+    if ((allowedHost === 'localhost' || allowedHost === '127.0.0.1') &&
+        (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') ||
+         origin.startsWith('https://localhost:') || origin.startsWith('https://127.0.0.1:'))) {
+      return true
+    }
+  }
+
+  return false
 }

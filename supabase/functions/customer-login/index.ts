@@ -56,6 +56,19 @@ Deno.serve(async (req) => {
       })
     }
 
+    // Load admin notes (including insurance review triggers) for this customer
+    const { data: notes, error: notesError } = await adminClient
+      .from('admin_notes')
+      .select('*')
+      .eq('email', data.email)
+      .order('created_at', { ascending: false })
+
+    if (notesError) {
+      console.error('Customer login admin notes error:', notesError)
+    }
+
+    ;(data as any).admin_notes = notes || []
+
     return new Response(JSON.stringify({ success: true, customer: data }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User, FileText, Download, CheckCircle, Clock, XCircle, AlertCircle, Shield } from 'lucide-react';
 import { customerLogin } from '../services/edgeFunctionService';
 import { getCustomerKYCDocuments } from '../services/documentService';
+import { loadAdminNotes } from '../services/databaseService';
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
@@ -45,8 +46,14 @@ const CustomerDashboard = () => {
               setDocuments(docs);
             }
             
-            // Admin notes are included in customer data
-            setAdminNotes(freshData.adminNotes || []);
+            // Load admin notes from the admin_notes table
+            try {
+              const notes = await loadAdminNotes(freshData.email || localData.email);
+              setAdminNotes(notes || []);
+            } catch (notesErr) {
+              console.warn('Could not load admin notes:', notesErr);
+              setAdminNotes([]);
+            }
           }
         } catch (err) {
           console.warn('Could not refresh application from server:', err);
