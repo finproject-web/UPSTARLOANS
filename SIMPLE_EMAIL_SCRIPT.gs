@@ -3,7 +3,6 @@
 
 // Configuration
 const PRIMARY_EMAIL = "finnfoxpersonalloan@gmail.com";
-const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
@@ -12,7 +11,6 @@ function doGet(e) {
     <p><strong>Current emails:</strong></p>
     <ul>
       <li>Primary: ${PRIMARY_EMAIL}</li>
-      <li>Secondary: ${SECONDARY_EMAIL}</li>
     </ul>
   `);
 }
@@ -73,13 +71,9 @@ function sendEmailToBoth(subject, htmlBody, textBody) {
     replyTo: PRIMARY_EMAIL
   };
   
-  // Send to primary email
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, textBody, options);
   
-  // Send to secondary email
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, textBody, options);
-  
-  Logger.log(`Email sent to both: ${PRIMARY_EMAIL} and ${SECONDARY_EMAIL}`);
+  Logger.log(`Email sent to: ${PRIMARY_EMAIL}`);
 }
 
 function createApplicationEmailHTML(data) {

