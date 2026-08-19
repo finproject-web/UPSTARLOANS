@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
       console.error('Customer login admin notes error:', notesError)
     }
 
-    ;(data as any).admin_notes = notes || []
+    ;(data as any).admin_note_records = notes || []
 
     return new Response(JSON.stringify({ success: true, customer: data }), {
       status: 200,
