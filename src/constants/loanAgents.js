@@ -7,4 +7,7 @@ export const LOAN_AGENTS = [
   'Benjamin',
   'Peter Smith',
   'Sofia Jones',
+  'Mike Smith',
+  'Stuart Wilson',
+  'David Wilson',
 ]
