@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     const { data, error } = await adminClient
       .from('customers')
       .select('*')
-      .eq('email', email.trim().toLowerCase())
+      .ilike('email', email.trim())
       .order('submission_date', { ascending: false })
       .limit(1)
       .single()
