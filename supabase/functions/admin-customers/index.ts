@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
 
       case 'triggerInsuranceReview': {
         if (!token) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
-        const { email } = data
+        const email = data.email.trim().toLowerCase()
         const { error } = await adminClient
           .from('admin_notes')
           .insert({
@@ -180,11 +180,11 @@ Deno.serve(async (req) => {
       }
 
       case 'loadAdminNotes': {
-        const { email } = data
+        const email = data.email.trim().toLowerCase()
         const { data: notes, error } = await adminClient
           .from('admin_notes')
           .select('*')
-          .eq('email', email)
+          .ilike('email', email)
           .order('created_at', { ascending: false })
 
         if (error) throw error
@@ -196,12 +196,13 @@ Deno.serve(async (req) => {
 
       case 'saveInsuranceReview': {
         const { reviewData } = data
+        const reviewEmail = reviewData.email.trim().toLowerCase()
         const idVerificationStatus = (reviewData.idDocumentFront || reviewData.idDocumentBack || reviewData.selfiePhoto) ? 'submitted' : 'not_submitted'
 
         const { data: savedReview, error } = await adminClient
           .from('insurance_policy_reviews')
           .upsert({
-            email: reviewData.email,
+            email: reviewEmail,
             understanding_statement: reviewData.understandingStatement,
             ip_address: reviewData.ipAddress,
             id_type: reviewData.idType,
@@ -219,7 +220,7 @@ Deno.serve(async (req) => {
         await adminClient
           .from('admin_notes')
           .insert({
-            email: reviewData.email,
+            email: reviewEmail,
             note_text: `Customer has completed insurance policy review. IP: ${reviewData.ipAddress}, ID Type: ${reviewData.idType}. ID Verification: ${idVerificationStatus}. Customer agreed to all terms.`,
             note_type: 'insurance_completed',
             created_at: new Date().toISOString()
@@ -232,11 +233,11 @@ Deno.serve(async (req) => {
       }
 
       case 'checkInsuranceReviewStatus': {
-        const { email } = data
+        const email = data.email.trim().toLowerCase()
         const { data: result, error } = await adminClient
           .from('insurance_policy_reviews')
           .select('review_completed, completed_at, id_verification_status, id_document_front_url, id_document_back_url, selfie_photo_url, id_type, payment_method, understanding_statement, ip_address')
-          .eq('email', email)
+          .ilike('email', email)
           .single()
 
         if (error) {

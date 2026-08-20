@@ -40,6 +40,17 @@ npx supabase link --project-ref yxseqkbwlxxwxkhslnog
 npx supabase functions deploy <function-name>
 ```
 
+**Automatic deployment is now configured.** A GitHub Action in `.github/workflows/deploy-supabase-functions.yml`
+redeploys **all** Edge Functions automatically whenever `supabase/functions/**` is changed on `main`.
+To enable it, add these secrets in GitHub (Settings > Secrets and variables > Actions):
+- `SUPABASE_ACCESS_TOKEN` — from `https://supabase.com/dashboard/account/tokens`
+- `SUPABASE_PROJECT_ID` — `yxseqkbwlxxwxkhslnog`
+
+The CORS code also contains a hardcoded fallback list of production domains
+(`upstarloans.vercel.app`, `upstartloan.vercel.app`, `upstarsloans.com`, localhost),
+so the live site keeps working even if the `ALLOWED_ORIGIN` secret is accidentally
+overwritten.
+
 ## Google Apps Script (email notifications on new applications)
 The actual live email/notification script is **not** any of the `.gs` files in this repo
 (those are old/unused reference copies). The real one lives at:
@@ -59,6 +70,9 @@ The `customers` table has UNIQUE constraints on both `email` and `user_id`. Test
 application submissions with an already-used email or User ID will fail with a `500` and a
 `duplicate key value violates unique constraint` error - this is expected behavior, not a bug.
 Always use a fresh email + fresh User ID when testing submissions.
+
+New application emails are stored in lowercase. Customer login and insurance-review lookups
+use case-insensitive matching, so mixed-case emails copied from the admin dashboard still work.
 
 ## admin_notes field naming
 `customers.admin_notes` (text column, admin free-text notes) is different from the

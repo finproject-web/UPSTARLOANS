@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
     const { data: notes, error: notesError } = await adminClient
       .from('admin_notes')
       .select('*')
-      .eq('email', data.email)
+      .ilike('email', data.email)
       .order('created_at', { ascending: false })
 
     if (notesError) {

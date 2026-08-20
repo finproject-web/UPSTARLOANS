@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
         application_id: customer.applicationId,
         first_name: customer.firstName,
         last_name: customer.lastName,
-        email: customer.email,
+        email: customer.email.trim().toLowerCase(),
         phone_number: customer.phoneNumber,
         home_address: customer.homeAddress,
         city: customer.city,
