@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Mail, Phone, MapPin, Send, CheckCircle, User, MessageSquare } from 'lucide-react'
+import { Mail, MapPin, Send, CheckCircle, User, MessageSquare } from 'lucide-react'
 import { submitToSheets } from '../services/edgeFunctionService'
 
 const Contact = () => {
@@ -69,8 +69,7 @@ const Contact = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
               <h3 className="font-semibold text-blue-900 mb-2">What's Next?</h3>
               <p className="text-blue-800">
-                Our support team will review your message and respond to your email address with the information you need. 
-                For urgent matters, please call us at (470) 243-4061 during business hours.
+                Our support team will review your message and respond to your email address with the information you need.
               </p>
             </div>
             <button
@@ -203,17 +202,6 @@ const Contact = () => {
 
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-6 h-6 text-primary-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                      <p className="text-gray-600">(470) 243-4061</p>
-                      <p className="text-sm text-gray-500 mt-1">Mon-Fri: 9AM-6PM EST</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-6 h-6 text-primary-600" />
                     </div>
                     <div>
@@ -228,8 +216,7 @@ const Contact = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                 <h3 className="font-semibold text-blue-900 mb-2">Response Time</h3>
                 <p className="text-blue-800">
-                  We typically respond to email inquiries within 24-48 hours during business days. 
-                  For urgent matters, please call us during business hours.
+                  We typically respond to email inquiries within 24-48 hours during business days.
                 </p>
               </div>
 
