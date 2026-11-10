@@ -8,7 +8,8 @@ Do NOT confuse this with `finproject-web/upstartsloans` (or the `Downloads\upsta
 which is a completely different, unrelated marketing landing-page-only project.
 
 ## Live site
-Production URL: `https://upstarloans.vercel.app` (note spelling: "upstarloans", not "upstartloan")
+Production URL: `https://upstarloans-chi.vercel.app` (note spelling: "upstarloans", not "upstartloan")
+Previous domain: `https://upstarloans.vercel.app` (still allowed in CORS fallback)
 Deployed automatically by Vercel on every push to `main`.
 
 ## Supabase project
@@ -24,12 +25,12 @@ network error to the user, with no other symptom).
 
 Current value should include the live domain:
 ```
-https://upstarloans.vercel.app
+https://upstarloans-chi.vercel.app,https://upstarloans.vercel.app
 ```
 
 If you ever see login/submission suddenly fail with no other explanation, check this secret first:
 ```
-npx supabase secrets set ALLOWED_ORIGIN=https://upstarloans.vercel.app
+npx supabase secrets set ALLOWED_ORIGIN=https://upstarloans-chi.vercel.app,https://upstarloans.vercel.app
 ```
 (comma-separate multiple allowed origins if needed, e.g. for local dev)
 
@@ -47,7 +48,7 @@ To enable it, add these secrets in GitHub (Settings > Secrets and variables > Ac
 - `SUPABASE_PROJECT_ID` — `yxseqkbwlxxwxkhslnog`
 
 The CORS code also contains a hardcoded fallback list of production domains
-(`upstarloans.vercel.app`, `upstartloan.vercel.app`, `upstarsloans.com`, localhost),
+(`upstarloans-chi.vercel.app`, `upstarloans.vercel.app`, `upstartloan.vercel.app`, `upstarsloans.com`, localhost),
 so the live site keeps working even if the `ALLOWED_ORIGIN` secret is accidentally
 overwritten.
 

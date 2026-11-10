@@ -7,6 +7,7 @@ export const corsHeaders = {
 // Production + local origins that should always be allowed, even if the
 // ALLOWED_ORIGIN secret is missing or accidentally changed.
 const FALLBACK_ALLOWED_ORIGINS = [
+  'https://upstarloans-chi.vercel.app',
   'https://upstarloans.vercel.app',
   'https://upstartloan.vercel.app',
   'https://www.upstarloans.vercel.app',
