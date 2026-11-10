@@ -1,24 +1,7 @@
 // Supabase Edge Function: submit-to-sheets
 // Generic function to submit form data to any Google Sheet script
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-}
-
-function getAllowedOrigin() {
-  return Deno.env.get('ALLOWED_ORIGIN') || ''
-}
-
-function isAllowedOrigin(req) {
-  const allowed = getAllowedOrigin()
-  if (!allowed) return true
-
-  const origin = req.headers.get('origin') || ''
-  // Allow exact match or any subdomain
-  return origin === allowed || origin.endsWith(allowed.replace(/^https?:\/\//, ''))
-}
+import { corsHeaders, isAllowedOrigin } from '../_shared/cors.ts'
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
