@@ -4,6 +4,7 @@ import { Users, FileText, CheckCircle, Clock, AlertCircle, XCircle, Search, Filt
 import { LOAN_AGENTS } from '../constants/loanAgents';
 import { fetchAllCustomers, updateCustomerStatus, updateCustomerInDatabase, deleteCustomer, triggerInsuranceReview, checkInsuranceReviewStatus } from '../services/databaseService';
 import { getCustomerKYCDocuments, getLoanAgreement } from '../services/documentService';
+import { downloadInsurancePolicyPDF } from '../utils/insurancePdf';
 
 // Insurance Review Status Component
 const InsuranceReviewStatus = ({ email }) => {
@@ -838,6 +839,19 @@ const AdminDashboard = () => {
               </div>
 
               <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => {
+                    downloadInsurancePolicyPDF({
+                      name: `${selectedCustomer.firstName || ''} ${selectedCustomer.lastName || ''}`.trim(),
+                      email: selectedCustomer.email,
+                      applicationId: selectedCustomer.applicationId
+                    });
+                  }}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Insurance Policy
+                </button>
                 <button
                   onClick={() => setSelectedCustomer(null)}
                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
